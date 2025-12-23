@@ -1,21 +1,8896 @@
-(function(){const t=document.createElement("link").relList;if(t&&t.supports&&t.supports("modulepreload"))return;for(const n of document.querySelectorAll('link[rel="modulepreload"]'))o(n);new MutationObserver(n=>{for(const r of n)if(r.type==="childList")for(const i of r.addedNodes)i.tagName==="LINK"&&i.rel==="modulepreload"&&o(i)}).observe(document,{childList:!0,subtree:!0});function s(n){const r={};return n.integrity&&(r.integrity=n.integrity),n.referrerPolicy&&(r.referrerPolicy=n.referrerPolicy),n.crossOrigin==="use-credentials"?r.credentials="include":n.crossOrigin==="anonymous"?r.credentials="omit":r.credentials="same-origin",r}function o(n){if(n.ep)return;n.ep=!0;const r=s(n);fetch(n.href,r)}})();/**
+(function polyfill() {
+  const relList = document.createElement("link").relList;
+  if (relList && relList.supports && relList.supports("modulepreload")) {
+    return;
+  }
+  for (const link of document.querySelectorAll('link[rel="modulepreload"]')) {
+    processPreload(link);
+  }
+  new MutationObserver((mutations) => {
+    for (const mutation of mutations) {
+      if (mutation.type !== "childList") {
+        continue;
+      }
+      for (const node of mutation.addedNodes) {
+        if (node.tagName === "LINK" && node.rel === "modulepreload")
+          processPreload(node);
+      }
+    }
+  }).observe(document, { childList: true, subtree: true });
+  function getFetchOpts(link) {
+    const fetchOpts = {};
+    if (link.integrity) fetchOpts.integrity = link.integrity;
+    if (link.referrerPolicy) fetchOpts.referrerPolicy = link.referrerPolicy;
+    if (link.crossOrigin === "use-credentials")
+      fetchOpts.credentials = "include";
+    else if (link.crossOrigin === "anonymous") fetchOpts.credentials = "omit";
+    else fetchOpts.credentials = "same-origin";
+    return fetchOpts;
+  }
+  function processPreload(link) {
+    if (link.ep)
+      return;
+    link.ep = true;
+    const fetchOpts = getFetchOpts(link);
+    fetch(link.href, fetchOpts);
+  }
+})();
+/**
 * @vue/shared v3.5.25
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
-**/function po(e){const t=Object.create(null);for(const s of e.split(","))t[s]=1;return s=>s in t}const X={},Pt=[],Ue=()=>{},bn=()=>!1,$s=e=>e.charCodeAt(0)===111&&e.charCodeAt(1)===110&&(e.charCodeAt(2)>122||e.charCodeAt(2)<97),ho=e=>e.startsWith("onUpdate:"),ye=Object.assign,mo=(e,t)=>{const s=e.indexOf(t);s>-1&&e.splice(s,1)},jr=Object.prototype.hasOwnProperty,Y=(e,t)=>jr.call(e,t),A=Array.isArray,Ot=e=>rs(e)==="[object Map]",jt=e=>rs(e)==="[object Set]",Ro=e=>rs(e)==="[object Date]",D=e=>typeof e=="function",ae=e=>typeof e=="string",De=e=>typeof e=="symbol",te=e=>e!==null&&typeof e=="object",yn=e=>(te(e)||D(e))&&D(e.then)&&D(e.catch),_n=Object.prototype.toString,rs=e=>_n.call(e),Fr=e=>rs(e).slice(8,-1),xn=e=>rs(e)==="[object Object]",Ps=e=>ae(e)&&e!=="NaN"&&e[0]!=="-"&&""+parseInt(e,10)===e,Wt=po(",key,ref,ref_for,ref_key,onVnodeBeforeMount,onVnodeMounted,onVnodeBeforeUpdate,onVnodeUpdated,onVnodeBeforeUnmount,onVnodeUnmounted"),Os=e=>{const t=Object.create(null);return s=>t[s]||(t[s]=e(s))},Lr=/-\w/g,Ie=Os(e=>e.replace(Lr,t=>t.slice(1).toUpperCase())),Vr=/\B([A-Z])/g,dt=Os(e=>e.replace(Vr,"-$1").toLowerCase()),Ts=Os(e=>e.charAt(0).toUpperCase()+e.slice(1)),Bs=Os(e=>e?`on${Ts(e)}`:""),ft=(e,t)=>!Object.is(e,t),ps=(e,...t)=>{for(let s=0;s<e.length;s++)e[s](...t)},Cn=(e,t,s,o=!1)=>{Object.defineProperty(e,t,{configurable:!0,enumerable:!1,writable:o,value:s})},Es=e=>{const t=parseFloat(e);return isNaN(t)?e:t};let No;const ks=()=>No||(No=typeof globalThis<"u"?globalThis:typeof self<"u"?self:typeof window<"u"?window:typeof global<"u"?global:{});function is(e){if(A(e)){const t={};for(let s=0;s<e.length;s++){const o=e[s],n=ae(o)?Kr(o):is(o);if(n)for(const r in n)t[r]=n[r]}return t}else if(ae(e)||te(e))return e}const Hr=/;(?![^(]*\))/g,Ur=/:([^]+)/,Br=/\/\*[^]*?\*\//g;function Kr(e){const t={};return e.replace(Br,"").split(Hr).forEach(s=>{if(s){const o=s.split(Ur);o.length>1&&(t[o[0].trim()]=o[1].trim())}}),t}function we(e){let t="";if(ae(e))t=e;else if(A(e))for(let s=0;s<e.length;s++){const o=we(e[s]);o&&(t+=o+" ")}else if(te(e))for(const s in e)e[s]&&(t+=s+" ");return t.trim()}const Wr="itemscope,allowfullscreen,formnovalidate,ismap,nomodule,novalidate,readonly",Jr=po(Wr);function wn(e){return!!e||e===""}function qr(e,t){if(e.length!==t.length)return!1;let s=!0;for(let o=0;s&&o<e.length;o++)s=ls(e[o],t[o]);return s}function ls(e,t){if(e===t)return!0;let s=Ro(e),o=Ro(t);if(s||o)return s&&o?e.getTime()===t.getTime():!1;if(s=De(e),o=De(t),s||o)return e===t;if(s=A(e),o=A(t),s||o)return s&&o?qr(e,t):!1;if(s=te(e),o=te(t),s||o){if(!s||!o)return!1;const n=Object.keys(e).length,r=Object.keys(t).length;if(n!==r)return!1;for(const i in e){const l=e.hasOwnProperty(i),a=t.hasOwnProperty(i);if(l&&!a||!l&&a||!ls(e[i],t[i]))return!1}}return String(e)===String(t)}function go(e,t){return e.findIndex(s=>ls(s,t))}const Sn=e=>!!(e&&e.__v_isRef===!0),ee=e=>ae(e)?e:e==null?"":A(e)||te(e)&&(e.toString===_n||!D(e.toString))?Sn(e)?ee(e.value):JSON.stringify(e,$n,2):String(e),$n=(e,t)=>Sn(t)?$n(e,t.value):Ot(t)?{[`Map(${t.size})`]:[...t.entries()].reduce((s,[o,n],r)=>(s[Ks(o,r)+" =>"]=n,s),{})}:jt(t)?{[`Set(${t.size})`]:[...t.values()].map(s=>Ks(s))}:De(t)?Ks(t):te(t)&&!A(t)&&!xn(t)?String(t):t,Ks=(e,t="")=>{var s;return De(e)?`Symbol(${(s=e.description)!=null?s:t})`:e};/**
+**/
+// @__NO_SIDE_EFFECTS__
+function makeMap(str) {
+  const map = /* @__PURE__ */ Object.create(null);
+  for (const key of str.split(",")) map[key] = 1;
+  return (val) => val in map;
+}
+const EMPTY_OBJ = {};
+const EMPTY_ARR = [];
+const NOOP = () => {
+};
+const NO = () => false;
+const isOn = (key) => key.charCodeAt(0) === 111 && key.charCodeAt(1) === 110 && // uppercase letter
+(key.charCodeAt(2) > 122 || key.charCodeAt(2) < 97);
+const isModelListener = (key) => key.startsWith("onUpdate:");
+const extend = Object.assign;
+const remove = (arr, el) => {
+  const i = arr.indexOf(el);
+  if (i > -1) {
+    arr.splice(i, 1);
+  }
+};
+const hasOwnProperty$1 = Object.prototype.hasOwnProperty;
+const hasOwn = (val, key) => hasOwnProperty$1.call(val, key);
+const isArray = Array.isArray;
+const isMap = (val) => toTypeString(val) === "[object Map]";
+const isSet = (val) => toTypeString(val) === "[object Set]";
+const isDate = (val) => toTypeString(val) === "[object Date]";
+const isFunction = (val) => typeof val === "function";
+const isString = (val) => typeof val === "string";
+const isSymbol = (val) => typeof val === "symbol";
+const isObject = (val) => val !== null && typeof val === "object";
+const isPromise = (val) => {
+  return (isObject(val) || isFunction(val)) && isFunction(val.then) && isFunction(val.catch);
+};
+const objectToString = Object.prototype.toString;
+const toTypeString = (value) => objectToString.call(value);
+const toRawType = (value) => {
+  return toTypeString(value).slice(8, -1);
+};
+const isPlainObject$1 = (val) => toTypeString(val) === "[object Object]";
+const isIntegerKey = (key) => isString(key) && key !== "NaN" && key[0] !== "-" && "" + parseInt(key, 10) === key;
+const isReservedProp = /* @__PURE__ */ makeMap(
+  // the leading comma is intentional so empty string "" is also included
+  ",key,ref,ref_for,ref_key,onVnodeBeforeMount,onVnodeMounted,onVnodeBeforeUpdate,onVnodeUpdated,onVnodeBeforeUnmount,onVnodeUnmounted"
+);
+const cacheStringFunction = (fn) => {
+  const cache = /* @__PURE__ */ Object.create(null);
+  return (str) => {
+    const hit = cache[str];
+    return hit || (cache[str] = fn(str));
+  };
+};
+const camelizeRE = /-\w/g;
+const camelize = cacheStringFunction(
+  (str) => {
+    return str.replace(camelizeRE, (c) => c.slice(1).toUpperCase());
+  }
+);
+const hyphenateRE = /\B([A-Z])/g;
+const hyphenate = cacheStringFunction(
+  (str) => str.replace(hyphenateRE, "-$1").toLowerCase()
+);
+const capitalize = cacheStringFunction((str) => {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+});
+const toHandlerKey = cacheStringFunction(
+  (str) => {
+    const s = str ? `on${capitalize(str)}` : ``;
+    return s;
+  }
+);
+const hasChanged = (value, oldValue) => !Object.is(value, oldValue);
+const invokeArrayFns = (fns, ...arg) => {
+  for (let i = 0; i < fns.length; i++) {
+    fns[i](...arg);
+  }
+};
+const def = (obj, key, value, writable = false) => {
+  Object.defineProperty(obj, key, {
+    configurable: true,
+    enumerable: false,
+    writable,
+    value
+  });
+};
+const looseToNumber = (val) => {
+  const n = parseFloat(val);
+  return isNaN(n) ? val : n;
+};
+let _globalThis;
+const getGlobalThis = () => {
+  return _globalThis || (_globalThis = typeof globalThis !== "undefined" ? globalThis : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : typeof global !== "undefined" ? global : {});
+};
+function normalizeStyle(value) {
+  if (isArray(value)) {
+    const res = {};
+    for (let i = 0; i < value.length; i++) {
+      const item = value[i];
+      const normalized = isString(item) ? parseStringStyle(item) : normalizeStyle(item);
+      if (normalized) {
+        for (const key in normalized) {
+          res[key] = normalized[key];
+        }
+      }
+    }
+    return res;
+  } else if (isString(value) || isObject(value)) {
+    return value;
+  }
+}
+const listDelimiterRE = /;(?![^(]*\))/g;
+const propertyDelimiterRE = /:([^]+)/;
+const styleCommentRE = /\/\*[^]*?\*\//g;
+function parseStringStyle(cssText) {
+  const ret = {};
+  cssText.replace(styleCommentRE, "").split(listDelimiterRE).forEach((item) => {
+    if (item) {
+      const tmp = item.split(propertyDelimiterRE);
+      tmp.length > 1 && (ret[tmp[0].trim()] = tmp[1].trim());
+    }
+  });
+  return ret;
+}
+function normalizeClass(value) {
+  let res = "";
+  if (isString(value)) {
+    res = value;
+  } else if (isArray(value)) {
+    for (let i = 0; i < value.length; i++) {
+      const normalized = normalizeClass(value[i]);
+      if (normalized) {
+        res += normalized + " ";
+      }
+    }
+  } else if (isObject(value)) {
+    for (const name in value) {
+      if (value[name]) {
+        res += name + " ";
+      }
+    }
+  }
+  return res.trim();
+}
+const specialBooleanAttrs = `itemscope,allowfullscreen,formnovalidate,ismap,nomodule,novalidate,readonly`;
+const isSpecialBooleanAttr = /* @__PURE__ */ makeMap(specialBooleanAttrs);
+function includeBooleanAttr(value) {
+  return !!value || value === "";
+}
+function looseCompareArrays(a, b) {
+  if (a.length !== b.length) return false;
+  let equal = true;
+  for (let i = 0; equal && i < a.length; i++) {
+    equal = looseEqual(a[i], b[i]);
+  }
+  return equal;
+}
+function looseEqual(a, b) {
+  if (a === b) return true;
+  let aValidType = isDate(a);
+  let bValidType = isDate(b);
+  if (aValidType || bValidType) {
+    return aValidType && bValidType ? a.getTime() === b.getTime() : false;
+  }
+  aValidType = isSymbol(a);
+  bValidType = isSymbol(b);
+  if (aValidType || bValidType) {
+    return a === b;
+  }
+  aValidType = isArray(a);
+  bValidType = isArray(b);
+  if (aValidType || bValidType) {
+    return aValidType && bValidType ? looseCompareArrays(a, b) : false;
+  }
+  aValidType = isObject(a);
+  bValidType = isObject(b);
+  if (aValidType || bValidType) {
+    if (!aValidType || !bValidType) {
+      return false;
+    }
+    const aKeysCount = Object.keys(a).length;
+    const bKeysCount = Object.keys(b).length;
+    if (aKeysCount !== bKeysCount) {
+      return false;
+    }
+    for (const key in a) {
+      const aHasKey = a.hasOwnProperty(key);
+      const bHasKey = b.hasOwnProperty(key);
+      if (aHasKey && !bHasKey || !aHasKey && bHasKey || !looseEqual(a[key], b[key])) {
+        return false;
+      }
+    }
+  }
+  return String(a) === String(b);
+}
+function looseIndexOf(arr, val) {
+  return arr.findIndex((item) => looseEqual(item, val));
+}
+const isRef$1 = (val) => {
+  return !!(val && val["__v_isRef"] === true);
+};
+const toDisplayString = (val) => {
+  return isString(val) ? val : val == null ? "" : isArray(val) || isObject(val) && (val.toString === objectToString || !isFunction(val.toString)) ? isRef$1(val) ? toDisplayString(val.value) : JSON.stringify(val, replacer, 2) : String(val);
+};
+const replacer = (_key, val) => {
+  if (isRef$1(val)) {
+    return replacer(_key, val.value);
+  } else if (isMap(val)) {
+    return {
+      [`Map(${val.size})`]: [...val.entries()].reduce(
+        (entries, [key, val2], i) => {
+          entries[stringifySymbol(key, i) + " =>"] = val2;
+          return entries;
+        },
+        {}
+      )
+    };
+  } else if (isSet(val)) {
+    return {
+      [`Set(${val.size})`]: [...val.values()].map((v) => stringifySymbol(v))
+    };
+  } else if (isSymbol(val)) {
+    return stringifySymbol(val);
+  } else if (isObject(val) && !isArray(val) && !isPlainObject$1(val)) {
+    return String(val);
+  }
+  return val;
+};
+const stringifySymbol = (v, i = "") => {
+  var _a;
+  return (
+    // Symbol.description in es2019+ so we need to cast here to pass
+    // the lib: es2016 check
+    isSymbol(v) ? `Symbol(${(_a = v.description) != null ? _a : i})` : v
+  );
+};
+/**
 * @vue/reactivity v3.5.25
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
-**/let pe;class Pn{constructor(t=!1){this.detached=t,this._active=!0,this._on=0,this.effects=[],this.cleanups=[],this._isPaused=!1,this.parent=pe,!t&&pe&&(this.index=(pe.scopes||(pe.scopes=[])).push(this)-1)}get active(){return this._active}pause(){if(this._active){this._isPaused=!0;let t,s;if(this.scopes)for(t=0,s=this.scopes.length;t<s;t++)this.scopes[t].pause();for(t=0,s=this.effects.length;t<s;t++)this.effects[t].pause()}}resume(){if(this._active&&this._isPaused){this._isPaused=!1;let t,s;if(this.scopes)for(t=0,s=this.scopes.length;t<s;t++)this.scopes[t].resume();for(t=0,s=this.effects.length;t<s;t++)this.effects[t].resume()}}run(t){if(this._active){const s=pe;try{return pe=this,t()}finally{pe=s}}}on(){++this._on===1&&(this.prevScope=pe,pe=this)}off(){this._on>0&&--this._on===0&&(pe=this.prevScope,this.prevScope=void 0)}stop(t){if(this._active){this._active=!1;let s,o;for(s=0,o=this.effects.length;s<o;s++)this.effects[s].stop();for(this.effects.length=0,s=0,o=this.cleanups.length;s<o;s++)this.cleanups[s]();if(this.cleanups.length=0,this.scopes){for(s=0,o=this.scopes.length;s<o;s++)this.scopes[s].stop(!0);this.scopes.length=0}if(!this.detached&&this.parent&&!t){const n=this.parent.scopes.pop();n&&n!==this&&(this.parent.scopes[this.index]=n,n.index=this.index)}this.parent=void 0}}}function On(e){return new Pn(e)}function Tn(){return pe}function Gr(e,t=!1){pe&&pe.cleanups.push(e)}let Q;const Ws=new WeakSet;class En{constructor(t){this.fn=t,this.deps=void 0,this.depsTail=void 0,this.flags=5,this.next=void 0,this.cleanup=void 0,this.scheduler=void 0,pe&&pe.active&&pe.effects.push(this)}pause(){this.flags|=64}resume(){this.flags&64&&(this.flags&=-65,Ws.has(this)&&(Ws.delete(this),this.trigger()))}notify(){this.flags&2&&!(this.flags&32)||this.flags&8||An(this)}run(){if(!(this.flags&1))return this.fn();this.flags|=2,jo(this),In(this);const t=Q,s=Me;Q=this,Me=!0;try{return this.fn()}finally{Mn(this),Q=t,Me=s,this.flags&=-3}}stop(){if(this.flags&1){for(let t=this.deps;t;t=t.nextDep)yo(t);this.deps=this.depsTail=void 0,jo(this),this.onStop&&this.onStop(),this.flags&=-2}}trigger(){this.flags&64?Ws.add(this):this.scheduler?this.scheduler():this.runIfDirty()}runIfDirty(){eo(this)&&this.run()}get dirty(){return eo(this)}}let kn=0,Jt,qt;function An(e,t=!1){if(e.flags|=8,t){e.next=qt,qt=e;return}e.next=Jt,Jt=e}function vo(){kn++}function bo(){if(--kn>0)return;if(qt){let t=qt;for(qt=void 0;t;){const s=t.next;t.next=void 0,t.flags&=-9,t=s}}let e;for(;Jt;){let t=Jt;for(Jt=void 0;t;){const s=t.next;if(t.next=void 0,t.flags&=-9,t.flags&1)try{t.trigger()}catch(o){e||(e=o)}t=s}}if(e)throw e}function In(e){for(let t=e.deps;t;t=t.nextDep)t.version=-1,t.prevActiveLink=t.dep.activeLink,t.dep.activeLink=t}function Mn(e){let t,s=e.depsTail,o=s;for(;o;){const n=o.prevDep;o.version===-1?(o===s&&(s=n),yo(o),Yr(o)):t=o,o.dep.activeLink=o.prevActiveLink,o.prevActiveLink=void 0,o=n}e.deps=t,e.depsTail=s}function eo(e){for(let t=e.deps;t;t=t.nextDep)if(t.dep.version!==t.version||t.dep.computed&&(Dn(t.dep.computed)||t.dep.version!==t.version))return!0;return!!e._dirty}function Dn(e){if(e.flags&4&&!(e.flags&16)||(e.flags&=-17,e.globalVersion===Qt)||(e.globalVersion=Qt,!e.isSSR&&e.flags&128&&(!e.deps&&!e._dirty||!eo(e))))return;e.flags|=2;const t=e.dep,s=Q,o=Me;Q=e,Me=!0;try{In(e);const n=e.fn(e._value);(t.version===0||ft(n,e._value))&&(e.flags|=128,e._value=n,t.version++)}catch(n){throw t.version++,n}finally{Q=s,Me=o,Mn(e),e.flags&=-3}}function yo(e,t=!1){const{dep:s,prevSub:o,nextSub:n}=e;if(o&&(o.nextSub=n,e.prevSub=void 0),n&&(n.prevSub=o,e.nextSub=void 0),s.subs===e&&(s.subs=o,!o&&s.computed)){s.computed.flags&=-5;for(let r=s.computed.deps;r;r=r.nextDep)yo(r,!0)}!t&&!--s.sc&&s.map&&s.map.delete(s.key)}function Yr(e){const{prevDep:t,nextDep:s}=e;t&&(t.nextDep=s,e.prevDep=void 0),s&&(s.prevDep=t,e.nextDep=void 0)}let Me=!0;const Rn=[];function Ze(){Rn.push(Me),Me=!1}function Qe(){const e=Rn.pop();Me=e===void 0?!0:e}function jo(e){const{cleanup:t}=e;if(e.cleanup=void 0,t){const s=Q;Q=void 0;try{t()}finally{Q=s}}}let Qt=0;class zr{constructor(t,s){this.sub=t,this.dep=s,this.version=s.version,this.nextDep=this.prevDep=this.nextSub=this.prevSub=this.prevActiveLink=void 0}}class _o{constructor(t){this.computed=t,this.version=0,this.activeLink=void 0,this.subs=void 0,this.map=void 0,this.key=void 0,this.sc=0,this.__v_skip=!0}track(t){if(!Q||!Me||Q===this.computed)return;let s=this.activeLink;if(s===void 0||s.sub!==Q)s=this.activeLink=new zr(Q,this),Q.deps?(s.prevDep=Q.depsTail,Q.depsTail.nextDep=s,Q.depsTail=s):Q.deps=Q.depsTail=s,Nn(s);else if(s.version===-1&&(s.version=this.version,s.nextDep)){const o=s.nextDep;o.prevDep=s.prevDep,s.prevDep&&(s.prevDep.nextDep=o),s.prevDep=Q.depsTail,s.nextDep=void 0,Q.depsTail.nextDep=s,Q.depsTail=s,Q.deps===s&&(Q.deps=o)}return s}trigger(t){this.version++,Qt++,this.notify(t)}notify(t){vo();try{for(let s=this.subs;s;s=s.prevSub)s.sub.notify()&&s.sub.dep.notify()}finally{bo()}}}function Nn(e){if(e.dep.sc++,e.sub.flags&4){const t=e.dep.computed;if(t&&!e.dep.subs){t.flags|=20;for(let o=t.deps;o;o=o.nextDep)Nn(o)}const s=e.dep.subs;s!==e&&(e.prevSub=s,s&&(s.nextSub=e)),e.dep.subs=e}}const vs=new WeakMap,vt=Symbol(""),to=Symbol(""),es=Symbol("");function he(e,t,s){if(Me&&Q){let o=vs.get(e);o||vs.set(e,o=new Map);let n=o.get(s);n||(o.set(s,n=new _o),n.map=o,n.key=s),n.track()}}function Ge(e,t,s,o,n,r){const i=vs.get(e);if(!i){Qt++;return}const l=a=>{a&&a.trigger()};if(vo(),t==="clear")i.forEach(l);else{const a=A(e),f=a&&Ps(s);if(a&&s==="length"){const p=Number(o);i.forEach((m,C)=>{(C==="length"||C===es||!De(C)&&C>=p)&&l(m)})}else switch((s!==void 0||i.has(void 0))&&l(i.get(s)),f&&l(i.get(es)),t){case"add":a?f&&l(i.get("length")):(l(i.get(vt)),Ot(e)&&l(i.get(to)));break;case"delete":a||(l(i.get(vt)),Ot(e)&&l(i.get(to)));break;case"set":Ot(e)&&l(i.get(vt));break}}bo()}function Xr(e,t){const s=vs.get(e);return s&&s.get(t)}function Ct(e){const t=W(e);return t===e?t:(he(t,"iterate",es),Ee(e)?t:t.map(Re))}function As(e){return he(e=W(e),"iterate",es),e}function it(e,t){return et(e)?ze(e)?It(Re(t)):It(t):Re(t)}const Zr={__proto__:null,[Symbol.iterator](){return Js(this,Symbol.iterator,e=>it(this,e))},concat(...e){return Ct(this).concat(...e.map(t=>A(t)?Ct(t):t))},entries(){return Js(this,"entries",e=>(e[1]=it(this,e[1]),e))},every(e,t){return Je(this,"every",e,t,void 0,arguments)},filter(e,t){return Je(this,"filter",e,t,s=>s.map(o=>it(this,o)),arguments)},find(e,t){return Je(this,"find",e,t,s=>it(this,s),arguments)},findIndex(e,t){return Je(this,"findIndex",e,t,void 0,arguments)},findLast(e,t){return Je(this,"findLast",e,t,s=>it(this,s),arguments)},findLastIndex(e,t){return Je(this,"findLastIndex",e,t,void 0,arguments)},forEach(e,t){return Je(this,"forEach",e,t,void 0,arguments)},includes(...e){return qs(this,"includes",e)},indexOf(...e){return qs(this,"indexOf",e)},join(e){return Ct(this).join(e)},lastIndexOf(...e){return qs(this,"lastIndexOf",e)},map(e,t){return Je(this,"map",e,t,void 0,arguments)},pop(){return Ht(this,"pop")},push(...e){return Ht(this,"push",e)},reduce(e,...t){return Fo(this,"reduce",e,t)},reduceRight(e,...t){return Fo(this,"reduceRight",e,t)},shift(){return Ht(this,"shift")},some(e,t){return Je(this,"some",e,t,void 0,arguments)},splice(...e){return Ht(this,"splice",e)},toReversed(){return Ct(this).toReversed()},toSorted(e){return Ct(this).toSorted(e)},toSpliced(...e){return Ct(this).toSpliced(...e)},unshift(...e){return Ht(this,"unshift",e)},values(){return Js(this,"values",e=>it(this,e))}};function Js(e,t,s){const o=As(e),n=o[t]();return o!==e&&!Ee(e)&&(n._next=n.next,n.next=()=>{const r=n._next();return r.done||(r.value=s(r.value)),r}),n}const Qr=Array.prototype;function Je(e,t,s,o,n,r){const i=As(e),l=i!==e&&!Ee(e),a=i[t];if(a!==Qr[t]){const m=a.apply(e,r);return l?Re(m):m}let f=s;i!==e&&(l?f=function(m,C){return s.call(this,it(e,m),C,e)}:s.length>2&&(f=function(m,C){return s.call(this,m,C,e)}));const p=a.call(i,f,o);return l&&n?n(p):p}function Fo(e,t,s,o){const n=As(e);let r=s;return n!==e&&(Ee(e)?s.length>3&&(r=function(i,l,a){return s.call(this,i,l,a,e)}):r=function(i,l,a){return s.call(this,i,it(e,l),a,e)}),n[t](r,...o)}function qs(e,t,s){const o=W(e);he(o,"iterate",es);const n=o[t](...s);return(n===-1||n===!1)&&Ms(s[0])?(s[0]=W(s[0]),o[t](...s)):n}function Ht(e,t,s=[]){Ze(),vo();const o=W(e)[t].apply(e,s);return bo(),Qe(),o}const ei=po("__proto__,__v_isRef,__isVue"),jn=new Set(Object.getOwnPropertyNames(Symbol).filter(e=>e!=="arguments"&&e!=="caller").map(e=>Symbol[e]).filter(De));function ti(e){De(e)||(e=String(e));const t=W(this);return he(t,"has",e),t.hasOwnProperty(e)}class Fn{constructor(t=!1,s=!1){this._isReadonly=t,this._isShallow=s}get(t,s,o){if(s==="__v_skip")return t.__v_skip;const n=this._isReadonly,r=this._isShallow;if(s==="__v_isReactive")return!n;if(s==="__v_isReadonly")return n;if(s==="__v_isShallow")return r;if(s==="__v_raw")return o===(n?r?fi:Un:r?Hn:Vn).get(t)||Object.getPrototypeOf(t)===Object.getPrototypeOf(o)?t:void 0;const i=A(t);if(!n){let a;if(i&&(a=Zr[s]))return a;if(s==="hasOwnProperty")return ti}const l=Reflect.get(t,s,le(t)?t:o);if((De(s)?jn.has(s):ei(s))||(n||he(t,"get",s),r))return l;if(le(l)){const a=i&&Ps(s)?l:l.value;return n&&te(a)?oo(a):a}return te(l)?n?oo(l):Is(l):l}}class Ln extends Fn{constructor(t=!1){super(!1,t)}set(t,s,o,n){let r=t[s];const i=A(t)&&Ps(s);if(!this._isShallow){const f=et(r);if(!Ee(o)&&!et(o)&&(r=W(r),o=W(o)),!i&&le(r)&&!le(o))return f||(r.value=o),!0}const l=i?Number(s)<t.length:Y(t,s),a=Reflect.set(t,s,o,le(t)?t:n);return t===W(n)&&(l?ft(o,r)&&Ge(t,"set",s,o):Ge(t,"add",s,o)),a}deleteProperty(t,s){const o=Y(t,s);t[s];const n=Reflect.deleteProperty(t,s);return n&&o&&Ge(t,"delete",s,void 0),n}has(t,s){const o=Reflect.has(t,s);return(!De(s)||!jn.has(s))&&he(t,"has",s),o}ownKeys(t){return he(t,"iterate",A(t)?"length":vt),Reflect.ownKeys(t)}}class si extends Fn{constructor(t=!1){super(!0,t)}set(t,s){return!0}deleteProperty(t,s){return!0}}const oi=new Ln,ni=new si,ri=new Ln(!0);const so=e=>e,us=e=>Reflect.getPrototypeOf(e);function ii(e,t,s){return function(...o){const n=this.__v_raw,r=W(n),i=Ot(r),l=e==="entries"||e===Symbol.iterator&&i,a=e==="keys"&&i,f=n[e](...o),p=s?so:t?It:Re;return!t&&he(r,"iterate",a?to:vt),{next(){const{value:m,done:C}=f.next();return C?{value:m,done:C}:{value:l?[p(m[0]),p(m[1])]:p(m),done:C}},[Symbol.iterator](){return this}}}}function fs(e){return function(...t){return e==="delete"?!1:e==="clear"?void 0:this}}function li(e,t){const s={get(n){const r=this.__v_raw,i=W(r),l=W(n);e||(ft(n,l)&&he(i,"get",n),he(i,"get",l));const{has:a}=us(i),f=t?so:e?It:Re;if(a.call(i,n))return f(r.get(n));if(a.call(i,l))return f(r.get(l));r!==i&&r.get(n)},get size(){const n=this.__v_raw;return!e&&he(W(n),"iterate",vt),n.size},has(n){const r=this.__v_raw,i=W(r),l=W(n);return e||(ft(n,l)&&he(i,"has",n),he(i,"has",l)),n===l?r.has(n):r.has(n)||r.has(l)},forEach(n,r){const i=this,l=i.__v_raw,a=W(l),f=t?so:e?It:Re;return!e&&he(a,"iterate",vt),l.forEach((p,m)=>n.call(r,f(p),f(m),i))}};return ye(s,e?{add:fs("add"),set:fs("set"),delete:fs("delete"),clear:fs("clear")}:{add(n){!t&&!Ee(n)&&!et(n)&&(n=W(n));const r=W(this);return us(r).has.call(r,n)||(r.add(n),Ge(r,"add",n,n)),this},set(n,r){!t&&!Ee(r)&&!et(r)&&(r=W(r));const i=W(this),{has:l,get:a}=us(i);let f=l.call(i,n);f||(n=W(n),f=l.call(i,n));const p=a.call(i,n);return i.set(n,r),f?ft(r,p)&&Ge(i,"set",n,r):Ge(i,"add",n,r),this},delete(n){const r=W(this),{has:i,get:l}=us(r);let a=i.call(r,n);a||(n=W(n),a=i.call(r,n)),l&&l.call(r,n);const f=r.delete(n);return a&&Ge(r,"delete",n,void 0),f},clear(){const n=W(this),r=n.size!==0,i=n.clear();return r&&Ge(n,"clear",void 0,void 0),i}}),["keys","values","entries",Symbol.iterator].forEach(n=>{s[n]=ii(n,e,t)}),s}function xo(e,t){const s=li(e,t);return(o,n,r)=>n==="__v_isReactive"?!e:n==="__v_isReadonly"?e:n==="__v_raw"?o:Reflect.get(Y(s,n)&&n in o?s:o,n,r)}const ai={get:xo(!1,!1)},ci={get:xo(!1,!0)},ui={get:xo(!0,!1)};const Vn=new WeakMap,Hn=new WeakMap,Un=new WeakMap,fi=new WeakMap;function di(e){switch(e){case"Object":case"Array":return 1;case"Map":case"Set":case"WeakMap":case"WeakSet":return 2;default:return 0}}function pi(e){return e.__v_skip||!Object.isExtensible(e)?0:di(Fr(e))}function Is(e){return et(e)?e:Co(e,!1,oi,ai,Vn)}function hi(e){return Co(e,!1,ri,ci,Hn)}function oo(e){return Co(e,!0,ni,ui,Un)}function Co(e,t,s,o,n){if(!te(e)||e.__v_raw&&!(t&&e.__v_isReactive))return e;const r=pi(e);if(r===0)return e;const i=n.get(e);if(i)return i;const l=new Proxy(e,r===2?o:s);return n.set(e,l),l}function ze(e){return et(e)?ze(e.__v_raw):!!(e&&e.__v_isReactive)}function et(e){return!!(e&&e.__v_isReadonly)}function Ee(e){return!!(e&&e.__v_isShallow)}function Ms(e){return e?!!e.__v_raw:!1}function W(e){const t=e&&e.__v_raw;return t?W(t):e}function Tt(e){return!Y(e,"__v_skip")&&Object.isExtensible(e)&&Cn(e,"__v_skip",!0),e}const Re=e=>te(e)?Is(e):e,It=e=>te(e)?oo(e):e;function le(e){return e?e.__v_isRef===!0:!1}function J(e){return Bn(e,!1)}function mi(e){return Bn(e,!0)}function Bn(e,t){return le(e)?e:new gi(e,t)}class gi{constructor(t,s){this.dep=new _o,this.__v_isRef=!0,this.__v_isShallow=!1,this._rawValue=s?t:W(t),this._value=s?t:Re(t),this.__v_isShallow=s}get value(){return this.dep.track(),this._value}set value(t){const s=this._rawValue,o=this.__v_isShallow||Ee(t)||et(t);t=o?t:W(t),ft(t,s)&&(this._rawValue=t,this._value=o?t:Re(t),this.dep.trigger())}}function Kn(e){return le(e)?e.value:e}const vi={get:(e,t,s)=>t==="__v_raw"?e:Kn(Reflect.get(e,t,s)),set:(e,t,s,o)=>{const n=e[t];return le(n)&&!le(s)?(n.value=s,!0):Reflect.set(e,t,s,o)}};function Wn(e){return ze(e)?e:new Proxy(e,vi)}function bi(e){const t=A(e)?new Array(e.length):{};for(const s in e)t[s]=_i(e,s);return t}class yi{constructor(t,s,o){this._object=t,this._key=s,this._defaultValue=o,this.__v_isRef=!0,this._value=void 0,this._raw=W(t);let n=!0,r=t;if(!A(t)||!Ps(String(s)))do n=!Ms(r)||Ee(r);while(n&&(r=r.__v_raw));this._shallow=n}get value(){let t=this._object[this._key];return this._shallow&&(t=Kn(t)),this._value=t===void 0?this._defaultValue:t}set value(t){if(this._shallow&&le(this._raw[this._key])){const s=this._object[this._key];if(le(s)){s.value=t;return}}this._object[this._key]=t}get dep(){return Xr(this._raw,this._key)}}function _i(e,t,s){return new yi(e,t,s)}class xi{constructor(t,s,o){this.fn=t,this.setter=s,this._value=void 0,this.dep=new _o(this),this.__v_isRef=!0,this.deps=void 0,this.depsTail=void 0,this.flags=16,this.globalVersion=Qt-1,this.next=void 0,this.effect=this,this.__v_isReadonly=!s,this.isSSR=o}notify(){if(this.flags|=16,!(this.flags&8)&&Q!==this)return An(this,!0),!0}get value(){const t=this.dep.track();return Dn(this),t&&(t.version=this.dep.version),this._value}set value(t){this.setter&&this.setter(t)}}function Ci(e,t,s=!1){let o,n;return D(e)?o=e:(o=e.get,n=e.set),new xi(o,n,s)}const ds={},bs=new WeakMap;let gt;function wi(e,t=!1,s=gt){if(s){let o=bs.get(s);o||bs.set(s,o=[]),o.push(e)}}function Si(e,t,s=X){const{immediate:o,deep:n,once:r,scheduler:i,augmentJob:l,call:a}=s,f=T=>n?T:Ee(T)||n===!1||n===0?Ye(T,1):Ye(T);let p,m,C,$,I=!1,R=!1;if(le(e)?(m=()=>e.value,I=Ee(e)):ze(e)?(m=()=>f(e),I=!0):A(e)?(R=!0,I=e.some(T=>ze(T)||Ee(T)),m=()=>e.map(T=>{if(le(T))return T.value;if(ze(T))return f(T);if(D(T))return a?a(T,2):T()})):D(e)?t?m=a?()=>a(e,2):e:m=()=>{if(C){Ze();try{C()}finally{Qe()}}const T=gt;gt=p;try{return a?a(e,3,[$]):e($)}finally{gt=T}}:m=Ue,t&&n){const T=m,V=n===!0?1/0:n;m=()=>Ye(T(),V)}const se=Tn(),L=()=>{p.stop(),se&&se.active&&mo(se.effects,p)};if(r&&t){const T=t;t=(...V)=>{T(...V),L()}}let q=R?new Array(e.length).fill(ds):ds;const G=T=>{if(!(!(p.flags&1)||!p.dirty&&!T))if(t){const V=p.run();if(n||I||(R?V.some((re,ce)=>ft(re,q[ce])):ft(V,q))){C&&C();const re=gt;gt=p;try{const ce=[V,q===ds?void 0:R&&q[0]===ds?[]:q,$];q=V,a?a(t,3,ce):t(...ce)}finally{gt=re}}}else p.run()};return l&&l(G),p=new En(m),p.scheduler=i?()=>i(G,!1):G,$=T=>wi(T,!1,p),C=p.onStop=()=>{const T=bs.get(p);if(T){if(a)a(T,4);else for(const V of T)V();bs.delete(p)}},t?o?G(!0):q=p.run():i?i(G.bind(null,!0),!0):p.run(),L.pause=p.pause.bind(p),L.resume=p.resume.bind(p),L.stop=L,L}function Ye(e,t=1/0,s){if(t<=0||!te(e)||e.__v_skip||(s=s||new Map,(s.get(e)||0)>=t))return e;if(s.set(e,t),t--,le(e))Ye(e.value,t,s);else if(A(e))for(let o=0;o<e.length;o++)Ye(e[o],t,s);else if(jt(e)||Ot(e))e.forEach(o=>{Ye(o,t,s)});else if(xn(e)){for(const o in e)Ye(e[o],t,s);for(const o of Object.getOwnPropertySymbols(e))Object.prototype.propertyIsEnumerable.call(e,o)&&Ye(e[o],t,s)}return e}/**
+**/
+let activeEffectScope;
+class EffectScope {
+  constructor(detached = false) {
+    this.detached = detached;
+    this._active = true;
+    this._on = 0;
+    this.effects = [];
+    this.cleanups = [];
+    this._isPaused = false;
+    this.parent = activeEffectScope;
+    if (!detached && activeEffectScope) {
+      this.index = (activeEffectScope.scopes || (activeEffectScope.scopes = [])).push(
+        this
+      ) - 1;
+    }
+  }
+  get active() {
+    return this._active;
+  }
+  pause() {
+    if (this._active) {
+      this._isPaused = true;
+      let i, l;
+      if (this.scopes) {
+        for (i = 0, l = this.scopes.length; i < l; i++) {
+          this.scopes[i].pause();
+        }
+      }
+      for (i = 0, l = this.effects.length; i < l; i++) {
+        this.effects[i].pause();
+      }
+    }
+  }
+  /**
+   * Resumes the effect scope, including all child scopes and effects.
+   */
+  resume() {
+    if (this._active) {
+      if (this._isPaused) {
+        this._isPaused = false;
+        let i, l;
+        if (this.scopes) {
+          for (i = 0, l = this.scopes.length; i < l; i++) {
+            this.scopes[i].resume();
+          }
+        }
+        for (i = 0, l = this.effects.length; i < l; i++) {
+          this.effects[i].resume();
+        }
+      }
+    }
+  }
+  run(fn) {
+    if (this._active) {
+      const currentEffectScope = activeEffectScope;
+      try {
+        activeEffectScope = this;
+        return fn();
+      } finally {
+        activeEffectScope = currentEffectScope;
+      }
+    }
+  }
+  /**
+   * This should only be called on non-detached scopes
+   * @internal
+   */
+  on() {
+    if (++this._on === 1) {
+      this.prevScope = activeEffectScope;
+      activeEffectScope = this;
+    }
+  }
+  /**
+   * This should only be called on non-detached scopes
+   * @internal
+   */
+  off() {
+    if (this._on > 0 && --this._on === 0) {
+      activeEffectScope = this.prevScope;
+      this.prevScope = void 0;
+    }
+  }
+  stop(fromParent) {
+    if (this._active) {
+      this._active = false;
+      let i, l;
+      for (i = 0, l = this.effects.length; i < l; i++) {
+        this.effects[i].stop();
+      }
+      this.effects.length = 0;
+      for (i = 0, l = this.cleanups.length; i < l; i++) {
+        this.cleanups[i]();
+      }
+      this.cleanups.length = 0;
+      if (this.scopes) {
+        for (i = 0, l = this.scopes.length; i < l; i++) {
+          this.scopes[i].stop(true);
+        }
+        this.scopes.length = 0;
+      }
+      if (!this.detached && this.parent && !fromParent) {
+        const last = this.parent.scopes.pop();
+        if (last && last !== this) {
+          this.parent.scopes[this.index] = last;
+          last.index = this.index;
+        }
+      }
+      this.parent = void 0;
+    }
+  }
+}
+function effectScope(detached) {
+  return new EffectScope(detached);
+}
+function getCurrentScope() {
+  return activeEffectScope;
+}
+function onScopeDispose(fn, failSilently = false) {
+  if (activeEffectScope) {
+    activeEffectScope.cleanups.push(fn);
+  }
+}
+let activeSub;
+const pausedQueueEffects = /* @__PURE__ */ new WeakSet();
+class ReactiveEffect {
+  constructor(fn) {
+    this.fn = fn;
+    this.deps = void 0;
+    this.depsTail = void 0;
+    this.flags = 1 | 4;
+    this.next = void 0;
+    this.cleanup = void 0;
+    this.scheduler = void 0;
+    if (activeEffectScope && activeEffectScope.active) {
+      activeEffectScope.effects.push(this);
+    }
+  }
+  pause() {
+    this.flags |= 64;
+  }
+  resume() {
+    if (this.flags & 64) {
+      this.flags &= -65;
+      if (pausedQueueEffects.has(this)) {
+        pausedQueueEffects.delete(this);
+        this.trigger();
+      }
+    }
+  }
+  /**
+   * @internal
+   */
+  notify() {
+    if (this.flags & 2 && !(this.flags & 32)) {
+      return;
+    }
+    if (!(this.flags & 8)) {
+      batch(this);
+    }
+  }
+  run() {
+    if (!(this.flags & 1)) {
+      return this.fn();
+    }
+    this.flags |= 2;
+    cleanupEffect(this);
+    prepareDeps(this);
+    const prevEffect = activeSub;
+    const prevShouldTrack = shouldTrack;
+    activeSub = this;
+    shouldTrack = true;
+    try {
+      return this.fn();
+    } finally {
+      cleanupDeps(this);
+      activeSub = prevEffect;
+      shouldTrack = prevShouldTrack;
+      this.flags &= -3;
+    }
+  }
+  stop() {
+    if (this.flags & 1) {
+      for (let link = this.deps; link; link = link.nextDep) {
+        removeSub(link);
+      }
+      this.deps = this.depsTail = void 0;
+      cleanupEffect(this);
+      this.onStop && this.onStop();
+      this.flags &= -2;
+    }
+  }
+  trigger() {
+    if (this.flags & 64) {
+      pausedQueueEffects.add(this);
+    } else if (this.scheduler) {
+      this.scheduler();
+    } else {
+      this.runIfDirty();
+    }
+  }
+  /**
+   * @internal
+   */
+  runIfDirty() {
+    if (isDirty(this)) {
+      this.run();
+    }
+  }
+  get dirty() {
+    return isDirty(this);
+  }
+}
+let batchDepth = 0;
+let batchedSub;
+let batchedComputed;
+function batch(sub, isComputed2 = false) {
+  sub.flags |= 8;
+  if (isComputed2) {
+    sub.next = batchedComputed;
+    batchedComputed = sub;
+    return;
+  }
+  sub.next = batchedSub;
+  batchedSub = sub;
+}
+function startBatch() {
+  batchDepth++;
+}
+function endBatch() {
+  if (--batchDepth > 0) {
+    return;
+  }
+  if (batchedComputed) {
+    let e = batchedComputed;
+    batchedComputed = void 0;
+    while (e) {
+      const next = e.next;
+      e.next = void 0;
+      e.flags &= -9;
+      e = next;
+    }
+  }
+  let error;
+  while (batchedSub) {
+    let e = batchedSub;
+    batchedSub = void 0;
+    while (e) {
+      const next = e.next;
+      e.next = void 0;
+      e.flags &= -9;
+      if (e.flags & 1) {
+        try {
+          ;
+          e.trigger();
+        } catch (err) {
+          if (!error) error = err;
+        }
+      }
+      e = next;
+    }
+  }
+  if (error) throw error;
+}
+function prepareDeps(sub) {
+  for (let link = sub.deps; link; link = link.nextDep) {
+    link.version = -1;
+    link.prevActiveLink = link.dep.activeLink;
+    link.dep.activeLink = link;
+  }
+}
+function cleanupDeps(sub) {
+  let head;
+  let tail = sub.depsTail;
+  let link = tail;
+  while (link) {
+    const prev = link.prevDep;
+    if (link.version === -1) {
+      if (link === tail) tail = prev;
+      removeSub(link);
+      removeDep(link);
+    } else {
+      head = link;
+    }
+    link.dep.activeLink = link.prevActiveLink;
+    link.prevActiveLink = void 0;
+    link = prev;
+  }
+  sub.deps = head;
+  sub.depsTail = tail;
+}
+function isDirty(sub) {
+  for (let link = sub.deps; link; link = link.nextDep) {
+    if (link.dep.version !== link.version || link.dep.computed && (refreshComputed(link.dep.computed) || link.dep.version !== link.version)) {
+      return true;
+    }
+  }
+  if (sub._dirty) {
+    return true;
+  }
+  return false;
+}
+function refreshComputed(computed2) {
+  if (computed2.flags & 4 && !(computed2.flags & 16)) {
+    return;
+  }
+  computed2.flags &= -17;
+  if (computed2.globalVersion === globalVersion) {
+    return;
+  }
+  computed2.globalVersion = globalVersion;
+  if (!computed2.isSSR && computed2.flags & 128 && (!computed2.deps && !computed2._dirty || !isDirty(computed2))) {
+    return;
+  }
+  computed2.flags |= 2;
+  const dep = computed2.dep;
+  const prevSub = activeSub;
+  const prevShouldTrack = shouldTrack;
+  activeSub = computed2;
+  shouldTrack = true;
+  try {
+    prepareDeps(computed2);
+    const value = computed2.fn(computed2._value);
+    if (dep.version === 0 || hasChanged(value, computed2._value)) {
+      computed2.flags |= 128;
+      computed2._value = value;
+      dep.version++;
+    }
+  } catch (err) {
+    dep.version++;
+    throw err;
+  } finally {
+    activeSub = prevSub;
+    shouldTrack = prevShouldTrack;
+    cleanupDeps(computed2);
+    computed2.flags &= -3;
+  }
+}
+function removeSub(link, soft = false) {
+  const { dep, prevSub, nextSub } = link;
+  if (prevSub) {
+    prevSub.nextSub = nextSub;
+    link.prevSub = void 0;
+  }
+  if (nextSub) {
+    nextSub.prevSub = prevSub;
+    link.nextSub = void 0;
+  }
+  if (dep.subs === link) {
+    dep.subs = prevSub;
+    if (!prevSub && dep.computed) {
+      dep.computed.flags &= -5;
+      for (let l = dep.computed.deps; l; l = l.nextDep) {
+        removeSub(l, true);
+      }
+    }
+  }
+  if (!soft && !--dep.sc && dep.map) {
+    dep.map.delete(dep.key);
+  }
+}
+function removeDep(link) {
+  const { prevDep, nextDep } = link;
+  if (prevDep) {
+    prevDep.nextDep = nextDep;
+    link.prevDep = void 0;
+  }
+  if (nextDep) {
+    nextDep.prevDep = prevDep;
+    link.nextDep = void 0;
+  }
+}
+let shouldTrack = true;
+const trackStack = [];
+function pauseTracking() {
+  trackStack.push(shouldTrack);
+  shouldTrack = false;
+}
+function resetTracking() {
+  const last = trackStack.pop();
+  shouldTrack = last === void 0 ? true : last;
+}
+function cleanupEffect(e) {
+  const { cleanup } = e;
+  e.cleanup = void 0;
+  if (cleanup) {
+    const prevSub = activeSub;
+    activeSub = void 0;
+    try {
+      cleanup();
+    } finally {
+      activeSub = prevSub;
+    }
+  }
+}
+let globalVersion = 0;
+class Link {
+  constructor(sub, dep) {
+    this.sub = sub;
+    this.dep = dep;
+    this.version = dep.version;
+    this.nextDep = this.prevDep = this.nextSub = this.prevSub = this.prevActiveLink = void 0;
+  }
+}
+class Dep {
+  // TODO isolatedDeclarations "__v_skip"
+  constructor(computed2) {
+    this.computed = computed2;
+    this.version = 0;
+    this.activeLink = void 0;
+    this.subs = void 0;
+    this.map = void 0;
+    this.key = void 0;
+    this.sc = 0;
+    this.__v_skip = true;
+  }
+  track(debugInfo) {
+    if (!activeSub || !shouldTrack || activeSub === this.computed) {
+      return;
+    }
+    let link = this.activeLink;
+    if (link === void 0 || link.sub !== activeSub) {
+      link = this.activeLink = new Link(activeSub, this);
+      if (!activeSub.deps) {
+        activeSub.deps = activeSub.depsTail = link;
+      } else {
+        link.prevDep = activeSub.depsTail;
+        activeSub.depsTail.nextDep = link;
+        activeSub.depsTail = link;
+      }
+      addSub(link);
+    } else if (link.version === -1) {
+      link.version = this.version;
+      if (link.nextDep) {
+        const next = link.nextDep;
+        next.prevDep = link.prevDep;
+        if (link.prevDep) {
+          link.prevDep.nextDep = next;
+        }
+        link.prevDep = activeSub.depsTail;
+        link.nextDep = void 0;
+        activeSub.depsTail.nextDep = link;
+        activeSub.depsTail = link;
+        if (activeSub.deps === link) {
+          activeSub.deps = next;
+        }
+      }
+    }
+    return link;
+  }
+  trigger(debugInfo) {
+    this.version++;
+    globalVersion++;
+    this.notify(debugInfo);
+  }
+  notify(debugInfo) {
+    startBatch();
+    try {
+      if (false) ;
+      for (let link = this.subs; link; link = link.prevSub) {
+        if (link.sub.notify()) {
+          ;
+          link.sub.dep.notify();
+        }
+      }
+    } finally {
+      endBatch();
+    }
+  }
+}
+function addSub(link) {
+  link.dep.sc++;
+  if (link.sub.flags & 4) {
+    const computed2 = link.dep.computed;
+    if (computed2 && !link.dep.subs) {
+      computed2.flags |= 4 | 16;
+      for (let l = computed2.deps; l; l = l.nextDep) {
+        addSub(l);
+      }
+    }
+    const currentTail = link.dep.subs;
+    if (currentTail !== link) {
+      link.prevSub = currentTail;
+      if (currentTail) currentTail.nextSub = link;
+    }
+    link.dep.subs = link;
+  }
+}
+const targetMap = /* @__PURE__ */ new WeakMap();
+const ITERATE_KEY = Symbol(
+  ""
+);
+const MAP_KEY_ITERATE_KEY = Symbol(
+  ""
+);
+const ARRAY_ITERATE_KEY = Symbol(
+  ""
+);
+function track(target, type, key) {
+  if (shouldTrack && activeSub) {
+    let depsMap = targetMap.get(target);
+    if (!depsMap) {
+      targetMap.set(target, depsMap = /* @__PURE__ */ new Map());
+    }
+    let dep = depsMap.get(key);
+    if (!dep) {
+      depsMap.set(key, dep = new Dep());
+      dep.map = depsMap;
+      dep.key = key;
+    }
+    {
+      dep.track();
+    }
+  }
+}
+function trigger(target, type, key, newValue, oldValue, oldTarget) {
+  const depsMap = targetMap.get(target);
+  if (!depsMap) {
+    globalVersion++;
+    return;
+  }
+  const run = (dep) => {
+    if (dep) {
+      {
+        dep.trigger();
+      }
+    }
+  };
+  startBatch();
+  if (type === "clear") {
+    depsMap.forEach(run);
+  } else {
+    const targetIsArray = isArray(target);
+    const isArrayIndex = targetIsArray && isIntegerKey(key);
+    if (targetIsArray && key === "length") {
+      const newLength = Number(newValue);
+      depsMap.forEach((dep, key2) => {
+        if (key2 === "length" || key2 === ARRAY_ITERATE_KEY || !isSymbol(key2) && key2 >= newLength) {
+          run(dep);
+        }
+      });
+    } else {
+      if (key !== void 0 || depsMap.has(void 0)) {
+        run(depsMap.get(key));
+      }
+      if (isArrayIndex) {
+        run(depsMap.get(ARRAY_ITERATE_KEY));
+      }
+      switch (type) {
+        case "add":
+          if (!targetIsArray) {
+            run(depsMap.get(ITERATE_KEY));
+            if (isMap(target)) {
+              run(depsMap.get(MAP_KEY_ITERATE_KEY));
+            }
+          } else if (isArrayIndex) {
+            run(depsMap.get("length"));
+          }
+          break;
+        case "delete":
+          if (!targetIsArray) {
+            run(depsMap.get(ITERATE_KEY));
+            if (isMap(target)) {
+              run(depsMap.get(MAP_KEY_ITERATE_KEY));
+            }
+          }
+          break;
+        case "set":
+          if (isMap(target)) {
+            run(depsMap.get(ITERATE_KEY));
+          }
+          break;
+      }
+    }
+  }
+  endBatch();
+}
+function getDepFromReactive(object, key) {
+  const depMap = targetMap.get(object);
+  return depMap && depMap.get(key);
+}
+function reactiveReadArray(array) {
+  const raw = toRaw(array);
+  if (raw === array) return raw;
+  track(raw, "iterate", ARRAY_ITERATE_KEY);
+  return isShallow(array) ? raw : raw.map(toReactive);
+}
+function shallowReadArray(arr) {
+  track(arr = toRaw(arr), "iterate", ARRAY_ITERATE_KEY);
+  return arr;
+}
+function toWrapped(target, item) {
+  if (isReadonly(target)) {
+    return isReactive(target) ? toReadonly(toReactive(item)) : toReadonly(item);
+  }
+  return toReactive(item);
+}
+const arrayInstrumentations = {
+  __proto__: null,
+  [Symbol.iterator]() {
+    return iterator(this, Symbol.iterator, (item) => toWrapped(this, item));
+  },
+  concat(...args) {
+    return reactiveReadArray(this).concat(
+      ...args.map((x) => isArray(x) ? reactiveReadArray(x) : x)
+    );
+  },
+  entries() {
+    return iterator(this, "entries", (value) => {
+      value[1] = toWrapped(this, value[1]);
+      return value;
+    });
+  },
+  every(fn, thisArg) {
+    return apply(this, "every", fn, thisArg, void 0, arguments);
+  },
+  filter(fn, thisArg) {
+    return apply(
+      this,
+      "filter",
+      fn,
+      thisArg,
+      (v) => v.map((item) => toWrapped(this, item)),
+      arguments
+    );
+  },
+  find(fn, thisArg) {
+    return apply(
+      this,
+      "find",
+      fn,
+      thisArg,
+      (item) => toWrapped(this, item),
+      arguments
+    );
+  },
+  findIndex(fn, thisArg) {
+    return apply(this, "findIndex", fn, thisArg, void 0, arguments);
+  },
+  findLast(fn, thisArg) {
+    return apply(
+      this,
+      "findLast",
+      fn,
+      thisArg,
+      (item) => toWrapped(this, item),
+      arguments
+    );
+  },
+  findLastIndex(fn, thisArg) {
+    return apply(this, "findLastIndex", fn, thisArg, void 0, arguments);
+  },
+  // flat, flatMap could benefit from ARRAY_ITERATE but are not straight-forward to implement
+  forEach(fn, thisArg) {
+    return apply(this, "forEach", fn, thisArg, void 0, arguments);
+  },
+  includes(...args) {
+    return searchProxy(this, "includes", args);
+  },
+  indexOf(...args) {
+    return searchProxy(this, "indexOf", args);
+  },
+  join(separator) {
+    return reactiveReadArray(this).join(separator);
+  },
+  // keys() iterator only reads `length`, no optimization required
+  lastIndexOf(...args) {
+    return searchProxy(this, "lastIndexOf", args);
+  },
+  map(fn, thisArg) {
+    return apply(this, "map", fn, thisArg, void 0, arguments);
+  },
+  pop() {
+    return noTracking(this, "pop");
+  },
+  push(...args) {
+    return noTracking(this, "push", args);
+  },
+  reduce(fn, ...args) {
+    return reduce(this, "reduce", fn, args);
+  },
+  reduceRight(fn, ...args) {
+    return reduce(this, "reduceRight", fn, args);
+  },
+  shift() {
+    return noTracking(this, "shift");
+  },
+  // slice could use ARRAY_ITERATE but also seems to beg for range tracking
+  some(fn, thisArg) {
+    return apply(this, "some", fn, thisArg, void 0, arguments);
+  },
+  splice(...args) {
+    return noTracking(this, "splice", args);
+  },
+  toReversed() {
+    return reactiveReadArray(this).toReversed();
+  },
+  toSorted(comparer) {
+    return reactiveReadArray(this).toSorted(comparer);
+  },
+  toSpliced(...args) {
+    return reactiveReadArray(this).toSpliced(...args);
+  },
+  unshift(...args) {
+    return noTracking(this, "unshift", args);
+  },
+  values() {
+    return iterator(this, "values", (item) => toWrapped(this, item));
+  }
+};
+function iterator(self2, method, wrapValue) {
+  const arr = shallowReadArray(self2);
+  const iter = arr[method]();
+  if (arr !== self2 && !isShallow(self2)) {
+    iter._next = iter.next;
+    iter.next = () => {
+      const result = iter._next();
+      if (!result.done) {
+        result.value = wrapValue(result.value);
+      }
+      return result;
+    };
+  }
+  return iter;
+}
+const arrayProto = Array.prototype;
+function apply(self2, method, fn, thisArg, wrappedRetFn, args) {
+  const arr = shallowReadArray(self2);
+  const needsWrap = arr !== self2 && !isShallow(self2);
+  const methodFn = arr[method];
+  if (methodFn !== arrayProto[method]) {
+    const result2 = methodFn.apply(self2, args);
+    return needsWrap ? toReactive(result2) : result2;
+  }
+  let wrappedFn = fn;
+  if (arr !== self2) {
+    if (needsWrap) {
+      wrappedFn = function(item, index) {
+        return fn.call(this, toWrapped(self2, item), index, self2);
+      };
+    } else if (fn.length > 2) {
+      wrappedFn = function(item, index) {
+        return fn.call(this, item, index, self2);
+      };
+    }
+  }
+  const result = methodFn.call(arr, wrappedFn, thisArg);
+  return needsWrap && wrappedRetFn ? wrappedRetFn(result) : result;
+}
+function reduce(self2, method, fn, args) {
+  const arr = shallowReadArray(self2);
+  let wrappedFn = fn;
+  if (arr !== self2) {
+    if (!isShallow(self2)) {
+      wrappedFn = function(acc, item, index) {
+        return fn.call(this, acc, toWrapped(self2, item), index, self2);
+      };
+    } else if (fn.length > 3) {
+      wrappedFn = function(acc, item, index) {
+        return fn.call(this, acc, item, index, self2);
+      };
+    }
+  }
+  return arr[method](wrappedFn, ...args);
+}
+function searchProxy(self2, method, args) {
+  const arr = toRaw(self2);
+  track(arr, "iterate", ARRAY_ITERATE_KEY);
+  const res = arr[method](...args);
+  if ((res === -1 || res === false) && isProxy(args[0])) {
+    args[0] = toRaw(args[0]);
+    return arr[method](...args);
+  }
+  return res;
+}
+function noTracking(self2, method, args = []) {
+  pauseTracking();
+  startBatch();
+  const res = toRaw(self2)[method].apply(self2, args);
+  endBatch();
+  resetTracking();
+  return res;
+}
+const isNonTrackableKeys = /* @__PURE__ */ makeMap(`__proto__,__v_isRef,__isVue`);
+const builtInSymbols = new Set(
+  /* @__PURE__ */ Object.getOwnPropertyNames(Symbol).filter((key) => key !== "arguments" && key !== "caller").map((key) => Symbol[key]).filter(isSymbol)
+);
+function hasOwnProperty(key) {
+  if (!isSymbol(key)) key = String(key);
+  const obj = toRaw(this);
+  track(obj, "has", key);
+  return obj.hasOwnProperty(key);
+}
+class BaseReactiveHandler {
+  constructor(_isReadonly = false, _isShallow = false) {
+    this._isReadonly = _isReadonly;
+    this._isShallow = _isShallow;
+  }
+  get(target, key, receiver) {
+    if (key === "__v_skip") return target["__v_skip"];
+    const isReadonly2 = this._isReadonly, isShallow2 = this._isShallow;
+    if (key === "__v_isReactive") {
+      return !isReadonly2;
+    } else if (key === "__v_isReadonly") {
+      return isReadonly2;
+    } else if (key === "__v_isShallow") {
+      return isShallow2;
+    } else if (key === "__v_raw") {
+      if (receiver === (isReadonly2 ? isShallow2 ? shallowReadonlyMap : readonlyMap : isShallow2 ? shallowReactiveMap : reactiveMap).get(target) || // receiver is not the reactive proxy, but has the same prototype
+      // this means the receiver is a user proxy of the reactive proxy
+      Object.getPrototypeOf(target) === Object.getPrototypeOf(receiver)) {
+        return target;
+      }
+      return;
+    }
+    const targetIsArray = isArray(target);
+    if (!isReadonly2) {
+      let fn;
+      if (targetIsArray && (fn = arrayInstrumentations[key])) {
+        return fn;
+      }
+      if (key === "hasOwnProperty") {
+        return hasOwnProperty;
+      }
+    }
+    const res = Reflect.get(
+      target,
+      key,
+      // if this is a proxy wrapping a ref, return methods using the raw ref
+      // as receiver so that we don't have to call `toRaw` on the ref in all
+      // its class methods
+      isRef(target) ? target : receiver
+    );
+    if (isSymbol(key) ? builtInSymbols.has(key) : isNonTrackableKeys(key)) {
+      return res;
+    }
+    if (!isReadonly2) {
+      track(target, "get", key);
+    }
+    if (isShallow2) {
+      return res;
+    }
+    if (isRef(res)) {
+      const value = targetIsArray && isIntegerKey(key) ? res : res.value;
+      return isReadonly2 && isObject(value) ? readonly(value) : value;
+    }
+    if (isObject(res)) {
+      return isReadonly2 ? readonly(res) : reactive(res);
+    }
+    return res;
+  }
+}
+class MutableReactiveHandler extends BaseReactiveHandler {
+  constructor(isShallow2 = false) {
+    super(false, isShallow2);
+  }
+  set(target, key, value, receiver) {
+    let oldValue = target[key];
+    const isArrayWithIntegerKey = isArray(target) && isIntegerKey(key);
+    if (!this._isShallow) {
+      const isOldValueReadonly = isReadonly(oldValue);
+      if (!isShallow(value) && !isReadonly(value)) {
+        oldValue = toRaw(oldValue);
+        value = toRaw(value);
+      }
+      if (!isArrayWithIntegerKey && isRef(oldValue) && !isRef(value)) {
+        if (isOldValueReadonly) {
+          return true;
+        } else {
+          oldValue.value = value;
+          return true;
+        }
+      }
+    }
+    const hadKey = isArrayWithIntegerKey ? Number(key) < target.length : hasOwn(target, key);
+    const result = Reflect.set(
+      target,
+      key,
+      value,
+      isRef(target) ? target : receiver
+    );
+    if (target === toRaw(receiver)) {
+      if (!hadKey) {
+        trigger(target, "add", key, value);
+      } else if (hasChanged(value, oldValue)) {
+        trigger(target, "set", key, value);
+      }
+    }
+    return result;
+  }
+  deleteProperty(target, key) {
+    const hadKey = hasOwn(target, key);
+    target[key];
+    const result = Reflect.deleteProperty(target, key);
+    if (result && hadKey) {
+      trigger(target, "delete", key, void 0);
+    }
+    return result;
+  }
+  has(target, key) {
+    const result = Reflect.has(target, key);
+    if (!isSymbol(key) || !builtInSymbols.has(key)) {
+      track(target, "has", key);
+    }
+    return result;
+  }
+  ownKeys(target) {
+    track(
+      target,
+      "iterate",
+      isArray(target) ? "length" : ITERATE_KEY
+    );
+    return Reflect.ownKeys(target);
+  }
+}
+class ReadonlyReactiveHandler extends BaseReactiveHandler {
+  constructor(isShallow2 = false) {
+    super(true, isShallow2);
+  }
+  set(target, key) {
+    return true;
+  }
+  deleteProperty(target, key) {
+    return true;
+  }
+}
+const mutableHandlers = /* @__PURE__ */ new MutableReactiveHandler();
+const readonlyHandlers = /* @__PURE__ */ new ReadonlyReactiveHandler();
+const shallowReactiveHandlers = /* @__PURE__ */ new MutableReactiveHandler(true);
+const shallowReadonlyHandlers = /* @__PURE__ */ new ReadonlyReactiveHandler(true);
+const toShallow = (value) => value;
+const getProto = (v) => Reflect.getPrototypeOf(v);
+function createIterableMethod(method, isReadonly2, isShallow2) {
+  return function(...args) {
+    const target = this["__v_raw"];
+    const rawTarget = toRaw(target);
+    const targetIsMap = isMap(rawTarget);
+    const isPair = method === "entries" || method === Symbol.iterator && targetIsMap;
+    const isKeyOnly = method === "keys" && targetIsMap;
+    const innerIterator = target[method](...args);
+    const wrap = isShallow2 ? toShallow : isReadonly2 ? toReadonly : toReactive;
+    !isReadonly2 && track(
+      rawTarget,
+      "iterate",
+      isKeyOnly ? MAP_KEY_ITERATE_KEY : ITERATE_KEY
+    );
+    return {
+      // iterator protocol
+      next() {
+        const { value, done } = innerIterator.next();
+        return done ? { value, done } : {
+          value: isPair ? [wrap(value[0]), wrap(value[1])] : wrap(value),
+          done
+        };
+      },
+      // iterable protocol
+      [Symbol.iterator]() {
+        return this;
+      }
+    };
+  };
+}
+function createReadonlyMethod(type) {
+  return function(...args) {
+    return type === "delete" ? false : type === "clear" ? void 0 : this;
+  };
+}
+function createInstrumentations(readonly2, shallow) {
+  const instrumentations = {
+    get(key) {
+      const target = this["__v_raw"];
+      const rawTarget = toRaw(target);
+      const rawKey = toRaw(key);
+      if (!readonly2) {
+        if (hasChanged(key, rawKey)) {
+          track(rawTarget, "get", key);
+        }
+        track(rawTarget, "get", rawKey);
+      }
+      const { has } = getProto(rawTarget);
+      const wrap = shallow ? toShallow : readonly2 ? toReadonly : toReactive;
+      if (has.call(rawTarget, key)) {
+        return wrap(target.get(key));
+      } else if (has.call(rawTarget, rawKey)) {
+        return wrap(target.get(rawKey));
+      } else if (target !== rawTarget) {
+        target.get(key);
+      }
+    },
+    get size() {
+      const target = this["__v_raw"];
+      !readonly2 && track(toRaw(target), "iterate", ITERATE_KEY);
+      return target.size;
+    },
+    has(key) {
+      const target = this["__v_raw"];
+      const rawTarget = toRaw(target);
+      const rawKey = toRaw(key);
+      if (!readonly2) {
+        if (hasChanged(key, rawKey)) {
+          track(rawTarget, "has", key);
+        }
+        track(rawTarget, "has", rawKey);
+      }
+      return key === rawKey ? target.has(key) : target.has(key) || target.has(rawKey);
+    },
+    forEach(callback, thisArg) {
+      const observed = this;
+      const target = observed["__v_raw"];
+      const rawTarget = toRaw(target);
+      const wrap = shallow ? toShallow : readonly2 ? toReadonly : toReactive;
+      !readonly2 && track(rawTarget, "iterate", ITERATE_KEY);
+      return target.forEach((value, key) => {
+        return callback.call(thisArg, wrap(value), wrap(key), observed);
+      });
+    }
+  };
+  extend(
+    instrumentations,
+    readonly2 ? {
+      add: createReadonlyMethod("add"),
+      set: createReadonlyMethod("set"),
+      delete: createReadonlyMethod("delete"),
+      clear: createReadonlyMethod("clear")
+    } : {
+      add(value) {
+        if (!shallow && !isShallow(value) && !isReadonly(value)) {
+          value = toRaw(value);
+        }
+        const target = toRaw(this);
+        const proto = getProto(target);
+        const hadKey = proto.has.call(target, value);
+        if (!hadKey) {
+          target.add(value);
+          trigger(target, "add", value, value);
+        }
+        return this;
+      },
+      set(key, value) {
+        if (!shallow && !isShallow(value) && !isReadonly(value)) {
+          value = toRaw(value);
+        }
+        const target = toRaw(this);
+        const { has, get } = getProto(target);
+        let hadKey = has.call(target, key);
+        if (!hadKey) {
+          key = toRaw(key);
+          hadKey = has.call(target, key);
+        }
+        const oldValue = get.call(target, key);
+        target.set(key, value);
+        if (!hadKey) {
+          trigger(target, "add", key, value);
+        } else if (hasChanged(value, oldValue)) {
+          trigger(target, "set", key, value);
+        }
+        return this;
+      },
+      delete(key) {
+        const target = toRaw(this);
+        const { has, get } = getProto(target);
+        let hadKey = has.call(target, key);
+        if (!hadKey) {
+          key = toRaw(key);
+          hadKey = has.call(target, key);
+        }
+        get ? get.call(target, key) : void 0;
+        const result = target.delete(key);
+        if (hadKey) {
+          trigger(target, "delete", key, void 0);
+        }
+        return result;
+      },
+      clear() {
+        const target = toRaw(this);
+        const hadItems = target.size !== 0;
+        const result = target.clear();
+        if (hadItems) {
+          trigger(
+            target,
+            "clear",
+            void 0,
+            void 0
+          );
+        }
+        return result;
+      }
+    }
+  );
+  const iteratorMethods = [
+    "keys",
+    "values",
+    "entries",
+    Symbol.iterator
+  ];
+  iteratorMethods.forEach((method) => {
+    instrumentations[method] = createIterableMethod(method, readonly2, shallow);
+  });
+  return instrumentations;
+}
+function createInstrumentationGetter(isReadonly2, shallow) {
+  const instrumentations = createInstrumentations(isReadonly2, shallow);
+  return (target, key, receiver) => {
+    if (key === "__v_isReactive") {
+      return !isReadonly2;
+    } else if (key === "__v_isReadonly") {
+      return isReadonly2;
+    } else if (key === "__v_raw") {
+      return target;
+    }
+    return Reflect.get(
+      hasOwn(instrumentations, key) && key in target ? instrumentations : target,
+      key,
+      receiver
+    );
+  };
+}
+const mutableCollectionHandlers = {
+  get: /* @__PURE__ */ createInstrumentationGetter(false, false)
+};
+const shallowCollectionHandlers = {
+  get: /* @__PURE__ */ createInstrumentationGetter(false, true)
+};
+const readonlyCollectionHandlers = {
+  get: /* @__PURE__ */ createInstrumentationGetter(true, false)
+};
+const shallowReadonlyCollectionHandlers = {
+  get: /* @__PURE__ */ createInstrumentationGetter(true, true)
+};
+const reactiveMap = /* @__PURE__ */ new WeakMap();
+const shallowReactiveMap = /* @__PURE__ */ new WeakMap();
+const readonlyMap = /* @__PURE__ */ new WeakMap();
+const shallowReadonlyMap = /* @__PURE__ */ new WeakMap();
+function targetTypeMap(rawType) {
+  switch (rawType) {
+    case "Object":
+    case "Array":
+      return 1;
+    case "Map":
+    case "Set":
+    case "WeakMap":
+    case "WeakSet":
+      return 2;
+    default:
+      return 0;
+  }
+}
+function getTargetType(value) {
+  return value["__v_skip"] || !Object.isExtensible(value) ? 0 : targetTypeMap(toRawType(value));
+}
+function reactive(target) {
+  if (isReadonly(target)) {
+    return target;
+  }
+  return createReactiveObject(
+    target,
+    false,
+    mutableHandlers,
+    mutableCollectionHandlers,
+    reactiveMap
+  );
+}
+function shallowReactive(target) {
+  return createReactiveObject(
+    target,
+    false,
+    shallowReactiveHandlers,
+    shallowCollectionHandlers,
+    shallowReactiveMap
+  );
+}
+function readonly(target) {
+  return createReactiveObject(
+    target,
+    true,
+    readonlyHandlers,
+    readonlyCollectionHandlers,
+    readonlyMap
+  );
+}
+function shallowReadonly(target) {
+  return createReactiveObject(
+    target,
+    true,
+    shallowReadonlyHandlers,
+    shallowReadonlyCollectionHandlers,
+    shallowReadonlyMap
+  );
+}
+function createReactiveObject(target, isReadonly2, baseHandlers, collectionHandlers, proxyMap) {
+  if (!isObject(target)) {
+    return target;
+  }
+  if (target["__v_raw"] && !(isReadonly2 && target["__v_isReactive"])) {
+    return target;
+  }
+  const targetType = getTargetType(target);
+  if (targetType === 0) {
+    return target;
+  }
+  const existingProxy = proxyMap.get(target);
+  if (existingProxy) {
+    return existingProxy;
+  }
+  const proxy = new Proxy(
+    target,
+    targetType === 2 ? collectionHandlers : baseHandlers
+  );
+  proxyMap.set(target, proxy);
+  return proxy;
+}
+function isReactive(value) {
+  if (isReadonly(value)) {
+    return isReactive(value["__v_raw"]);
+  }
+  return !!(value && value["__v_isReactive"]);
+}
+function isReadonly(value) {
+  return !!(value && value["__v_isReadonly"]);
+}
+function isShallow(value) {
+  return !!(value && value["__v_isShallow"]);
+}
+function isProxy(value) {
+  return value ? !!value["__v_raw"] : false;
+}
+function toRaw(observed) {
+  const raw = observed && observed["__v_raw"];
+  return raw ? toRaw(raw) : observed;
+}
+function markRaw(value) {
+  if (!hasOwn(value, "__v_skip") && Object.isExtensible(value)) {
+    def(value, "__v_skip", true);
+  }
+  return value;
+}
+const toReactive = (value) => isObject(value) ? reactive(value) : value;
+const toReadonly = (value) => isObject(value) ? readonly(value) : value;
+function isRef(r) {
+  return r ? r["__v_isRef"] === true : false;
+}
+function ref(value) {
+  return createRef(value, false);
+}
+function shallowRef(value) {
+  return createRef(value, true);
+}
+function createRef(rawValue, shallow) {
+  if (isRef(rawValue)) {
+    return rawValue;
+  }
+  return new RefImpl(rawValue, shallow);
+}
+class RefImpl {
+  constructor(value, isShallow2) {
+    this.dep = new Dep();
+    this["__v_isRef"] = true;
+    this["__v_isShallow"] = false;
+    this._rawValue = isShallow2 ? value : toRaw(value);
+    this._value = isShallow2 ? value : toReactive(value);
+    this["__v_isShallow"] = isShallow2;
+  }
+  get value() {
+    {
+      this.dep.track();
+    }
+    return this._value;
+  }
+  set value(newValue) {
+    const oldValue = this._rawValue;
+    const useDirectValue = this["__v_isShallow"] || isShallow(newValue) || isReadonly(newValue);
+    newValue = useDirectValue ? newValue : toRaw(newValue);
+    if (hasChanged(newValue, oldValue)) {
+      this._rawValue = newValue;
+      this._value = useDirectValue ? newValue : toReactive(newValue);
+      {
+        this.dep.trigger();
+      }
+    }
+  }
+}
+function unref(ref2) {
+  return isRef(ref2) ? ref2.value : ref2;
+}
+const shallowUnwrapHandlers = {
+  get: (target, key, receiver) => key === "__v_raw" ? target : unref(Reflect.get(target, key, receiver)),
+  set: (target, key, value, receiver) => {
+    const oldValue = target[key];
+    if (isRef(oldValue) && !isRef(value)) {
+      oldValue.value = value;
+      return true;
+    } else {
+      return Reflect.set(target, key, value, receiver);
+    }
+  }
+};
+function proxyRefs(objectWithRefs) {
+  return isReactive(objectWithRefs) ? objectWithRefs : new Proxy(objectWithRefs, shallowUnwrapHandlers);
+}
+function toRefs(object) {
+  const ret = isArray(object) ? new Array(object.length) : {};
+  for (const key in object) {
+    ret[key] = propertyToRef(object, key);
+  }
+  return ret;
+}
+class ObjectRefImpl {
+  constructor(_object, _key, _defaultValue) {
+    this._object = _object;
+    this._key = _key;
+    this._defaultValue = _defaultValue;
+    this["__v_isRef"] = true;
+    this._value = void 0;
+    this._raw = toRaw(_object);
+    let shallow = true;
+    let obj = _object;
+    if (!isArray(_object) || !isIntegerKey(String(_key))) {
+      do {
+        shallow = !isProxy(obj) || isShallow(obj);
+      } while (shallow && (obj = obj["__v_raw"]));
+    }
+    this._shallow = shallow;
+  }
+  get value() {
+    let val = this._object[this._key];
+    if (this._shallow) {
+      val = unref(val);
+    }
+    return this._value = val === void 0 ? this._defaultValue : val;
+  }
+  set value(newVal) {
+    if (this._shallow && isRef(this._raw[this._key])) {
+      const nestedRef = this._object[this._key];
+      if (isRef(nestedRef)) {
+        nestedRef.value = newVal;
+        return;
+      }
+    }
+    this._object[this._key] = newVal;
+  }
+  get dep() {
+    return getDepFromReactive(this._raw, this._key);
+  }
+}
+function propertyToRef(source, key, defaultValue) {
+  return new ObjectRefImpl(source, key, defaultValue);
+}
+class ComputedRefImpl {
+  constructor(fn, setter, isSSR) {
+    this.fn = fn;
+    this.setter = setter;
+    this._value = void 0;
+    this.dep = new Dep(this);
+    this.__v_isRef = true;
+    this.deps = void 0;
+    this.depsTail = void 0;
+    this.flags = 16;
+    this.globalVersion = globalVersion - 1;
+    this.next = void 0;
+    this.effect = this;
+    this["__v_isReadonly"] = !setter;
+    this.isSSR = isSSR;
+  }
+  /**
+   * @internal
+   */
+  notify() {
+    this.flags |= 16;
+    if (!(this.flags & 8) && // avoid infinite self recursion
+    activeSub !== this) {
+      batch(this, true);
+      return true;
+    }
+  }
+  get value() {
+    const link = this.dep.track();
+    refreshComputed(this);
+    if (link) {
+      link.version = this.dep.version;
+    }
+    return this._value;
+  }
+  set value(newValue) {
+    if (this.setter) {
+      this.setter(newValue);
+    }
+  }
+}
+function computed$1(getterOrOptions, debugOptions, isSSR = false) {
+  let getter;
+  let setter;
+  if (isFunction(getterOrOptions)) {
+    getter = getterOrOptions;
+  } else {
+    getter = getterOrOptions.get;
+    setter = getterOrOptions.set;
+  }
+  const cRef = new ComputedRefImpl(getter, setter, isSSR);
+  return cRef;
+}
+const INITIAL_WATCHER_VALUE = {};
+const cleanupMap = /* @__PURE__ */ new WeakMap();
+let activeWatcher = void 0;
+function onWatcherCleanup(cleanupFn, failSilently = false, owner = activeWatcher) {
+  if (owner) {
+    let cleanups = cleanupMap.get(owner);
+    if (!cleanups) cleanupMap.set(owner, cleanups = []);
+    cleanups.push(cleanupFn);
+  }
+}
+function watch$1(source, cb, options = EMPTY_OBJ) {
+  const { immediate, deep, once, scheduler, augmentJob, call } = options;
+  const reactiveGetter = (source2) => {
+    if (deep) return source2;
+    if (isShallow(source2) || deep === false || deep === 0)
+      return traverse(source2, 1);
+    return traverse(source2);
+  };
+  let effect2;
+  let getter;
+  let cleanup;
+  let boundCleanup;
+  let forceTrigger = false;
+  let isMultiSource = false;
+  if (isRef(source)) {
+    getter = () => source.value;
+    forceTrigger = isShallow(source);
+  } else if (isReactive(source)) {
+    getter = () => reactiveGetter(source);
+    forceTrigger = true;
+  } else if (isArray(source)) {
+    isMultiSource = true;
+    forceTrigger = source.some((s) => isReactive(s) || isShallow(s));
+    getter = () => source.map((s) => {
+      if (isRef(s)) {
+        return s.value;
+      } else if (isReactive(s)) {
+        return reactiveGetter(s);
+      } else if (isFunction(s)) {
+        return call ? call(s, 2) : s();
+      } else ;
+    });
+  } else if (isFunction(source)) {
+    if (cb) {
+      getter = call ? () => call(source, 2) : source;
+    } else {
+      getter = () => {
+        if (cleanup) {
+          pauseTracking();
+          try {
+            cleanup();
+          } finally {
+            resetTracking();
+          }
+        }
+        const currentEffect = activeWatcher;
+        activeWatcher = effect2;
+        try {
+          return call ? call(source, 3, [boundCleanup]) : source(boundCleanup);
+        } finally {
+          activeWatcher = currentEffect;
+        }
+      };
+    }
+  } else {
+    getter = NOOP;
+  }
+  if (cb && deep) {
+    const baseGetter = getter;
+    const depth = deep === true ? Infinity : deep;
+    getter = () => traverse(baseGetter(), depth);
+  }
+  const scope = getCurrentScope();
+  const watchHandle = () => {
+    effect2.stop();
+    if (scope && scope.active) {
+      remove(scope.effects, effect2);
+    }
+  };
+  if (once && cb) {
+    const _cb = cb;
+    cb = (...args) => {
+      _cb(...args);
+      watchHandle();
+    };
+  }
+  let oldValue = isMultiSource ? new Array(source.length).fill(INITIAL_WATCHER_VALUE) : INITIAL_WATCHER_VALUE;
+  const job = (immediateFirstRun) => {
+    if (!(effect2.flags & 1) || !effect2.dirty && !immediateFirstRun) {
+      return;
+    }
+    if (cb) {
+      const newValue = effect2.run();
+      if (deep || forceTrigger || (isMultiSource ? newValue.some((v, i) => hasChanged(v, oldValue[i])) : hasChanged(newValue, oldValue))) {
+        if (cleanup) {
+          cleanup();
+        }
+        const currentWatcher = activeWatcher;
+        activeWatcher = effect2;
+        try {
+          const args = [
+            newValue,
+            // pass undefined as the old value when it's changed for the first time
+            oldValue === INITIAL_WATCHER_VALUE ? void 0 : isMultiSource && oldValue[0] === INITIAL_WATCHER_VALUE ? [] : oldValue,
+            boundCleanup
+          ];
+          oldValue = newValue;
+          call ? call(cb, 3, args) : (
+            // @ts-expect-error
+            cb(...args)
+          );
+        } finally {
+          activeWatcher = currentWatcher;
+        }
+      }
+    } else {
+      effect2.run();
+    }
+  };
+  if (augmentJob) {
+    augmentJob(job);
+  }
+  effect2 = new ReactiveEffect(getter);
+  effect2.scheduler = scheduler ? () => scheduler(job, false) : job;
+  boundCleanup = (fn) => onWatcherCleanup(fn, false, effect2);
+  cleanup = effect2.onStop = () => {
+    const cleanups = cleanupMap.get(effect2);
+    if (cleanups) {
+      if (call) {
+        call(cleanups, 4);
+      } else {
+        for (const cleanup2 of cleanups) cleanup2();
+      }
+      cleanupMap.delete(effect2);
+    }
+  };
+  if (cb) {
+    if (immediate) {
+      job(true);
+    } else {
+      oldValue = effect2.run();
+    }
+  } else if (scheduler) {
+    scheduler(job.bind(null, true), true);
+  } else {
+    effect2.run();
+  }
+  watchHandle.pause = effect2.pause.bind(effect2);
+  watchHandle.resume = effect2.resume.bind(effect2);
+  watchHandle.stop = watchHandle;
+  return watchHandle;
+}
+function traverse(value, depth = Infinity, seen) {
+  if (depth <= 0 || !isObject(value) || value["__v_skip"]) {
+    return value;
+  }
+  seen = seen || /* @__PURE__ */ new Map();
+  if ((seen.get(value) || 0) >= depth) {
+    return value;
+  }
+  seen.set(value, depth);
+  depth--;
+  if (isRef(value)) {
+    traverse(value.value, depth, seen);
+  } else if (isArray(value)) {
+    for (let i = 0; i < value.length; i++) {
+      traverse(value[i], depth, seen);
+    }
+  } else if (isSet(value) || isMap(value)) {
+    value.forEach((v) => {
+      traverse(v, depth, seen);
+    });
+  } else if (isPlainObject$1(value)) {
+    for (const key in value) {
+      traverse(value[key], depth, seen);
+    }
+    for (const key of Object.getOwnPropertySymbols(value)) {
+      if (Object.prototype.propertyIsEnumerable.call(value, key)) {
+        traverse(value[key], depth, seen);
+      }
+    }
+  }
+  return value;
+}
+/**
 * @vue/runtime-core v3.5.25
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
-**/function as(e,t,s,o){try{return o?e(...o):e()}catch(n){Ds(n,t,s)}}function Be(e,t,s,o){if(D(e)){const n=as(e,t,s,o);return n&&yn(n)&&n.catch(r=>{Ds(r,t,s)}),n}if(A(e)){const n=[];for(let r=0;r<e.length;r++)n.push(Be(e[r],t,s,o));return n}}function Ds(e,t,s,o=!0){const n=t?t.vnode:null,{errorHandler:r,throwUnhandledErrorInProduction:i}=t&&t.appContext.config||X;if(t){let l=t.parent;const a=t.proxy,f=`https://vuejs.org/error-reference/#runtime-${s}`;for(;l;){const p=l.ec;if(p){for(let m=0;m<p.length;m++)if(p[m](e,a,f)===!1)return}l=l.parent}if(r){Ze(),as(r,null,10,[e,a,f]),Qe();return}}$i(e,s,n,o,i)}function $i(e,t,s,o=!0,n=!1){if(n)throw e;console.error(e)}const be=[];let Ve=-1;const Et=[];let lt=null,St=0;const Jn=Promise.resolve();let ys=null;function Rs(e){const t=ys||Jn;return e?t.then(this?e.bind(this):e):t}function Pi(e){let t=Ve+1,s=be.length;for(;t<s;){const o=t+s>>>1,n=be[o],r=ts(n);r<e||r===e&&n.flags&2?t=o+1:s=o}return t}function wo(e){if(!(e.flags&1)){const t=ts(e),s=be[be.length-1];!s||!(e.flags&2)&&t>=ts(s)?be.push(e):be.splice(Pi(t),0,e),e.flags|=1,qn()}}function qn(){ys||(ys=Jn.then(Yn))}function Oi(e){A(e)?Et.push(...e):lt&&e.id===-1?lt.splice(St+1,0,e):e.flags&1||(Et.push(e),e.flags|=1),qn()}function Lo(e,t,s=Ve+1){for(;s<be.length;s++){const o=be[s];if(o&&o.flags&2){if(e&&o.id!==e.uid)continue;be.splice(s,1),s--,o.flags&4&&(o.flags&=-2),o(),o.flags&4||(o.flags&=-2)}}}function Gn(e){if(Et.length){const t=[...new Set(Et)].sort((s,o)=>ts(s)-ts(o));if(Et.length=0,lt){lt.push(...t);return}for(lt=t,St=0;St<lt.length;St++){const s=lt[St];s.flags&4&&(s.flags&=-2),s.flags&8||s(),s.flags&=-2}lt=null,St=0}}const ts=e=>e.id==null?e.flags&2?-1:1/0:e.id;function Yn(e){try{for(Ve=0;Ve<be.length;Ve++){const t=be[Ve];t&&!(t.flags&8)&&(t.flags&4&&(t.flags&=-2),as(t,t.i,t.i?15:14),t.flags&4||(t.flags&=-2))}}finally{for(;Ve<be.length;Ve++){const t=be[Ve];t&&(t.flags&=-2)}Ve=-1,be.length=0,Gn(),ys=null,(be.length||Et.length)&&Yn()}}let de=null,zn=null;function _s(e){const t=de;return de=e,zn=e&&e.type.__scopeId||null,t}function Xn(e,t=de,s){if(!t||e._n)return e;const o=(...n)=>{o._d&&zo(-1);const r=_s(t);let i;try{i=e(...n)}finally{_s(r),o._d&&zo(1)}return i};return o._n=!0,o._c=!0,o._d=!0,o}function ne(e,t){if(de===null)return e;const s=Ls(de),o=e.dirs||(e.dirs=[]);for(let n=0;n<t.length;n++){let[r,i,l,a=X]=t[n];r&&(D(r)&&(r={mounted:r,updated:r}),r.deep&&Ye(i),o.push({dir:r,instance:s,value:i,oldValue:void 0,arg:l,modifiers:a}))}return e}function ht(e,t,s,o){const n=e.dirs,r=t&&t.dirs;for(let i=0;i<n.length;i++){const l=n[i];r&&(l.oldValue=r[i].value);let a=l.dir[o];a&&(Ze(),Be(a,s,8,[e.el,l,e,t]),Qe())}}const Ti=Symbol("_vte"),Ei=e=>e.__isTeleport,ki=Symbol("_leaveCb");function So(e,t){e.shapeFlag&6&&e.component?(e.transition=t,So(e.component.subTree,t)):e.shapeFlag&128?(e.ssContent.transition=t.clone(e.ssContent),e.ssFallback.transition=t.clone(e.ssFallback)):e.transition=t}function Zn(e){e.ids=[e.ids[0]+e.ids[2]+++"-",0,0]}const xs=new WeakMap;function Gt(e,t,s,o,n=!1){if(A(e)){e.forEach((I,R)=>Gt(I,t&&(A(t)?t[R]:t),s,o,n));return}if(kt(o)&&!n){o.shapeFlag&512&&o.type.__asyncResolved&&o.component.subTree.component&&Gt(e,t,s,o.component.subTree);return}const r=o.shapeFlag&4?Ls(o.component):o.el,i=n?null:r,{i:l,r:a}=e,f=t&&t.r,p=l.refs===X?l.refs={}:l.refs,m=l.setupState,C=W(m),$=m===X?bn:I=>Y(C,I);if(f!=null&&f!==a){if(Vo(t),ae(f))p[f]=null,$(f)&&(m[f]=null);else if(le(f)){f.value=null;const I=t;I.k&&(p[I.k]=null)}}if(D(a))as(a,l,12,[i,p]);else{const I=ae(a),R=le(a);if(I||R){const se=()=>{if(e.f){const L=I?$(a)?m[a]:p[a]:a.value;if(n)A(L)&&mo(L,r);else if(A(L))L.includes(r)||L.push(r);else if(I)p[a]=[r],$(a)&&(m[a]=p[a]);else{const q=[r];a.value=q,e.k&&(p[e.k]=q)}}else I?(p[a]=i,$(a)&&(m[a]=i)):R&&(a.value=i,e.k&&(p[e.k]=i))};if(i){const L=()=>{se(),xs.delete(e)};L.id=-1,xs.set(e,L),Oe(L,s)}else Vo(e),se()}}}function Vo(e){const t=xs.get(e);t&&(t.flags|=8,xs.delete(e))}ks().requestIdleCallback;ks().cancelIdleCallback;const kt=e=>!!e.type.__asyncLoader,Qn=e=>e.type.__isKeepAlive;function Ai(e,t){er(e,"a",t)}function Ii(e,t){er(e,"da",t)}function er(e,t,s=ge){const o=e.__wdc||(e.__wdc=()=>{let n=s;for(;n;){if(n.isDeactivated)return;n=n.parent}return e()});if(Ns(t,o,s),s){let n=s.parent;for(;n&&n.parent;)Qn(n.parent.vnode)&&Mi(o,t,s,n),n=n.parent}}function Mi(e,t,s,o){const n=Ns(t,e,o,!0);Po(()=>{mo(o[t],n)},s)}function Ns(e,t,s=ge,o=!1){if(s){const n=s[e]||(s[e]=[]),r=t.__weh||(t.__weh=(...i)=>{Ze();const l=cs(s),a=Be(t,s,e,i);return l(),Qe(),a});return o?n.unshift(r):n.push(r),r}}const st=e=>(t,s=ge)=>{(!os||e==="sp")&&Ns(e,(...o)=>t(...o),s)},Di=st("bm"),$o=st("m"),Ri=st("bu"),Ni=st("u"),ji=st("bum"),Po=st("um"),Fi=st("sp"),Li=st("rtg"),Vi=st("rtc");function Hi(e,t=ge){Ns("ec",e,t)}const Ui="components",tr=Symbol.for("v-ndc");function Bi(e){return ae(e)?Ki(Ui,e,!1)||e:e||tr}function Ki(e,t,s=!0,o=!1){const n=de||ge;if(n){const r=n.type;{const l=Il(r,!1);if(l&&(l===t||l===Ie(t)||l===Ts(Ie(t))))return r}const i=Ho(n[e]||r[e],t)||Ho(n.appContext[e],t);return!i&&o?r:i}}function Ho(e,t){return e&&(e[t]||e[Ie(t)]||e[Ts(Ie(t))])}function sr(e,t,s,o){let n;const r=s,i=A(e);if(i||ae(e)){const l=i&&ze(e);let a=!1,f=!1;l&&(a=!Ee(e),f=et(e),e=As(e)),n=new Array(e.length);for(let p=0,m=e.length;p<m;p++)n[p]=t(a?f?It(Re(e[p])):Re(e[p]):e[p],p,void 0,r)}else if(typeof e=="number"){n=new Array(e);for(let l=0;l<e;l++)n[l]=t(l+1,l,void 0,r)}else if(te(e))if(e[Symbol.iterator])n=Array.from(e,(l,a)=>t(l,a,void 0,r));else{const l=Object.keys(e);n=new Array(l.length);for(let a=0,f=l.length;a<f;a++){const p=l[a];n[a]=t(e[p],p,a,r)}}else n=[];return n}function Wi(e,t,s={},o,n){if(de.ce||de.parent&&kt(de.parent)&&de.parent.ce){const f=Object.keys(s).length>0;return s.name=t,j(),Mt(fe,null,[ue("slot",s,o)],f?-2:64)}let r=e[t];r&&r._c&&(r._d=!1),j();const i=r&&or(r(s)),l=s.key||i&&i.key,a=Mt(fe,{key:(l&&!De(l)?l:`_${t}`)+(!i&&o?"_fb":"")},i||[],i&&e._===1?64:-2);return a.scopeId&&(a.slotScopeIds=[a.scopeId+"-s"]),r&&r._c&&(r._d=!0),a}function or(e){return e.some(t=>Eo(t)?!(t.type===tt||t.type===fe&&!or(t.children)):!0)?e:null}const no=e=>e?Pr(e)?Ls(e):no(e.parent):null,Yt=ye(Object.create(null),{$:e=>e,$el:e=>e.vnode.el,$data:e=>e.data,$props:e=>e.props,$attrs:e=>e.attrs,$slots:e=>e.slots,$refs:e=>e.refs,$parent:e=>no(e.parent),$root:e=>no(e.root),$host:e=>e.ce,$emit:e=>e.emit,$options:e=>rr(e),$forceUpdate:e=>e.f||(e.f=()=>{wo(e.update)}),$nextTick:e=>e.n||(e.n=Rs.bind(e.proxy)),$watch:e=>ol.bind(e)}),Gs=(e,t)=>e!==X&&!e.__isScriptSetup&&Y(e,t),Ji={get({_:e},t){if(t==="__v_skip")return!0;const{ctx:s,setupState:o,data:n,props:r,accessCache:i,type:l,appContext:a}=e;if(t[0]!=="$"){const C=i[t];if(C!==void 0)switch(C){case 1:return o[t];case 2:return n[t];case 4:return s[t];case 3:return r[t]}else{if(Gs(o,t))return i[t]=1,o[t];if(n!==X&&Y(n,t))return i[t]=2,n[t];if(Y(r,t))return i[t]=3,r[t];if(s!==X&&Y(s,t))return i[t]=4,s[t];ro&&(i[t]=0)}}const f=Yt[t];let p,m;if(f)return t==="$attrs"&&he(e.attrs,"get",""),f(e);if((p=l.__cssModules)&&(p=p[t]))return p;if(s!==X&&Y(s,t))return i[t]=4,s[t];if(m=a.config.globalProperties,Y(m,t))return m[t]},set({_:e},t,s){const{data:o,setupState:n,ctx:r}=e;return Gs(n,t)?(n[t]=s,!0):o!==X&&Y(o,t)?(o[t]=s,!0):Y(e.props,t)||t[0]==="$"&&t.slice(1)in e?!1:(r[t]=s,!0)},has({_:{data:e,setupState:t,accessCache:s,ctx:o,appContext:n,props:r,type:i}},l){let a;return!!(s[l]||e!==X&&l[0]!=="$"&&Y(e,l)||Gs(t,l)||Y(r,l)||Y(o,l)||Y(Yt,l)||Y(n.config.globalProperties,l)||(a=i.__cssModules)&&a[l])},defineProperty(e,t,s){return s.get!=null?e._.accessCache[t]=0:Y(s,"value")&&this.set(e,t,s.value,null),Reflect.defineProperty(e,t,s)}};function Uo(e){return A(e)?e.reduce((t,s)=>(t[s]=null,t),{}):e}let ro=!0;function qi(e){const t=rr(e),s=e.proxy,o=e.ctx;ro=!1,t.beforeCreate&&Bo(t.beforeCreate,e,"bc");const{data:n,computed:r,methods:i,watch:l,provide:a,inject:f,created:p,beforeMount:m,mounted:C,beforeUpdate:$,updated:I,activated:R,deactivated:se,beforeDestroy:L,beforeUnmount:q,destroyed:G,unmounted:T,render:V,renderTracked:re,renderTriggered:ce,errorCaptured:N,serverPrefetch:H,expose:ie,inheritAttrs:_e,components:ke,directives:Se,filters:pt}=t;if(f&&Gi(f,o,null),i)for(const F in i){const B=i[F];D(B)&&(o[F]=B.bind(s))}if(n){const F=n.call(s,s);te(F)&&(e.data=Is(F))}if(ro=!0,r)for(const F in r){const B=r[F],Ke=D(B)?B.bind(s,s):D(B.get)?B.get.bind(s,s):Ue,ot=!D(B)&&D(B.set)?B.set.bind(s):Ue,We=Tr({get:Ke,set:ot});Object.defineProperty(o,F,{enumerable:!0,configurable:!0,get:()=>We.value,set:Ae=>We.value=Ae})}if(l)for(const F in l)nr(l[F],o,s,F);if(a){const F=D(a)?a.call(s):a;Reflect.ownKeys(F).forEach(B=>{lr(B,F[B])})}p&&Bo(p,e,"c");function oe(F,B){A(B)?B.forEach(Ke=>F(Ke.bind(s))):B&&F(B.bind(s))}if(oe(Di,m),oe($o,C),oe(Ri,$),oe(Ni,I),oe(Ai,R),oe(Ii,se),oe(Hi,N),oe(Vi,re),oe(Li,ce),oe(ji,q),oe(Po,T),oe(Fi,H),A(ie))if(ie.length){const F=e.exposed||(e.exposed={});ie.forEach(B=>{Object.defineProperty(F,B,{get:()=>s[B],set:Ke=>s[B]=Ke,enumerable:!0})})}else e.exposed||(e.exposed={});V&&e.render===Ue&&(e.render=V),_e!=null&&(e.inheritAttrs=_e),ke&&(e.components=ke),Se&&(e.directives=Se),H&&Zn(e)}function Gi(e,t,s=Ue){A(e)&&(e=io(e));for(const o in e){const n=e[o];let r;te(n)?"default"in n?r=zt(n.from||o,n.default,!0):r=zt(n.from||o):r=zt(n),le(r)?Object.defineProperty(t,o,{enumerable:!0,configurable:!0,get:()=>r.value,set:i=>r.value=i}):t[o]=r}}function Bo(e,t,s){Be(A(e)?e.map(o=>o.bind(t.proxy)):e.bind(t.proxy),t,s)}function nr(e,t,s,o){let n=o.includes(".")?cr(s,o):()=>s[o];if(ae(e)){const r=t[e];D(r)&&At(n,r)}else if(D(e))At(n,e.bind(s));else if(te(e))if(A(e))e.forEach(r=>nr(r,t,s,o));else{const r=D(e.handler)?e.handler.bind(s):t[e.handler];D(r)&&At(n,r,e)}}function rr(e){const t=e.type,{mixins:s,extends:o}=t,{mixins:n,optionsCache:r,config:{optionMergeStrategies:i}}=e.appContext,l=r.get(t);let a;return l?a=l:!n.length&&!s&&!o?a=t:(a={},n.length&&n.forEach(f=>Cs(a,f,i,!0)),Cs(a,t,i)),te(t)&&r.set(t,a),a}function Cs(e,t,s,o=!1){const{mixins:n,extends:r}=t;r&&Cs(e,r,s,!0),n&&n.forEach(i=>Cs(e,i,s,!0));for(const i in t)if(!(o&&i==="expose")){const l=Yi[i]||s&&s[i];e[i]=l?l(e[i],t[i]):t[i]}return e}const Yi={data:Ko,props:Wo,emits:Wo,methods:Kt,computed:Kt,beforeCreate:ve,created:ve,beforeMount:ve,mounted:ve,beforeUpdate:ve,updated:ve,beforeDestroy:ve,beforeUnmount:ve,destroyed:ve,unmounted:ve,activated:ve,deactivated:ve,errorCaptured:ve,serverPrefetch:ve,components:Kt,directives:Kt,watch:Xi,provide:Ko,inject:zi};function Ko(e,t){return t?e?function(){return ye(D(e)?e.call(this,this):e,D(t)?t.call(this,this):t)}:t:e}function zi(e,t){return Kt(io(e),io(t))}function io(e){if(A(e)){const t={};for(let s=0;s<e.length;s++)t[e[s]]=e[s];return t}return e}function ve(e,t){return e?[...new Set([].concat(e,t))]:t}function Kt(e,t){return e?ye(Object.create(null),e,t):t}function Wo(e,t){return e?A(e)&&A(t)?[...new Set([...e,...t])]:ye(Object.create(null),Uo(e),Uo(t??{})):t}function Xi(e,t){if(!e)return t;if(!t)return e;const s=ye(Object.create(null),e);for(const o in t)s[o]=ve(e[o],t[o]);return s}function ir(){return{app:null,config:{isNativeTag:bn,performance:!1,globalProperties:{},optionMergeStrategies:{},errorHandler:void 0,warnHandler:void 0,compilerOptions:{}},mixins:[],components:{},directives:{},provides:Object.create(null),optionsCache:new WeakMap,propsCache:new WeakMap,emitsCache:new WeakMap}}let Zi=0;function Qi(e,t){return function(o,n=null){D(o)||(o=ye({},o)),n!=null&&!te(n)&&(n=null);const r=ir(),i=new WeakSet,l=[];let a=!1;const f=r.app={_uid:Zi++,_component:o,_props:n,_container:null,_context:r,_instance:null,version:Dl,get config(){return r.config},set config(p){},use(p,...m){return i.has(p)||(p&&D(p.install)?(i.add(p),p.install(f,...m)):D(p)&&(i.add(p),p(f,...m))),f},mixin(p){return r.mixins.includes(p)||r.mixins.push(p),f},component(p,m){return m?(r.components[p]=m,f):r.components[p]},directive(p,m){return m?(r.directives[p]=m,f):r.directives[p]},mount(p,m,C){if(!a){const $=f._ceVNode||ue(o,n);return $.appContext=r,C===!0?C="svg":C===!1&&(C=void 0),e($,p,C),a=!0,f._container=p,p.__vue_app__=f,Ls($.component)}},onUnmount(p){l.push(p)},unmount(){a&&(Be(l,f._instance,16),e(null,f._container),delete f._container.__vue_app__)},provide(p,m){return r.provides[p]=m,f},runWithContext(p){const m=bt;bt=f;try{return p()}finally{bt=m}}};return f}}let bt=null;function lr(e,t){if(ge){let s=ge.provides;const o=ge.parent&&ge.parent.provides;o===s&&(s=ge.provides=Object.create(o)),s[e]=t}}function zt(e,t,s=!1){const o=$r();if(o||bt){let n=bt?bt._context.provides:o?o.parent==null||o.ce?o.vnode.appContext&&o.vnode.appContext.provides:o.parent.provides:void 0;if(n&&e in n)return n[e];if(arguments.length>1)return s&&D(t)?t.call(o&&o.proxy):t}}function el(){return!!($r()||bt)}const tl=Symbol.for("v-scx"),sl=()=>zt(tl);function At(e,t,s){return ar(e,t,s)}function ar(e,t,s=X){const{immediate:o,deep:n,flush:r,once:i}=s,l=ye({},s),a=t&&o||!t&&r!=="post";let f;if(os){if(r==="sync"){const $=sl();f=$.__watcherHandles||($.__watcherHandles=[])}else if(!a){const $=()=>{};return $.stop=Ue,$.resume=Ue,$.pause=Ue,$}}const p=ge;l.call=($,I,R)=>Be($,p,I,R);let m=!1;r==="post"?l.scheduler=$=>{Oe($,p&&p.suspense)}:r!=="sync"&&(m=!0,l.scheduler=($,I)=>{I?$():wo($)}),l.augmentJob=$=>{t&&($.flags|=4),m&&($.flags|=2,p&&($.id=p.uid,$.i=p))};const C=Si(e,t,l);return os&&(f?f.push(C):a&&C()),C}function ol(e,t,s){const o=this.proxy,n=ae(e)?e.includes(".")?cr(o,e):()=>o[e]:e.bind(o,o);let r;D(t)?r=t:(r=t.handler,s=t);const i=cs(this),l=ar(n,r.bind(o),s);return i(),l}function cr(e,t){const s=t.split(".");return()=>{let o=e;for(let n=0;n<s.length&&o;n++)o=o[s[n]];return o}}const nl=(e,t)=>t==="modelValue"||t==="model-value"?e.modelModifiers:e[`${t}Modifiers`]||e[`${Ie(t)}Modifiers`]||e[`${dt(t)}Modifiers`];function rl(e,t,...s){if(e.isUnmounted)return;const o=e.vnode.props||X;let n=s;const r=t.startsWith("update:"),i=r&&nl(o,t.slice(7));i&&(i.trim&&(n=s.map(p=>ae(p)?p.trim():p)),i.number&&(n=s.map(Es)));let l,a=o[l=Bs(t)]||o[l=Bs(Ie(t))];!a&&r&&(a=o[l=Bs(dt(t))]),a&&Be(a,e,6,n);const f=o[l+"Once"];if(f){if(!e.emitted)e.emitted={};else if(e.emitted[l])return;e.emitted[l]=!0,Be(f,e,6,n)}}const il=new WeakMap;function ur(e,t,s=!1){const o=s?il:t.emitsCache,n=o.get(e);if(n!==void 0)return n;const r=e.emits;let i={},l=!1;if(!D(e)){const a=f=>{const p=ur(f,t,!0);p&&(l=!0,ye(i,p))};!s&&t.mixins.length&&t.mixins.forEach(a),e.extends&&a(e.extends),e.mixins&&e.mixins.forEach(a)}return!r&&!l?(te(e)&&o.set(e,null),null):(A(r)?r.forEach(a=>i[a]=null):ye(i,r),te(e)&&o.set(e,i),i)}function js(e,t){return!e||!$s(t)?!1:(t=t.slice(2).replace(/Once$/,""),Y(e,t[0].toLowerCase()+t.slice(1))||Y(e,dt(t))||Y(e,t))}function Jo(e){const{type:t,vnode:s,proxy:o,withProxy:n,propsOptions:[r],slots:i,attrs:l,emit:a,render:f,renderCache:p,props:m,data:C,setupState:$,ctx:I,inheritAttrs:R}=e,se=_s(e);let L,q;try{if(s.shapeFlag&4){const T=n||o,V=T;L=He(f.call(V,T,p,m,$,C,I)),q=l}else{const T=t;L=He(T.length>1?T(m,{attrs:l,slots:i,emit:a}):T(m,null)),q=t.props?l:ll(l)}}catch(T){Xt.length=0,Ds(T,e,1),L=ue(tt)}let G=L;if(q&&R!==!1){const T=Object.keys(q),{shapeFlag:V}=G;T.length&&V&7&&(r&&T.some(ho)&&(q=al(q,r)),G=Dt(G,q,!1,!0))}return s.dirs&&(G=Dt(G,null,!1,!0),G.dirs=G.dirs?G.dirs.concat(s.dirs):s.dirs),s.transition&&So(G,s.transition),L=G,_s(se),L}const ll=e=>{let t;for(const s in e)(s==="class"||s==="style"||$s(s))&&((t||(t={}))[s]=e[s]);return t},al=(e,t)=>{const s={};for(const o in e)(!ho(o)||!(o.slice(9)in t))&&(s[o]=e[o]);return s};function cl(e,t,s){const{props:o,children:n,component:r}=e,{props:i,children:l,patchFlag:a}=t,f=r.emitsOptions;if(t.dirs||t.transition)return!0;if(s&&a>=0){if(a&1024)return!0;if(a&16)return o?qo(o,i,f):!!i;if(a&8){const p=t.dynamicProps;for(let m=0;m<p.length;m++){const C=p[m];if(i[C]!==o[C]&&!js(f,C))return!0}}}else return(n||l)&&(!l||!l.$stable)?!0:o===i?!1:o?i?qo(o,i,f):!0:!!i;return!1}function qo(e,t,s){const o=Object.keys(t);if(o.length!==Object.keys(e).length)return!0;for(let n=0;n<o.length;n++){const r=o[n];if(t[r]!==e[r]&&!js(s,r))return!0}return!1}function ul({vnode:e,parent:t},s){for(;t;){const o=t.subTree;if(o.suspense&&o.suspense.activeBranch===e&&(o.el=e.el),o===e)(e=t.vnode).el=s,t=t.parent;else break}}const fr={},dr=()=>Object.create(fr),pr=e=>Object.getPrototypeOf(e)===fr;function fl(e,t,s,o=!1){const n={},r=dr();e.propsDefaults=Object.create(null),hr(e,t,n,r);for(const i in e.propsOptions[0])i in n||(n[i]=void 0);s?e.props=o?n:hi(n):e.type.props?e.props=n:e.props=r,e.attrs=r}function dl(e,t,s,o){const{props:n,attrs:r,vnode:{patchFlag:i}}=e,l=W(n),[a]=e.propsOptions;let f=!1;if((o||i>0)&&!(i&16)){if(i&8){const p=e.vnode.dynamicProps;for(let m=0;m<p.length;m++){let C=p[m];if(js(e.emitsOptions,C))continue;const $=t[C];if(a)if(Y(r,C))$!==r[C]&&(r[C]=$,f=!0);else{const I=Ie(C);n[I]=lo(a,l,I,$,e,!1)}else $!==r[C]&&(r[C]=$,f=!0)}}}else{hr(e,t,n,r)&&(f=!0);let p;for(const m in l)(!t||!Y(t,m)&&((p=dt(m))===m||!Y(t,p)))&&(a?s&&(s[m]!==void 0||s[p]!==void 0)&&(n[m]=lo(a,l,m,void 0,e,!0)):delete n[m]);if(r!==l)for(const m in r)(!t||!Y(t,m))&&(delete r[m],f=!0)}f&&Ge(e.attrs,"set","")}function hr(e,t,s,o){const[n,r]=e.propsOptions;let i=!1,l;if(t)for(let a in t){if(Wt(a))continue;const f=t[a];let p;n&&Y(n,p=Ie(a))?!r||!r.includes(p)?s[p]=f:(l||(l={}))[p]=f:js(e.emitsOptions,a)||(!(a in o)||f!==o[a])&&(o[a]=f,i=!0)}if(r){const a=W(s),f=l||X;for(let p=0;p<r.length;p++){const m=r[p];s[m]=lo(n,a,m,f[m],e,!Y(f,m))}}return i}function lo(e,t,s,o,n,r){const i=e[s];if(i!=null){const l=Y(i,"default");if(l&&o===void 0){const a=i.default;if(i.type!==Function&&!i.skipFactory&&D(a)){const{propsDefaults:f}=n;if(s in f)o=f[s];else{const p=cs(n);o=f[s]=a.call(null,t),p()}}else o=a;n.ce&&n.ce._setProp(s,o)}i[0]&&(r&&!l?o=!1:i[1]&&(o===""||o===dt(s))&&(o=!0))}return o}const pl=new WeakMap;function mr(e,t,s=!1){const o=s?pl:t.propsCache,n=o.get(e);if(n)return n;const r=e.props,i={},l=[];let a=!1;if(!D(e)){const p=m=>{a=!0;const[C,$]=mr(m,t,!0);ye(i,C),$&&l.push(...$)};!s&&t.mixins.length&&t.mixins.forEach(p),e.extends&&p(e.extends),e.mixins&&e.mixins.forEach(p)}if(!r&&!a)return te(e)&&o.set(e,Pt),Pt;if(A(r))for(let p=0;p<r.length;p++){const m=Ie(r[p]);Go(m)&&(i[m]=X)}else if(r)for(const p in r){const m=Ie(p);if(Go(m)){const C=r[p],$=i[m]=A(C)||D(C)?{type:C}:ye({},C),I=$.type;let R=!1,se=!0;if(A(I))for(let L=0;L<I.length;++L){const q=I[L],G=D(q)&&q.name;if(G==="Boolean"){R=!0;break}else G==="String"&&(se=!1)}else R=D(I)&&I.name==="Boolean";$[0]=R,$[1]=se,(R||Y($,"default"))&&l.push(m)}}const f=[i,l];return te(e)&&o.set(e,f),f}function Go(e){return e[0]!=="$"&&!Wt(e)}const Oo=e=>e==="_"||e==="_ctx"||e==="$stable",To=e=>A(e)?e.map(He):[He(e)],hl=(e,t,s)=>{if(t._n)return t;const o=Xn((...n)=>To(t(...n)),s);return o._c=!1,o},gr=(e,t,s)=>{const o=e._ctx;for(const n in e){if(Oo(n))continue;const r=e[n];if(D(r))t[n]=hl(n,r,o);else if(r!=null){const i=To(r);t[n]=()=>i}}},vr=(e,t)=>{const s=To(t);e.slots.default=()=>s},br=(e,t,s)=>{for(const o in t)(s||!Oo(o))&&(e[o]=t[o])},ml=(e,t,s)=>{const o=e.slots=dr();if(e.vnode.shapeFlag&32){const n=t._;n?(br(o,t,s),s&&Cn(o,"_",n,!0)):gr(t,o)}else t&&vr(e,t)},gl=(e,t,s)=>{const{vnode:o,slots:n}=e;let r=!0,i=X;if(o.shapeFlag&32){const l=t._;l?s&&l===1?r=!1:br(n,t,s):(r=!t.$stable,gr(t,n)),i=t}else t&&(vr(e,t),i={default:1});if(r)for(const l in n)!Oo(l)&&i[l]==null&&delete n[l]},Oe=xl;function vl(e){return bl(e)}function bl(e,t){const s=ks();s.__VUE__=!0;const{insert:o,remove:n,patchProp:r,createElement:i,createText:l,createComment:a,setText:f,setElementText:p,parentNode:m,nextSibling:C,setScopeId:$=Ue,insertStaticContent:I}=e,R=(u,d,h,y=null,g=null,v=null,w=void 0,x=null,_=!!d.dynamicChildren)=>{if(u===d)return;u&&!Ut(u,d)&&(y=_t(u),Ae(u,g,v,!0),u=null),d.patchFlag===-2&&(_=!1,d.dynamicChildren=null);const{type:b,ref:k,shapeFlag:S}=d;switch(b){case Fs:se(u,d,h,y);break;case tt:L(u,d,h,y);break;case hs:u==null&&q(d,h,y,w);break;case fe:ke(u,d,h,y,g,v,w,x,_);break;default:S&1?V(u,d,h,y,g,v,w,x,_):S&6?Se(u,d,h,y,g,v,w,x,_):(S&64||S&128)&&b.process(u,d,h,y,g,v,w,x,_,P)}k!=null&&g?Gt(k,u&&u.ref,v,d||u,!d):k==null&&u&&u.ref!=null&&Gt(u.ref,null,v,u,!0)},se=(u,d,h,y)=>{if(u==null)o(d.el=l(d.children),h,y);else{const g=d.el=u.el;d.children!==u.children&&f(g,d.children)}},L=(u,d,h,y)=>{u==null?o(d.el=a(d.children||""),h,y):d.el=u.el},q=(u,d,h,y)=>{[u.el,u.anchor]=I(u.children,d,h,y,u.el,u.anchor)},G=({el:u,anchor:d},h,y)=>{let g;for(;u&&u!==d;)g=C(u),o(u,h,y),u=g;o(d,h,y)},T=({el:u,anchor:d})=>{let h;for(;u&&u!==d;)h=C(u),n(u),u=h;n(d)},V=(u,d,h,y,g,v,w,x,_)=>{if(d.type==="svg"?w="svg":d.type==="math"&&(w="mathml"),u==null)re(d,h,y,g,v,w,x,_);else{const b=u.el&&u.el._isVueCE?u.el:null;try{b&&b._beginPatch(),H(u,d,g,v,w,x,_)}finally{b&&b._endPatch()}}},re=(u,d,h,y,g,v,w,x)=>{let _,b;const{props:k,shapeFlag:S,transition:E,dirs:M}=u;if(_=u.el=i(u.type,v,k&&k.is,k),S&8?p(_,u.children):S&16&&N(u.children,_,null,y,g,Ys(u,v),w,x),M&&ht(u,null,y,"created"),ce(_,u,u.scopeId,w,y),k){for(const Z in k)Z!=="value"&&!Wt(Z)&&r(_,Z,null,k[Z],v,y);"value"in k&&r(_,"value",null,k.value,v),(b=k.onVnodeBeforeMount)&&Le(b,y,u)}M&&ht(u,null,y,"beforeMount");const U=yl(g,E);U&&E.beforeEnter(_),o(_,d,h),((b=k&&k.onVnodeMounted)||U||M)&&Oe(()=>{b&&Le(b,y,u),U&&E.enter(_),M&&ht(u,null,y,"mounted")},g)},ce=(u,d,h,y,g)=>{if(h&&$(u,h),y)for(let v=0;v<y.length;v++)$(u,y[v]);if(g){let v=g.subTree;if(d===v||xr(v.type)&&(v.ssContent===d||v.ssFallback===d)){const w=g.vnode;ce(u,w,w.scopeId,w.slotScopeIds,g.parent)}}},N=(u,d,h,y,g,v,w,x,_=0)=>{for(let b=_;b<u.length;b++){const k=u[b]=x?at(u[b]):He(u[b]);R(null,k,d,h,y,g,v,w,x)}},H=(u,d,h,y,g,v,w)=>{const x=d.el=u.el;let{patchFlag:_,dynamicChildren:b,dirs:k}=d;_|=u.patchFlag&16;const S=u.props||X,E=d.props||X;let M;if(h&&mt(h,!1),(M=E.onVnodeBeforeUpdate)&&Le(M,h,d,u),k&&ht(d,u,h,"beforeUpdate"),h&&mt(h,!0),(S.innerHTML&&E.innerHTML==null||S.textContent&&E.textContent==null)&&p(x,""),b?ie(u.dynamicChildren,b,x,h,y,Ys(d,g),v):w||B(u,d,x,null,h,y,Ys(d,g),v,!1),_>0){if(_&16)_e(x,S,E,h,g);else if(_&2&&S.class!==E.class&&r(x,"class",null,E.class,g),_&4&&r(x,"style",S.style,E.style,g),_&8){const U=d.dynamicProps;for(let Z=0;Z<U.length;Z++){const z=U[Z],xe=S[z],Ce=E[z];(Ce!==xe||z==="value")&&r(x,z,xe,Ce,g,h)}}_&1&&u.children!==d.children&&p(x,d.children)}else!w&&b==null&&_e(x,S,E,h,g);((M=E.onVnodeUpdated)||k)&&Oe(()=>{M&&Le(M,h,d,u),k&&ht(d,u,h,"updated")},y)},ie=(u,d,h,y,g,v,w)=>{for(let x=0;x<d.length;x++){const _=u[x],b=d[x],k=_.el&&(_.type===fe||!Ut(_,b)||_.shapeFlag&198)?m(_.el):h;R(_,b,k,null,y,g,v,w,!0)}},_e=(u,d,h,y,g)=>{if(d!==h){if(d!==X)for(const v in d)!Wt(v)&&!(v in h)&&r(u,v,d[v],null,g,y);for(const v in h){if(Wt(v))continue;const w=h[v],x=d[v];w!==x&&v!=="value"&&r(u,v,x,w,g,y)}"value"in h&&r(u,"value",d.value,h.value,g)}},ke=(u,d,h,y,g,v,w,x,_)=>{const b=d.el=u?u.el:l(""),k=d.anchor=u?u.anchor:l("");let{patchFlag:S,dynamicChildren:E,slotScopeIds:M}=d;M&&(x=x?x.concat(M):M),u==null?(o(b,h,y),o(k,h,y),N(d.children||[],h,k,g,v,w,x,_)):S>0&&S&64&&E&&u.dynamicChildren?(ie(u.dynamicChildren,E,h,g,v,w,x),(d.key!=null||g&&d===g.subTree)&&yr(u,d,!0)):B(u,d,h,k,g,v,w,x,_)},Se=(u,d,h,y,g,v,w,x,_)=>{d.slotScopeIds=x,u==null?d.shapeFlag&512?g.ctx.activate(d,h,y,w,_):pt(d,h,y,g,v,w,_):yt(u,d,_)},pt=(u,d,h,y,g,v,w)=>{const x=u.component=Ol(u,y,g);if(Qn(u)&&(x.ctx.renderer=P),Tl(x,!1,w),x.asyncDep){if(g&&g.registerDep(x,oe,w),!u.el){const _=x.subTree=ue(tt);L(null,_,d,h),u.placeholder=_.el}}else oe(x,u,d,h,g,v,w)},yt=(u,d,h)=>{const y=d.component=u.component;if(cl(u,d,h))if(y.asyncDep&&!y.asyncResolved){F(y,d,h);return}else y.next=d,y.update();else d.el=u.el,y.vnode=d},oe=(u,d,h,y,g,v,w)=>{const x=()=>{if(u.isMounted){let{next:S,bu:E,u:M,parent:U,vnode:Z}=u;{const je=_r(u);if(je){S&&(S.el=Z.el,F(u,S,w)),je.asyncDep.then(()=>{u.isUnmounted||x()});return}}let z=S,xe;mt(u,!1),S?(S.el=Z.el,F(u,S,w)):S=Z,E&&ps(E),(xe=S.props&&S.props.onVnodeBeforeUpdate)&&Le(xe,U,S,Z),mt(u,!0);const Ce=Jo(u),Ne=u.subTree;u.subTree=Ce,R(Ne,Ce,m(Ne.el),_t(Ne),u,g,v),S.el=Ce.el,z===null&&ul(u,Ce.el),M&&Oe(M,g),(xe=S.props&&S.props.onVnodeUpdated)&&Oe(()=>Le(xe,U,S,Z),g)}else{let S;const{el:E,props:M}=d,{bm:U,m:Z,parent:z,root:xe,type:Ce}=u,Ne=kt(d);mt(u,!1),U&&ps(U),!Ne&&(S=M&&M.onVnodeBeforeMount)&&Le(S,z,d),mt(u,!0);{xe.ce&&xe.ce._def.shadowRoot!==!1&&xe.ce._injectChildStyle(Ce);const je=u.subTree=Jo(u);R(null,je,h,y,u,g,v),d.el=je.el}if(Z&&Oe(Z,g),!Ne&&(S=M&&M.onVnodeMounted)){const je=d;Oe(()=>Le(S,z,je),g)}(d.shapeFlag&256||z&&kt(z.vnode)&&z.vnode.shapeFlag&256)&&u.a&&Oe(u.a,g),u.isMounted=!0,d=h=y=null}};u.scope.on();const _=u.effect=new En(x);u.scope.off();const b=u.update=_.run.bind(_),k=u.job=_.runIfDirty.bind(_);k.i=u,k.id=u.uid,_.scheduler=()=>wo(k),mt(u,!0),b()},F=(u,d,h)=>{d.component=u;const y=u.vnode.props;u.vnode=d,u.next=null,dl(u,d.props,y,h),gl(u,d.children,h),Ze(),Lo(u),Qe()},B=(u,d,h,y,g,v,w,x,_=!1)=>{const b=u&&u.children,k=u?u.shapeFlag:0,S=d.children,{patchFlag:E,shapeFlag:M}=d;if(E>0){if(E&128){ot(b,S,h,y,g,v,w,x,_);return}else if(E&256){Ke(b,S,h,y,g,v,w,x,_);return}}M&8?(k&16&&nt(b,g,v),S!==b&&p(h,S)):k&16?M&16?ot(b,S,h,y,g,v,w,x,_):nt(b,g,v,!0):(k&8&&p(h,""),M&16&&N(S,h,y,g,v,w,x,_))},Ke=(u,d,h,y,g,v,w,x,_)=>{u=u||Pt,d=d||Pt;const b=u.length,k=d.length,S=Math.min(b,k);let E;for(E=0;E<S;E++){const M=d[E]=_?at(d[E]):He(d[E]);R(u[E],M,h,null,g,v,w,x,_)}b>k?nt(u,g,v,!0,!1,S):N(d,h,y,g,v,w,x,_,S)},ot=(u,d,h,y,g,v,w,x,_)=>{let b=0;const k=d.length;let S=u.length-1,E=k-1;for(;b<=S&&b<=E;){const M=u[b],U=d[b]=_?at(d[b]):He(d[b]);if(Ut(M,U))R(M,U,h,null,g,v,w,x,_);else break;b++}for(;b<=S&&b<=E;){const M=u[S],U=d[E]=_?at(d[E]):He(d[E]);if(Ut(M,U))R(M,U,h,null,g,v,w,x,_);else break;S--,E--}if(b>S){if(b<=E){const M=E+1,U=M<k?d[M].el:y;for(;b<=E;)R(null,d[b]=_?at(d[b]):He(d[b]),h,U,g,v,w,x,_),b++}}else if(b>E)for(;b<=S;)Ae(u[b],g,v,!0),b++;else{const M=b,U=b,Z=new Map;for(b=U;b<=E;b++){const $e=d[b]=_?at(d[b]):He(d[b]);$e.key!=null&&Z.set($e.key,b)}let z,xe=0;const Ce=E-U+1;let Ne=!1,je=0;const Vt=new Array(Ce);for(b=0;b<Ce;b++)Vt[b]=0;for(b=M;b<=S;b++){const $e=u[b];if(xe>=Ce){Ae($e,g,v,!0);continue}let Fe;if($e.key!=null)Fe=Z.get($e.key);else for(z=U;z<=E;z++)if(Vt[z-U]===0&&Ut($e,d[z])){Fe=z;break}Fe===void 0?Ae($e,g,v,!0):(Vt[Fe-U]=b+1,Fe>=je?je=Fe:Ne=!0,R($e,d[Fe],h,null,g,v,w,x,_),xe++)}const Io=Ne?_l(Vt):Pt;for(z=Io.length-1,b=Ce-1;b>=0;b--){const $e=U+b,Fe=d[$e],Mo=d[$e+1],Do=$e+1<k?Mo.el||Mo.placeholder:y;Vt[b]===0?R(null,Fe,h,Do,g,v,w,x,_):Ne&&(z<0||b!==Io[z]?We(Fe,h,Do,2):z--)}}},We=(u,d,h,y,g=null)=>{const{el:v,type:w,transition:x,children:_,shapeFlag:b}=u;if(b&6){We(u.component.subTree,d,h,y);return}if(b&128){u.suspense.move(d,h,y);return}if(b&64){w.move(u,d,h,P);return}if(w===fe){o(v,d,h);for(let S=0;S<_.length;S++)We(_[S],d,h,y);o(u.anchor,d,h);return}if(w===hs){G(u,d,h);return}if(y!==2&&b&1&&x)if(y===0)x.beforeEnter(v),o(v,d,h),Oe(()=>x.enter(v),g);else{const{leave:S,delayLeave:E,afterLeave:M}=x,U=()=>{u.ctx.isUnmounted?n(v):o(v,d,h)},Z=()=>{v._isLeaving&&v[ki](!0),S(v,()=>{U(),M&&M()})};E?E(v,U,Z):Z()}else o(v,d,h)},Ae=(u,d,h,y=!1,g=!1)=>{const{type:v,props:w,ref:x,children:_,dynamicChildren:b,shapeFlag:k,patchFlag:S,dirs:E,cacheIndex:M}=u;if(S===-2&&(g=!1),x!=null&&(Ze(),Gt(x,null,h,u,!0),Qe()),M!=null&&(d.renderCache[M]=void 0),k&256){d.ctx.deactivate(u);return}const U=k&1&&E,Z=!kt(u);let z;if(Z&&(z=w&&w.onVnodeBeforeUnmount)&&Le(z,d,u),k&6)Us(u.component,h,y);else{if(k&128){u.suspense.unmount(h,y);return}U&&ht(u,null,d,"beforeUnmount"),k&64?u.type.remove(u,d,h,P,y):b&&!b.hasOnce&&(v!==fe||S>0&&S&64)?nt(b,d,h,!1,!0):(v===fe&&S&384||!g&&k&16)&&nt(_,d,h),y&&Ft(u)}(Z&&(z=w&&w.onVnodeUnmounted)||U)&&Oe(()=>{z&&Le(z,d,u),U&&ht(u,null,d,"unmounted")},h)},Ft=u=>{const{type:d,el:h,anchor:y,transition:g}=u;if(d===fe){Hs(h,y);return}if(d===hs){T(u);return}const v=()=>{n(h),g&&!g.persisted&&g.afterLeave&&g.afterLeave()};if(u.shapeFlag&1&&g&&!g.persisted){const{leave:w,delayLeave:x}=g,_=()=>w(h,v);x?x(u.el,v,_):_()}else v()},Hs=(u,d)=>{let h;for(;u!==d;)h=C(u),n(u),u=h;n(d)},Us=(u,d,h)=>{const{bum:y,scope:g,job:v,subTree:w,um:x,m:_,a:b}=u;Yo(_),Yo(b),y&&ps(y),g.stop(),v&&(v.flags|=8,Ae(w,u,d,h)),x&&Oe(x,d),Oe(()=>{u.isUnmounted=!0},d)},nt=(u,d,h,y=!1,g=!1,v=0)=>{for(let w=v;w<u.length;w++)Ae(u[w],d,h,y,g)},_t=u=>{if(u.shapeFlag&6)return _t(u.component.subTree);if(u.shapeFlag&128)return u.suspense.next();const d=C(u.anchor||u.el),h=d&&d[Ti];return h?C(h):d};let xt=!1;const Lt=(u,d,h)=>{u==null?d._vnode&&Ae(d._vnode,null,null,!0):R(d._vnode||null,u,d,null,null,null,h),d._vnode=u,xt||(xt=!0,Lo(),Gn(),xt=!1)},P={p:R,um:Ae,m:We,r:Ft,mt:pt,mc:N,pc:B,pbc:ie,n:_t,o:e};return{render:Lt,hydrate:void 0,createApp:Qi(Lt)}}function Ys({type:e,props:t},s){return s==="svg"&&e==="foreignObject"||s==="mathml"&&e==="annotation-xml"&&t&&t.encoding&&t.encoding.includes("html")?void 0:s}function mt({effect:e,job:t},s){s?(e.flags|=32,t.flags|=4):(e.flags&=-33,t.flags&=-5)}function yl(e,t){return(!e||e&&!e.pendingBranch)&&t&&!t.persisted}function yr(e,t,s=!1){const o=e.children,n=t.children;if(A(o)&&A(n))for(let r=0;r<o.length;r++){const i=o[r];let l=n[r];l.shapeFlag&1&&!l.dynamicChildren&&((l.patchFlag<=0||l.patchFlag===32)&&(l=n[r]=at(n[r]),l.el=i.el),!s&&l.patchFlag!==-2&&yr(i,l)),l.type===Fs&&l.patchFlag!==-1&&(l.el=i.el),l.type===tt&&!l.el&&(l.el=i.el)}}function _l(e){const t=e.slice(),s=[0];let o,n,r,i,l;const a=e.length;for(o=0;o<a;o++){const f=e[o];if(f!==0){if(n=s[s.length-1],e[n]<f){t[o]=n,s.push(o);continue}for(r=0,i=s.length-1;r<i;)l=r+i>>1,e[s[l]]<f?r=l+1:i=l;f<e[s[r]]&&(r>0&&(t[o]=s[r-1]),s[r]=o)}}for(r=s.length,i=s[r-1];r-- >0;)s[r]=i,i=t[i];return s}function _r(e){const t=e.subTree.component;if(t)return t.asyncDep&&!t.asyncResolved?t:_r(t)}function Yo(e){if(e)for(let t=0;t<e.length;t++)e[t].flags|=8}const xr=e=>e.__isSuspense;function xl(e,t){t&&t.pendingBranch?A(e)?t.effects.push(...e):t.effects.push(e):Oi(e)}const fe=Symbol.for("v-fgt"),Fs=Symbol.for("v-txt"),tt=Symbol.for("v-cmt"),hs=Symbol.for("v-stc"),Xt=[];let Te=null;function j(e=!1){Xt.push(Te=e?null:[])}function Cl(){Xt.pop(),Te=Xt[Xt.length-1]||null}let ss=1;function zo(e,t=!1){ss+=e,e<0&&Te&&t&&(Te.hasOnce=!0)}function Cr(e){return e.dynamicChildren=ss>0?Te||Pt:null,Cl(),ss>0&&Te&&Te.push(e),e}function K(e,t,s,o,n,r){return Cr(c(e,t,s,o,n,r,!0))}function Mt(e,t,s,o,n){return Cr(ue(e,t,s,o,n,!0))}function Eo(e){return e?e.__v_isVNode===!0:!1}function Ut(e,t){return e.type===t.type&&e.key===t.key}const wr=({key:e})=>e??null,ms=({ref:e,ref_key:t,ref_for:s})=>(typeof e=="number"&&(e=""+e),e!=null?ae(e)||le(e)||D(e)?{i:de,r:e,k:t,f:!!s}:e:null);function c(e,t=null,s=null,o=0,n=null,r=e===fe?0:1,i=!1,l=!1){const a={__v_isVNode:!0,__v_skip:!0,type:e,props:t,key:t&&wr(t),ref:t&&ms(t),scopeId:zn,slotScopeIds:null,children:s,component:null,suspense:null,ssContent:null,ssFallback:null,dirs:null,transition:null,el:null,anchor:null,target:null,targetStart:null,targetAnchor:null,staticCount:0,shapeFlag:r,patchFlag:o,dynamicProps:n,dynamicChildren:null,appContext:null,ctx:de};return l?(ko(a,s),r&128&&e.normalize(a)):s&&(a.shapeFlag|=ae(s)?8:16),ss>0&&!i&&Te&&(a.patchFlag>0||r&6)&&a.patchFlag!==32&&Te.push(a),a}const ue=wl;function wl(e,t=null,s=null,o=0,n=null,r=!1){if((!e||e===tr)&&(e=tt),Eo(e)){const l=Dt(e,t,!0);return s&&ko(l,s),ss>0&&!r&&Te&&(l.shapeFlag&6?Te[Te.indexOf(e)]=l:Te.push(l)),l.patchFlag=-2,l}if(Ml(e)&&(e=e.__vccOpts),t){t=Sl(t);let{class:l,style:a}=t;l&&!ae(l)&&(t.class=we(l)),te(a)&&(Ms(a)&&!A(a)&&(a=ye({},a)),t.style=is(a))}const i=ae(e)?1:xr(e)?128:Ei(e)?64:te(e)?4:D(e)?2:0;return c(e,t,s,o,n,i,r,!0)}function Sl(e){return e?Ms(e)||pr(e)?ye({},e):e:null}function Dt(e,t,s=!1,o=!1){const{props:n,ref:r,patchFlag:i,children:l,transition:a}=e,f=t?Sr(n||{},t):n,p={__v_isVNode:!0,__v_skip:!0,type:e.type,props:f,key:f&&wr(f),ref:t&&t.ref?s&&r?A(r)?r.concat(ms(t)):[r,ms(t)]:ms(t):r,scopeId:e.scopeId,slotScopeIds:e.slotScopeIds,children:l,target:e.target,targetStart:e.targetStart,targetAnchor:e.targetAnchor,staticCount:e.staticCount,shapeFlag:e.shapeFlag,patchFlag:t&&e.type!==fe?i===-1?16:i|16:i,dynamicProps:e.dynamicProps,dynamicChildren:e.dynamicChildren,appContext:e.appContext,dirs:e.dirs,transition:a,component:e.component,suspense:e.suspense,ssContent:e.ssContent&&Dt(e.ssContent),ssFallback:e.ssFallback&&Dt(e.ssFallback),placeholder:e.placeholder,el:e.el,anchor:e.anchor,ctx:e.ctx,ce:e.ce};return a&&o&&So(p,a.clone(p)),p}function me(e=" ",t=0){return ue(Fs,null,e,t)}function Rt(e,t){const s=ue(hs,null,e);return s.staticCount=t,s}function ut(e="",t=!1){return t?(j(),Mt(tt,null,e)):ue(tt,null,e)}function He(e){return e==null||typeof e=="boolean"?ue(tt):A(e)?ue(fe,null,e.slice()):Eo(e)?at(e):ue(Fs,null,String(e))}function at(e){return e.el===null&&e.patchFlag!==-1||e.memo?e:Dt(e)}function ko(e,t){let s=0;const{shapeFlag:o}=e;if(t==null)t=null;else if(A(t))s=16;else if(typeof t=="object")if(o&65){const n=t.default;n&&(n._c&&(n._d=!1),ko(e,n()),n._c&&(n._d=!0));return}else{s=32;const n=t._;!n&&!pr(t)?t._ctx=de:n===3&&de&&(de.slots._===1?t._=1:(t._=2,e.patchFlag|=1024))}else D(t)?(t={default:t,_ctx:de},s=32):(t=String(t),o&64?(s=16,t=[me(t)]):s=8);e.children=t,e.shapeFlag|=s}function Sr(...e){const t={};for(let s=0;s<e.length;s++){const o=e[s];for(const n in o)if(n==="class")t.class!==o.class&&(t.class=we([t.class,o.class]));else if(n==="style")t.style=is([t.style,o.style]);else if($s(n)){const r=t[n],i=o[n];i&&r!==i&&!(A(r)&&r.includes(i))&&(t[n]=r?[].concat(r,i):i)}else n!==""&&(t[n]=o[n])}return t}function Le(e,t,s,o=null){Be(e,t,7,[s,o])}const $l=ir();let Pl=0;function Ol(e,t,s){const o=e.type,n=(t?t.appContext:e.appContext)||$l,r={uid:Pl++,vnode:e,type:o,parent:t,appContext:n,root:null,next:null,subTree:null,effect:null,update:null,job:null,scope:new Pn(!0),render:null,proxy:null,exposed:null,exposeProxy:null,withProxy:null,provides:t?t.provides:Object.create(n.provides),ids:t?t.ids:["",0,0],accessCache:null,renderCache:[],components:null,directives:null,propsOptions:mr(o,n),emitsOptions:ur(o,n),emit:null,emitted:null,propsDefaults:X,inheritAttrs:o.inheritAttrs,ctx:X,data:X,props:X,attrs:X,slots:X,refs:X,setupState:X,setupContext:null,suspense:s,suspenseId:s?s.pendingId:0,asyncDep:null,asyncResolved:!1,isMounted:!1,isUnmounted:!1,isDeactivated:!1,bc:null,c:null,bm:null,m:null,bu:null,u:null,um:null,bum:null,da:null,a:null,rtg:null,rtc:null,ec:null,sp:null};return r.ctx={_:r},r.root=t?t.root:r,r.emit=rl.bind(null,r),e.ce&&e.ce(r),r}let ge=null;const $r=()=>ge||de;let ws,ao;{const e=ks(),t=(s,o)=>{let n;return(n=e[s])||(n=e[s]=[]),n.push(o),r=>{n.length>1?n.forEach(i=>i(r)):n[0](r)}};ws=t("__VUE_INSTANCE_SETTERS__",s=>ge=s),ao=t("__VUE_SSR_SETTERS__",s=>os=s)}const cs=e=>{const t=ge;return ws(e),e.scope.on(),()=>{e.scope.off(),ws(t)}},Xo=()=>{ge&&ge.scope.off(),ws(null)};function Pr(e){return e.vnode.shapeFlag&4}let os=!1;function Tl(e,t=!1,s=!1){t&&ao(t);const{props:o,children:n}=e.vnode,r=Pr(e);fl(e,o,r,t),ml(e,n,s||t);const i=r?El(e,t):void 0;return t&&ao(!1),i}function El(e,t){const s=e.type;e.accessCache=Object.create(null),e.proxy=new Proxy(e.ctx,Ji);const{setup:o}=s;if(o){Ze();const n=e.setupContext=o.length>1?Al(e):null,r=cs(e),i=as(o,e,0,[e.props,n]),l=yn(i);if(Qe(),r(),(l||e.sp)&&!kt(e)&&Zn(e),l){if(i.then(Xo,Xo),t)return i.then(a=>{Zo(e,a)}).catch(a=>{Ds(a,e,0)});e.asyncDep=i}else Zo(e,i)}else Or(e)}function Zo(e,t,s){D(t)?e.type.__ssrInlineRender?e.ssrRender=t:e.render=t:te(t)&&(e.setupState=Wn(t)),Or(e)}function Or(e,t,s){const o=e.type;e.render||(e.render=o.render||Ue);{const n=cs(e);Ze();try{qi(e)}finally{Qe(),n()}}}const kl={get(e,t){return he(e,"get",""),e[t]}};function Al(e){const t=s=>{e.exposed=s||{}};return{attrs:new Proxy(e.attrs,kl),slots:e.slots,emit:e.emit,expose:t}}function Ls(e){return e.exposed?e.exposeProxy||(e.exposeProxy=new Proxy(Wn(Tt(e.exposed)),{get(t,s){if(s in t)return t[s];if(s in Yt)return Yt[s](e)},has(t,s){return s in t||s in Yt}})):e.proxy}function Il(e,t=!0){return D(e)?e.displayName||e.name:e.name||t&&e.__name}function Ml(e){return D(e)&&"__vccOpts"in e}const Tr=(e,t)=>Ci(e,t,os),Dl="3.5.25";/**
+**/
+const stack = [];
+let isWarning = false;
+function warn$1(msg, ...args) {
+  if (isWarning) return;
+  isWarning = true;
+  pauseTracking();
+  const instance = stack.length ? stack[stack.length - 1].component : null;
+  const appWarnHandler = instance && instance.appContext.config.warnHandler;
+  const trace = getComponentTrace();
+  if (appWarnHandler) {
+    callWithErrorHandling(
+      appWarnHandler,
+      instance,
+      11,
+      [
+        // eslint-disable-next-line no-restricted-syntax
+        msg + args.map((a) => {
+          var _a, _b;
+          return (_b = (_a = a.toString) == null ? void 0 : _a.call(a)) != null ? _b : JSON.stringify(a);
+        }).join(""),
+        instance && instance.proxy,
+        trace.map(
+          ({ vnode }) => `at <${formatComponentName(instance, vnode.type)}>`
+        ).join("\n"),
+        trace
+      ]
+    );
+  } else {
+    const warnArgs = [`[Vue warn]: ${msg}`, ...args];
+    if (trace.length && // avoid spamming console during tests
+    true) {
+      warnArgs.push(`
+`, ...formatTrace(trace));
+    }
+    console.warn(...warnArgs);
+  }
+  resetTracking();
+  isWarning = false;
+}
+function getComponentTrace() {
+  let currentVNode = stack[stack.length - 1];
+  if (!currentVNode) {
+    return [];
+  }
+  const normalizedStack = [];
+  while (currentVNode) {
+    const last = normalizedStack[0];
+    if (last && last.vnode === currentVNode) {
+      last.recurseCount++;
+    } else {
+      normalizedStack.push({
+        vnode: currentVNode,
+        recurseCount: 0
+      });
+    }
+    const parentInstance = currentVNode.component && currentVNode.component.parent;
+    currentVNode = parentInstance && parentInstance.vnode;
+  }
+  return normalizedStack;
+}
+function formatTrace(trace) {
+  const logs = [];
+  trace.forEach((entry, i) => {
+    logs.push(...i === 0 ? [] : [`
+`], ...formatTraceEntry(entry));
+  });
+  return logs;
+}
+function formatTraceEntry({ vnode, recurseCount }) {
+  const postfix = recurseCount > 0 ? `... (${recurseCount} recursive calls)` : ``;
+  const isRoot = vnode.component ? vnode.component.parent == null : false;
+  const open = ` at <${formatComponentName(
+    vnode.component,
+    vnode.type,
+    isRoot
+  )}`;
+  const close = `>` + postfix;
+  return vnode.props ? [open, ...formatProps(vnode.props), close] : [open + close];
+}
+function formatProps(props) {
+  const res = [];
+  const keys = Object.keys(props);
+  keys.slice(0, 3).forEach((key) => {
+    res.push(...formatProp(key, props[key]));
+  });
+  if (keys.length > 3) {
+    res.push(` ...`);
+  }
+  return res;
+}
+function formatProp(key, value, raw) {
+  if (isString(value)) {
+    value = JSON.stringify(value);
+    return raw ? value : [`${key}=${value}`];
+  } else if (typeof value === "number" || typeof value === "boolean" || value == null) {
+    return raw ? value : [`${key}=${value}`];
+  } else if (isRef(value)) {
+    value = formatProp(key, toRaw(value.value), true);
+    return raw ? value : [`${key}=Ref<`, value, `>`];
+  } else if (isFunction(value)) {
+    return [`${key}=fn${value.name ? `<${value.name}>` : ``}`];
+  } else {
+    value = toRaw(value);
+    return raw ? value : [`${key}=`, value];
+  }
+}
+function callWithErrorHandling(fn, instance, type, args) {
+  try {
+    return args ? fn(...args) : fn();
+  } catch (err) {
+    handleError(err, instance, type);
+  }
+}
+function callWithAsyncErrorHandling(fn, instance, type, args) {
+  if (isFunction(fn)) {
+    const res = callWithErrorHandling(fn, instance, type, args);
+    if (res && isPromise(res)) {
+      res.catch((err) => {
+        handleError(err, instance, type);
+      });
+    }
+    return res;
+  }
+  if (isArray(fn)) {
+    const values = [];
+    for (let i = 0; i < fn.length; i++) {
+      values.push(callWithAsyncErrorHandling(fn[i], instance, type, args));
+    }
+    return values;
+  }
+}
+function handleError(err, instance, type, throwInDev = true) {
+  const contextVNode = instance ? instance.vnode : null;
+  const { errorHandler, throwUnhandledErrorInProduction } = instance && instance.appContext.config || EMPTY_OBJ;
+  if (instance) {
+    let cur = instance.parent;
+    const exposedInstance = instance.proxy;
+    const errorInfo = `https://vuejs.org/error-reference/#runtime-${type}`;
+    while (cur) {
+      const errorCapturedHooks = cur.ec;
+      if (errorCapturedHooks) {
+        for (let i = 0; i < errorCapturedHooks.length; i++) {
+          if (errorCapturedHooks[i](err, exposedInstance, errorInfo) === false) {
+            return;
+          }
+        }
+      }
+      cur = cur.parent;
+    }
+    if (errorHandler) {
+      pauseTracking();
+      callWithErrorHandling(errorHandler, null, 10, [
+        err,
+        exposedInstance,
+        errorInfo
+      ]);
+      resetTracking();
+      return;
+    }
+  }
+  logError(err, type, contextVNode, throwInDev, throwUnhandledErrorInProduction);
+}
+function logError(err, type, contextVNode, throwInDev = true, throwInProd = false) {
+  if (throwInProd) {
+    throw err;
+  } else {
+    console.error(err);
+  }
+}
+const queue = [];
+let flushIndex = -1;
+const pendingPostFlushCbs = [];
+let activePostFlushCbs = null;
+let postFlushIndex = 0;
+const resolvedPromise = /* @__PURE__ */ Promise.resolve();
+let currentFlushPromise = null;
+function nextTick(fn) {
+  const p2 = currentFlushPromise || resolvedPromise;
+  return fn ? p2.then(this ? fn.bind(this) : fn) : p2;
+}
+function findInsertionIndex(id) {
+  let start = flushIndex + 1;
+  let end = queue.length;
+  while (start < end) {
+    const middle = start + end >>> 1;
+    const middleJob = queue[middle];
+    const middleJobId = getId(middleJob);
+    if (middleJobId < id || middleJobId === id && middleJob.flags & 2) {
+      start = middle + 1;
+    } else {
+      end = middle;
+    }
+  }
+  return start;
+}
+function queueJob(job) {
+  if (!(job.flags & 1)) {
+    const jobId = getId(job);
+    const lastJob = queue[queue.length - 1];
+    if (!lastJob || // fast path when the job id is larger than the tail
+    !(job.flags & 2) && jobId >= getId(lastJob)) {
+      queue.push(job);
+    } else {
+      queue.splice(findInsertionIndex(jobId), 0, job);
+    }
+    job.flags |= 1;
+    queueFlush();
+  }
+}
+function queueFlush() {
+  if (!currentFlushPromise) {
+    currentFlushPromise = resolvedPromise.then(flushJobs);
+  }
+}
+function queuePostFlushCb(cb) {
+  if (!isArray(cb)) {
+    if (activePostFlushCbs && cb.id === -1) {
+      activePostFlushCbs.splice(postFlushIndex + 1, 0, cb);
+    } else if (!(cb.flags & 1)) {
+      pendingPostFlushCbs.push(cb);
+      cb.flags |= 1;
+    }
+  } else {
+    pendingPostFlushCbs.push(...cb);
+  }
+  queueFlush();
+}
+function flushPreFlushCbs(instance, seen, i = flushIndex + 1) {
+  for (; i < queue.length; i++) {
+    const cb = queue[i];
+    if (cb && cb.flags & 2) {
+      if (instance && cb.id !== instance.uid) {
+        continue;
+      }
+      queue.splice(i, 1);
+      i--;
+      if (cb.flags & 4) {
+        cb.flags &= -2;
+      }
+      cb();
+      if (!(cb.flags & 4)) {
+        cb.flags &= -2;
+      }
+    }
+  }
+}
+function flushPostFlushCbs(seen) {
+  if (pendingPostFlushCbs.length) {
+    const deduped = [...new Set(pendingPostFlushCbs)].sort(
+      (a, b) => getId(a) - getId(b)
+    );
+    pendingPostFlushCbs.length = 0;
+    if (activePostFlushCbs) {
+      activePostFlushCbs.push(...deduped);
+      return;
+    }
+    activePostFlushCbs = deduped;
+    for (postFlushIndex = 0; postFlushIndex < activePostFlushCbs.length; postFlushIndex++) {
+      const cb = activePostFlushCbs[postFlushIndex];
+      if (cb.flags & 4) {
+        cb.flags &= -2;
+      }
+      if (!(cb.flags & 8)) cb();
+      cb.flags &= -2;
+    }
+    activePostFlushCbs = null;
+    postFlushIndex = 0;
+  }
+}
+const getId = (job) => job.id == null ? job.flags & 2 ? -1 : Infinity : job.id;
+function flushJobs(seen) {
+  try {
+    for (flushIndex = 0; flushIndex < queue.length; flushIndex++) {
+      const job = queue[flushIndex];
+      if (job && !(job.flags & 8)) {
+        if (false) ;
+        if (job.flags & 4) {
+          job.flags &= ~1;
+        }
+        callWithErrorHandling(
+          job,
+          job.i,
+          job.i ? 15 : 14
+        );
+        if (!(job.flags & 4)) {
+          job.flags &= ~1;
+        }
+      }
+    }
+  } finally {
+    for (; flushIndex < queue.length; flushIndex++) {
+      const job = queue[flushIndex];
+      if (job) {
+        job.flags &= -2;
+      }
+    }
+    flushIndex = -1;
+    queue.length = 0;
+    flushPostFlushCbs();
+    currentFlushPromise = null;
+    if (queue.length || pendingPostFlushCbs.length) {
+      flushJobs();
+    }
+  }
+}
+let currentRenderingInstance = null;
+let currentScopeId = null;
+function setCurrentRenderingInstance(instance) {
+  const prev = currentRenderingInstance;
+  currentRenderingInstance = instance;
+  currentScopeId = instance && instance.type.__scopeId || null;
+  return prev;
+}
+function withCtx(fn, ctx = currentRenderingInstance, isNonScopedSlot) {
+  if (!ctx) return fn;
+  if (fn._n) {
+    return fn;
+  }
+  const renderFnWithContext = (...args) => {
+    if (renderFnWithContext._d) {
+      setBlockTracking(-1);
+    }
+    const prevInstance = setCurrentRenderingInstance(ctx);
+    let res;
+    try {
+      res = fn(...args);
+    } finally {
+      setCurrentRenderingInstance(prevInstance);
+      if (renderFnWithContext._d) {
+        setBlockTracking(1);
+      }
+    }
+    return res;
+  };
+  renderFnWithContext._n = true;
+  renderFnWithContext._c = true;
+  renderFnWithContext._d = true;
+  return renderFnWithContext;
+}
+function withDirectives(vnode, directives) {
+  if (currentRenderingInstance === null) {
+    return vnode;
+  }
+  const instance = getComponentPublicInstance(currentRenderingInstance);
+  const bindings = vnode.dirs || (vnode.dirs = []);
+  for (let i = 0; i < directives.length; i++) {
+    let [dir, value, arg, modifiers = EMPTY_OBJ] = directives[i];
+    if (dir) {
+      if (isFunction(dir)) {
+        dir = {
+          mounted: dir,
+          updated: dir
+        };
+      }
+      if (dir.deep) {
+        traverse(value);
+      }
+      bindings.push({
+        dir,
+        instance,
+        value,
+        oldValue: void 0,
+        arg,
+        modifiers
+      });
+    }
+  }
+  return vnode;
+}
+function invokeDirectiveHook(vnode, prevVNode, instance, name) {
+  const bindings = vnode.dirs;
+  const oldBindings = prevVNode && prevVNode.dirs;
+  for (let i = 0; i < bindings.length; i++) {
+    const binding = bindings[i];
+    if (oldBindings) {
+      binding.oldValue = oldBindings[i].value;
+    }
+    let hook = binding.dir[name];
+    if (hook) {
+      pauseTracking();
+      callWithAsyncErrorHandling(hook, instance, 8, [
+        vnode.el,
+        binding,
+        vnode,
+        prevVNode
+      ]);
+      resetTracking();
+    }
+  }
+}
+const TeleportEndKey = Symbol("_vte");
+const isTeleport = (type) => type.__isTeleport;
+const leaveCbKey = Symbol("_leaveCb");
+function setTransitionHooks(vnode, hooks) {
+  if (vnode.shapeFlag & 6 && vnode.component) {
+    vnode.transition = hooks;
+    setTransitionHooks(vnode.component.subTree, hooks);
+  } else if (vnode.shapeFlag & 128) {
+    vnode.ssContent.transition = hooks.clone(vnode.ssContent);
+    vnode.ssFallback.transition = hooks.clone(vnode.ssFallback);
+  } else {
+    vnode.transition = hooks;
+  }
+}
+function markAsyncBoundary(instance) {
+  instance.ids = [instance.ids[0] + instance.ids[2]++ + "-", 0, 0];
+}
+const pendingSetRefMap = /* @__PURE__ */ new WeakMap();
+function setRef(rawRef, oldRawRef, parentSuspense, vnode, isUnmount = false) {
+  if (isArray(rawRef)) {
+    rawRef.forEach(
+      (r, i) => setRef(
+        r,
+        oldRawRef && (isArray(oldRawRef) ? oldRawRef[i] : oldRawRef),
+        parentSuspense,
+        vnode,
+        isUnmount
+      )
+    );
+    return;
+  }
+  if (isAsyncWrapper(vnode) && !isUnmount) {
+    if (vnode.shapeFlag & 512 && vnode.type.__asyncResolved && vnode.component.subTree.component) {
+      setRef(rawRef, oldRawRef, parentSuspense, vnode.component.subTree);
+    }
+    return;
+  }
+  const refValue = vnode.shapeFlag & 4 ? getComponentPublicInstance(vnode.component) : vnode.el;
+  const value = isUnmount ? null : refValue;
+  const { i: owner, r: ref3 } = rawRef;
+  const oldRef = oldRawRef && oldRawRef.r;
+  const refs = owner.refs === EMPTY_OBJ ? owner.refs = {} : owner.refs;
+  const setupState = owner.setupState;
+  const rawSetupState = toRaw(setupState);
+  const canSetSetupRef = setupState === EMPTY_OBJ ? NO : (key) => {
+    return hasOwn(rawSetupState, key);
+  };
+  if (oldRef != null && oldRef !== ref3) {
+    invalidatePendingSetRef(oldRawRef);
+    if (isString(oldRef)) {
+      refs[oldRef] = null;
+      if (canSetSetupRef(oldRef)) {
+        setupState[oldRef] = null;
+      }
+    } else if (isRef(oldRef)) {
+      {
+        oldRef.value = null;
+      }
+      const oldRawRefAtom = oldRawRef;
+      if (oldRawRefAtom.k) refs[oldRawRefAtom.k] = null;
+    }
+  }
+  if (isFunction(ref3)) {
+    callWithErrorHandling(ref3, owner, 12, [value, refs]);
+  } else {
+    const _isString = isString(ref3);
+    const _isRef = isRef(ref3);
+    if (_isString || _isRef) {
+      const doSet = () => {
+        if (rawRef.f) {
+          const existing = _isString ? canSetSetupRef(ref3) ? setupState[ref3] : refs[ref3] : ref3.value;
+          if (isUnmount) {
+            isArray(existing) && remove(existing, refValue);
+          } else {
+            if (!isArray(existing)) {
+              if (_isString) {
+                refs[ref3] = [refValue];
+                if (canSetSetupRef(ref3)) {
+                  setupState[ref3] = refs[ref3];
+                }
+              } else {
+                const newVal = [refValue];
+                {
+                  ref3.value = newVal;
+                }
+                if (rawRef.k) refs[rawRef.k] = newVal;
+              }
+            } else if (!existing.includes(refValue)) {
+              existing.push(refValue);
+            }
+          }
+        } else if (_isString) {
+          refs[ref3] = value;
+          if (canSetSetupRef(ref3)) {
+            setupState[ref3] = value;
+          }
+        } else if (_isRef) {
+          {
+            ref3.value = value;
+          }
+          if (rawRef.k) refs[rawRef.k] = value;
+        } else ;
+      };
+      if (value) {
+        const job = () => {
+          doSet();
+          pendingSetRefMap.delete(rawRef);
+        };
+        job.id = -1;
+        pendingSetRefMap.set(rawRef, job);
+        queuePostRenderEffect(job, parentSuspense);
+      } else {
+        invalidatePendingSetRef(rawRef);
+        doSet();
+      }
+    }
+  }
+}
+function invalidatePendingSetRef(rawRef) {
+  const pendingSetRef = pendingSetRefMap.get(rawRef);
+  if (pendingSetRef) {
+    pendingSetRef.flags |= 8;
+    pendingSetRefMap.delete(rawRef);
+  }
+}
+getGlobalThis().requestIdleCallback || ((cb) => setTimeout(cb, 1));
+getGlobalThis().cancelIdleCallback || ((id) => clearTimeout(id));
+const isAsyncWrapper = (i) => !!i.type.__asyncLoader;
+const isKeepAlive = (vnode) => vnode.type.__isKeepAlive;
+function onActivated(hook, target) {
+  registerKeepAliveHook(hook, "a", target);
+}
+function onDeactivated(hook, target) {
+  registerKeepAliveHook(hook, "da", target);
+}
+function registerKeepAliveHook(hook, type, target = currentInstance) {
+  const wrappedHook = hook.__wdc || (hook.__wdc = () => {
+    let current = target;
+    while (current) {
+      if (current.isDeactivated) {
+        return;
+      }
+      current = current.parent;
+    }
+    return hook();
+  });
+  injectHook(type, wrappedHook, target);
+  if (target) {
+    let current = target.parent;
+    while (current && current.parent) {
+      if (isKeepAlive(current.parent.vnode)) {
+        injectToKeepAliveRoot(wrappedHook, type, target, current);
+      }
+      current = current.parent;
+    }
+  }
+}
+function injectToKeepAliveRoot(hook, type, target, keepAliveRoot) {
+  const injected = injectHook(
+    type,
+    hook,
+    keepAliveRoot,
+    true
+    /* prepend */
+  );
+  onUnmounted(() => {
+    remove(keepAliveRoot[type], injected);
+  }, target);
+}
+function injectHook(type, hook, target = currentInstance, prepend = false) {
+  if (target) {
+    const hooks = target[type] || (target[type] = []);
+    const wrappedHook = hook.__weh || (hook.__weh = (...args) => {
+      pauseTracking();
+      const reset = setCurrentInstance(target);
+      const res = callWithAsyncErrorHandling(hook, target, type, args);
+      reset();
+      resetTracking();
+      return res;
+    });
+    if (prepend) {
+      hooks.unshift(wrappedHook);
+    } else {
+      hooks.push(wrappedHook);
+    }
+    return wrappedHook;
+  }
+}
+const createHook = (lifecycle) => (hook, target = currentInstance) => {
+  if (!isInSSRComponentSetup || lifecycle === "sp") {
+    injectHook(lifecycle, (...args) => hook(...args), target);
+  }
+};
+const onBeforeMount = createHook("bm");
+const onMounted = createHook("m");
+const onBeforeUpdate = createHook(
+  "bu"
+);
+const onUpdated = createHook("u");
+const onBeforeUnmount = createHook(
+  "bum"
+);
+const onUnmounted = createHook("um");
+const onServerPrefetch = createHook(
+  "sp"
+);
+const onRenderTriggered = createHook("rtg");
+const onRenderTracked = createHook("rtc");
+function onErrorCaptured(hook, target = currentInstance) {
+  injectHook("ec", hook, target);
+}
+const COMPONENTS = "components";
+const NULL_DYNAMIC_COMPONENT = Symbol.for("v-ndc");
+function resolveDynamicComponent(component) {
+  if (isString(component)) {
+    return resolveAsset(COMPONENTS, component, false) || component;
+  } else {
+    return component || NULL_DYNAMIC_COMPONENT;
+  }
+}
+function resolveAsset(type, name, warnMissing = true, maybeSelfReference = false) {
+  const instance = currentRenderingInstance || currentInstance;
+  if (instance) {
+    const Component = instance.type;
+    {
+      const selfName = getComponentName(
+        Component,
+        false
+      );
+      if (selfName && (selfName === name || selfName === camelize(name) || selfName === capitalize(camelize(name)))) {
+        return Component;
+      }
+    }
+    const res = (
+      // local registration
+      // check instance[type] first which is resolved for options API
+      resolve(instance[type] || Component[type], name) || // global registration
+      resolve(instance.appContext[type], name)
+    );
+    if (!res && maybeSelfReference) {
+      return Component;
+    }
+    return res;
+  }
+}
+function resolve(registry, name) {
+  return registry && (registry[name] || registry[camelize(name)] || registry[capitalize(camelize(name))]);
+}
+function renderList(source, renderItem, cache, index) {
+  let ret;
+  const cached = cache;
+  const sourceIsArray = isArray(source);
+  if (sourceIsArray || isString(source)) {
+    const sourceIsReactiveArray = sourceIsArray && isReactive(source);
+    let needsWrap = false;
+    let isReadonlySource = false;
+    if (sourceIsReactiveArray) {
+      needsWrap = !isShallow(source);
+      isReadonlySource = isReadonly(source);
+      source = shallowReadArray(source);
+    }
+    ret = new Array(source.length);
+    for (let i = 0, l = source.length; i < l; i++) {
+      ret[i] = renderItem(
+        needsWrap ? isReadonlySource ? toReadonly(toReactive(source[i])) : toReactive(source[i]) : source[i],
+        i,
+        void 0,
+        cached
+      );
+    }
+  } else if (typeof source === "number") {
+    ret = new Array(source);
+    for (let i = 0; i < source; i++) {
+      ret[i] = renderItem(i + 1, i, void 0, cached);
+    }
+  } else if (isObject(source)) {
+    if (source[Symbol.iterator]) {
+      ret = Array.from(
+        source,
+        (item, i) => renderItem(item, i, void 0, cached)
+      );
+    } else {
+      const keys = Object.keys(source);
+      ret = new Array(keys.length);
+      for (let i = 0, l = keys.length; i < l; i++) {
+        const key = keys[i];
+        ret[i] = renderItem(source[key], key, i, cached);
+      }
+    }
+  } else {
+    ret = [];
+  }
+  return ret;
+}
+function renderSlot(slots, name, props = {}, fallback, noSlotted) {
+  if (currentRenderingInstance.ce || currentRenderingInstance.parent && isAsyncWrapper(currentRenderingInstance.parent) && currentRenderingInstance.parent.ce) {
+    const hasProps = Object.keys(props).length > 0;
+    props.name = name;
+    return openBlock(), createBlock(
+      Fragment,
+      null,
+      [createVNode("slot", props, fallback)],
+      hasProps ? -2 : 64
+    );
+  }
+  let slot = slots[name];
+  if (slot && slot._c) {
+    slot._d = false;
+  }
+  openBlock();
+  const validSlotContent = slot && ensureValidVNode(slot(props));
+  const slotKey = props.key || // slot content array of a dynamic conditional slot may have a branch
+  // key attached in the `createSlots` helper, respect that
+  validSlotContent && validSlotContent.key;
+  const rendered = createBlock(
+    Fragment,
+    {
+      key: (slotKey && !isSymbol(slotKey) ? slotKey : `_${name}`) + // #7256 force differentiate fallback content from actual content
+      (!validSlotContent && fallback ? "_fb" : "")
+    },
+    validSlotContent || [],
+    validSlotContent && slots._ === 1 ? 64 : -2
+  );
+  if (rendered.scopeId) {
+    rendered.slotScopeIds = [rendered.scopeId + "-s"];
+  }
+  if (slot && slot._c) {
+    slot._d = true;
+  }
+  return rendered;
+}
+function ensureValidVNode(vnodes) {
+  return vnodes.some((child) => {
+    if (!isVNode(child)) return true;
+    if (child.type === Comment) return false;
+    if (child.type === Fragment && !ensureValidVNode(child.children))
+      return false;
+    return true;
+  }) ? vnodes : null;
+}
+const getPublicInstance = (i) => {
+  if (!i) return null;
+  if (isStatefulComponent(i)) return getComponentPublicInstance(i);
+  return getPublicInstance(i.parent);
+};
+const publicPropertiesMap = (
+  // Move PURE marker to new line to workaround compiler discarding it
+  // due to type annotation
+  /* @__PURE__ */ extend(/* @__PURE__ */ Object.create(null), {
+    $: (i) => i,
+    $el: (i) => i.vnode.el,
+    $data: (i) => i.data,
+    $props: (i) => i.props,
+    $attrs: (i) => i.attrs,
+    $slots: (i) => i.slots,
+    $refs: (i) => i.refs,
+    $parent: (i) => getPublicInstance(i.parent),
+    $root: (i) => getPublicInstance(i.root),
+    $host: (i) => i.ce,
+    $emit: (i) => i.emit,
+    $options: (i) => resolveMergedOptions(i),
+    $forceUpdate: (i) => i.f || (i.f = () => {
+      queueJob(i.update);
+    }),
+    $nextTick: (i) => i.n || (i.n = nextTick.bind(i.proxy)),
+    $watch: (i) => instanceWatch.bind(i)
+  })
+);
+const hasSetupBinding = (state, key) => state !== EMPTY_OBJ && !state.__isScriptSetup && hasOwn(state, key);
+const PublicInstanceProxyHandlers = {
+  get({ _: instance }, key) {
+    if (key === "__v_skip") {
+      return true;
+    }
+    const { ctx, setupState, data, props, accessCache, type, appContext } = instance;
+    if (key[0] !== "$") {
+      const n = accessCache[key];
+      if (n !== void 0) {
+        switch (n) {
+          case 1:
+            return setupState[key];
+          case 2:
+            return data[key];
+          case 4:
+            return ctx[key];
+          case 3:
+            return props[key];
+        }
+      } else if (hasSetupBinding(setupState, key)) {
+        accessCache[key] = 1;
+        return setupState[key];
+      } else if (data !== EMPTY_OBJ && hasOwn(data, key)) {
+        accessCache[key] = 2;
+        return data[key];
+      } else if (hasOwn(props, key)) {
+        accessCache[key] = 3;
+        return props[key];
+      } else if (ctx !== EMPTY_OBJ && hasOwn(ctx, key)) {
+        accessCache[key] = 4;
+        return ctx[key];
+      } else if (shouldCacheAccess) {
+        accessCache[key] = 0;
+      }
+    }
+    const publicGetter = publicPropertiesMap[key];
+    let cssModule, globalProperties;
+    if (publicGetter) {
+      if (key === "$attrs") {
+        track(instance.attrs, "get", "");
+      }
+      return publicGetter(instance);
+    } else if (
+      // css module (injected by vue-loader)
+      (cssModule = type.__cssModules) && (cssModule = cssModule[key])
+    ) {
+      return cssModule;
+    } else if (ctx !== EMPTY_OBJ && hasOwn(ctx, key)) {
+      accessCache[key] = 4;
+      return ctx[key];
+    } else if (
+      // global properties
+      globalProperties = appContext.config.globalProperties, hasOwn(globalProperties, key)
+    ) {
+      {
+        return globalProperties[key];
+      }
+    } else ;
+  },
+  set({ _: instance }, key, value) {
+    const { data, setupState, ctx } = instance;
+    if (hasSetupBinding(setupState, key)) {
+      setupState[key] = value;
+      return true;
+    } else if (data !== EMPTY_OBJ && hasOwn(data, key)) {
+      data[key] = value;
+      return true;
+    } else if (hasOwn(instance.props, key)) {
+      return false;
+    }
+    if (key[0] === "$" && key.slice(1) in instance) {
+      return false;
+    } else {
+      {
+        ctx[key] = value;
+      }
+    }
+    return true;
+  },
+  has({
+    _: { data, setupState, accessCache, ctx, appContext, props, type }
+  }, key) {
+    let cssModules;
+    return !!(accessCache[key] || data !== EMPTY_OBJ && key[0] !== "$" && hasOwn(data, key) || hasSetupBinding(setupState, key) || hasOwn(props, key) || hasOwn(ctx, key) || hasOwn(publicPropertiesMap, key) || hasOwn(appContext.config.globalProperties, key) || (cssModules = type.__cssModules) && cssModules[key]);
+  },
+  defineProperty(target, key, descriptor) {
+    if (descriptor.get != null) {
+      target._.accessCache[key] = 0;
+    } else if (hasOwn(descriptor, "value")) {
+      this.set(target, key, descriptor.value, null);
+    }
+    return Reflect.defineProperty(target, key, descriptor);
+  }
+};
+function normalizePropsOrEmits(props) {
+  return isArray(props) ? props.reduce(
+    (normalized, p2) => (normalized[p2] = null, normalized),
+    {}
+  ) : props;
+}
+let shouldCacheAccess = true;
+function applyOptions(instance) {
+  const options = resolveMergedOptions(instance);
+  const publicThis = instance.proxy;
+  const ctx = instance.ctx;
+  shouldCacheAccess = false;
+  if (options.beforeCreate) {
+    callHook(options.beforeCreate, instance, "bc");
+  }
+  const {
+    // state
+    data: dataOptions,
+    computed: computedOptions,
+    methods,
+    watch: watchOptions,
+    provide: provideOptions,
+    inject: injectOptions,
+    // lifecycle
+    created,
+    beforeMount,
+    mounted,
+    beforeUpdate,
+    updated,
+    activated,
+    deactivated,
+    beforeDestroy,
+    beforeUnmount,
+    destroyed,
+    unmounted,
+    render,
+    renderTracked,
+    renderTriggered,
+    errorCaptured,
+    serverPrefetch,
+    // public API
+    expose,
+    inheritAttrs,
+    // assets
+    components,
+    directives,
+    filters
+  } = options;
+  const checkDuplicateProperties = null;
+  if (injectOptions) {
+    resolveInjections(injectOptions, ctx, checkDuplicateProperties);
+  }
+  if (methods) {
+    for (const key in methods) {
+      const methodHandler = methods[key];
+      if (isFunction(methodHandler)) {
+        {
+          ctx[key] = methodHandler.bind(publicThis);
+        }
+      }
+    }
+  }
+  if (dataOptions) {
+    const data = dataOptions.call(publicThis, publicThis);
+    if (!isObject(data)) ;
+    else {
+      instance.data = reactive(data);
+    }
+  }
+  shouldCacheAccess = true;
+  if (computedOptions) {
+    for (const key in computedOptions) {
+      const opt = computedOptions[key];
+      const get = isFunction(opt) ? opt.bind(publicThis, publicThis) : isFunction(opt.get) ? opt.get.bind(publicThis, publicThis) : NOOP;
+      const set = !isFunction(opt) && isFunction(opt.set) ? opt.set.bind(publicThis) : NOOP;
+      const c = computed({
+        get,
+        set
+      });
+      Object.defineProperty(ctx, key, {
+        enumerable: true,
+        configurable: true,
+        get: () => c.value,
+        set: (v) => c.value = v
+      });
+    }
+  }
+  if (watchOptions) {
+    for (const key in watchOptions) {
+      createWatcher(watchOptions[key], ctx, publicThis, key);
+    }
+  }
+  if (provideOptions) {
+    const provides = isFunction(provideOptions) ? provideOptions.call(publicThis) : provideOptions;
+    Reflect.ownKeys(provides).forEach((key) => {
+      provide(key, provides[key]);
+    });
+  }
+  if (created) {
+    callHook(created, instance, "c");
+  }
+  function registerLifecycleHook(register, hook) {
+    if (isArray(hook)) {
+      hook.forEach((_hook) => register(_hook.bind(publicThis)));
+    } else if (hook) {
+      register(hook.bind(publicThis));
+    }
+  }
+  registerLifecycleHook(onBeforeMount, beforeMount);
+  registerLifecycleHook(onMounted, mounted);
+  registerLifecycleHook(onBeforeUpdate, beforeUpdate);
+  registerLifecycleHook(onUpdated, updated);
+  registerLifecycleHook(onActivated, activated);
+  registerLifecycleHook(onDeactivated, deactivated);
+  registerLifecycleHook(onErrorCaptured, errorCaptured);
+  registerLifecycleHook(onRenderTracked, renderTracked);
+  registerLifecycleHook(onRenderTriggered, renderTriggered);
+  registerLifecycleHook(onBeforeUnmount, beforeUnmount);
+  registerLifecycleHook(onUnmounted, unmounted);
+  registerLifecycleHook(onServerPrefetch, serverPrefetch);
+  if (isArray(expose)) {
+    if (expose.length) {
+      const exposed = instance.exposed || (instance.exposed = {});
+      expose.forEach((key) => {
+        Object.defineProperty(exposed, key, {
+          get: () => publicThis[key],
+          set: (val) => publicThis[key] = val,
+          enumerable: true
+        });
+      });
+    } else if (!instance.exposed) {
+      instance.exposed = {};
+    }
+  }
+  if (render && instance.render === NOOP) {
+    instance.render = render;
+  }
+  if (inheritAttrs != null) {
+    instance.inheritAttrs = inheritAttrs;
+  }
+  if (components) instance.components = components;
+  if (directives) instance.directives = directives;
+  if (serverPrefetch) {
+    markAsyncBoundary(instance);
+  }
+}
+function resolveInjections(injectOptions, ctx, checkDuplicateProperties = NOOP) {
+  if (isArray(injectOptions)) {
+    injectOptions = normalizeInject(injectOptions);
+  }
+  for (const key in injectOptions) {
+    const opt = injectOptions[key];
+    let injected;
+    if (isObject(opt)) {
+      if ("default" in opt) {
+        injected = inject(
+          opt.from || key,
+          opt.default,
+          true
+        );
+      } else {
+        injected = inject(opt.from || key);
+      }
+    } else {
+      injected = inject(opt);
+    }
+    if (isRef(injected)) {
+      Object.defineProperty(ctx, key, {
+        enumerable: true,
+        configurable: true,
+        get: () => injected.value,
+        set: (v) => injected.value = v
+      });
+    } else {
+      ctx[key] = injected;
+    }
+  }
+}
+function callHook(hook, instance, type) {
+  callWithAsyncErrorHandling(
+    isArray(hook) ? hook.map((h2) => h2.bind(instance.proxy)) : hook.bind(instance.proxy),
+    instance,
+    type
+  );
+}
+function createWatcher(raw, ctx, publicThis, key) {
+  let getter = key.includes(".") ? createPathGetter(publicThis, key) : () => publicThis[key];
+  if (isString(raw)) {
+    const handler = ctx[raw];
+    if (isFunction(handler)) {
+      {
+        watch(getter, handler);
+      }
+    }
+  } else if (isFunction(raw)) {
+    {
+      watch(getter, raw.bind(publicThis));
+    }
+  } else if (isObject(raw)) {
+    if (isArray(raw)) {
+      raw.forEach((r) => createWatcher(r, ctx, publicThis, key));
+    } else {
+      const handler = isFunction(raw.handler) ? raw.handler.bind(publicThis) : ctx[raw.handler];
+      if (isFunction(handler)) {
+        watch(getter, handler, raw);
+      }
+    }
+  } else ;
+}
+function resolveMergedOptions(instance) {
+  const base = instance.type;
+  const { mixins, extends: extendsOptions } = base;
+  const {
+    mixins: globalMixins,
+    optionsCache: cache,
+    config: { optionMergeStrategies }
+  } = instance.appContext;
+  const cached = cache.get(base);
+  let resolved;
+  if (cached) {
+    resolved = cached;
+  } else if (!globalMixins.length && !mixins && !extendsOptions) {
+    {
+      resolved = base;
+    }
+  } else {
+    resolved = {};
+    if (globalMixins.length) {
+      globalMixins.forEach(
+        (m) => mergeOptions(resolved, m, optionMergeStrategies, true)
+      );
+    }
+    mergeOptions(resolved, base, optionMergeStrategies);
+  }
+  if (isObject(base)) {
+    cache.set(base, resolved);
+  }
+  return resolved;
+}
+function mergeOptions(to, from, strats, asMixin = false) {
+  const { mixins, extends: extendsOptions } = from;
+  if (extendsOptions) {
+    mergeOptions(to, extendsOptions, strats, true);
+  }
+  if (mixins) {
+    mixins.forEach(
+      (m) => mergeOptions(to, m, strats, true)
+    );
+  }
+  for (const key in from) {
+    if (asMixin && key === "expose") ;
+    else {
+      const strat = internalOptionMergeStrats[key] || strats && strats[key];
+      to[key] = strat ? strat(to[key], from[key]) : from[key];
+    }
+  }
+  return to;
+}
+const internalOptionMergeStrats = {
+  data: mergeDataFn,
+  props: mergeEmitsOrPropsOptions,
+  emits: mergeEmitsOrPropsOptions,
+  // objects
+  methods: mergeObjectOptions,
+  computed: mergeObjectOptions,
+  // lifecycle
+  beforeCreate: mergeAsArray,
+  created: mergeAsArray,
+  beforeMount: mergeAsArray,
+  mounted: mergeAsArray,
+  beforeUpdate: mergeAsArray,
+  updated: mergeAsArray,
+  beforeDestroy: mergeAsArray,
+  beforeUnmount: mergeAsArray,
+  destroyed: mergeAsArray,
+  unmounted: mergeAsArray,
+  activated: mergeAsArray,
+  deactivated: mergeAsArray,
+  errorCaptured: mergeAsArray,
+  serverPrefetch: mergeAsArray,
+  // assets
+  components: mergeObjectOptions,
+  directives: mergeObjectOptions,
+  // watch
+  watch: mergeWatchOptions,
+  // provide / inject
+  provide: mergeDataFn,
+  inject: mergeInject
+};
+function mergeDataFn(to, from) {
+  if (!from) {
+    return to;
+  }
+  if (!to) {
+    return from;
+  }
+  return function mergedDataFn() {
+    return extend(
+      isFunction(to) ? to.call(this, this) : to,
+      isFunction(from) ? from.call(this, this) : from
+    );
+  };
+}
+function mergeInject(to, from) {
+  return mergeObjectOptions(normalizeInject(to), normalizeInject(from));
+}
+function normalizeInject(raw) {
+  if (isArray(raw)) {
+    const res = {};
+    for (let i = 0; i < raw.length; i++) {
+      res[raw[i]] = raw[i];
+    }
+    return res;
+  }
+  return raw;
+}
+function mergeAsArray(to, from) {
+  return to ? [...new Set([].concat(to, from))] : from;
+}
+function mergeObjectOptions(to, from) {
+  return to ? extend(/* @__PURE__ */ Object.create(null), to, from) : from;
+}
+function mergeEmitsOrPropsOptions(to, from) {
+  if (to) {
+    if (isArray(to) && isArray(from)) {
+      return [.../* @__PURE__ */ new Set([...to, ...from])];
+    }
+    return extend(
+      /* @__PURE__ */ Object.create(null),
+      normalizePropsOrEmits(to),
+      normalizePropsOrEmits(from != null ? from : {})
+    );
+  } else {
+    return from;
+  }
+}
+function mergeWatchOptions(to, from) {
+  if (!to) return from;
+  if (!from) return to;
+  const merged = extend(/* @__PURE__ */ Object.create(null), to);
+  for (const key in from) {
+    merged[key] = mergeAsArray(to[key], from[key]);
+  }
+  return merged;
+}
+function createAppContext() {
+  return {
+    app: null,
+    config: {
+      isNativeTag: NO,
+      performance: false,
+      globalProperties: {},
+      optionMergeStrategies: {},
+      errorHandler: void 0,
+      warnHandler: void 0,
+      compilerOptions: {}
+    },
+    mixins: [],
+    components: {},
+    directives: {},
+    provides: /* @__PURE__ */ Object.create(null),
+    optionsCache: /* @__PURE__ */ new WeakMap(),
+    propsCache: /* @__PURE__ */ new WeakMap(),
+    emitsCache: /* @__PURE__ */ new WeakMap()
+  };
+}
+let uid$1 = 0;
+function createAppAPI(render, hydrate) {
+  return function createApp2(rootComponent, rootProps = null) {
+    if (!isFunction(rootComponent)) {
+      rootComponent = extend({}, rootComponent);
+    }
+    if (rootProps != null && !isObject(rootProps)) {
+      rootProps = null;
+    }
+    const context = createAppContext();
+    const installedPlugins = /* @__PURE__ */ new WeakSet();
+    const pluginCleanupFns = [];
+    let isMounted = false;
+    const app2 = context.app = {
+      _uid: uid$1++,
+      _component: rootComponent,
+      _props: rootProps,
+      _container: null,
+      _context: context,
+      _instance: null,
+      version,
+      get config() {
+        return context.config;
+      },
+      set config(v) {
+      },
+      use(plugin, ...options) {
+        if (installedPlugins.has(plugin)) ;
+        else if (plugin && isFunction(plugin.install)) {
+          installedPlugins.add(plugin);
+          plugin.install(app2, ...options);
+        } else if (isFunction(plugin)) {
+          installedPlugins.add(plugin);
+          plugin(app2, ...options);
+        } else ;
+        return app2;
+      },
+      mixin(mixin) {
+        {
+          if (!context.mixins.includes(mixin)) {
+            context.mixins.push(mixin);
+          }
+        }
+        return app2;
+      },
+      component(name, component) {
+        if (!component) {
+          return context.components[name];
+        }
+        context.components[name] = component;
+        return app2;
+      },
+      directive(name, directive) {
+        if (!directive) {
+          return context.directives[name];
+        }
+        context.directives[name] = directive;
+        return app2;
+      },
+      mount(rootContainer, isHydrate, namespace) {
+        if (!isMounted) {
+          const vnode = app2._ceVNode || createVNode(rootComponent, rootProps);
+          vnode.appContext = context;
+          if (namespace === true) {
+            namespace = "svg";
+          } else if (namespace === false) {
+            namespace = void 0;
+          }
+          {
+            render(vnode, rootContainer, namespace);
+          }
+          isMounted = true;
+          app2._container = rootContainer;
+          rootContainer.__vue_app__ = app2;
+          return getComponentPublicInstance(vnode.component);
+        }
+      },
+      onUnmount(cleanupFn) {
+        pluginCleanupFns.push(cleanupFn);
+      },
+      unmount() {
+        if (isMounted) {
+          callWithAsyncErrorHandling(
+            pluginCleanupFns,
+            app2._instance,
+            16
+          );
+          render(null, app2._container);
+          delete app2._container.__vue_app__;
+        }
+      },
+      provide(key, value) {
+        context.provides[key] = value;
+        return app2;
+      },
+      runWithContext(fn) {
+        const lastApp = currentApp;
+        currentApp = app2;
+        try {
+          return fn();
+        } finally {
+          currentApp = lastApp;
+        }
+      }
+    };
+    return app2;
+  };
+}
+let currentApp = null;
+function provide(key, value) {
+  if (currentInstance) {
+    let provides = currentInstance.provides;
+    const parentProvides = currentInstance.parent && currentInstance.parent.provides;
+    if (parentProvides === provides) {
+      provides = currentInstance.provides = Object.create(parentProvides);
+    }
+    provides[key] = value;
+  }
+}
+function inject(key, defaultValue, treatDefaultAsFactory = false) {
+  const instance = getCurrentInstance();
+  if (instance || currentApp) {
+    let provides = currentApp ? currentApp._context.provides : instance ? instance.parent == null || instance.ce ? instance.vnode.appContext && instance.vnode.appContext.provides : instance.parent.provides : void 0;
+    if (provides && key in provides) {
+      return provides[key];
+    } else if (arguments.length > 1) {
+      return treatDefaultAsFactory && isFunction(defaultValue) ? defaultValue.call(instance && instance.proxy) : defaultValue;
+    } else ;
+  }
+}
+function hasInjectionContext() {
+  return !!(getCurrentInstance() || currentApp);
+}
+const ssrContextKey = Symbol.for("v-scx");
+const useSSRContext = () => {
+  {
+    const ctx = inject(ssrContextKey);
+    return ctx;
+  }
+};
+function watch(source, cb, options) {
+  return doWatch(source, cb, options);
+}
+function doWatch(source, cb, options = EMPTY_OBJ) {
+  const { immediate, deep, flush, once } = options;
+  const baseWatchOptions = extend({}, options);
+  const runsImmediately = cb && immediate || !cb && flush !== "post";
+  let ssrCleanup;
+  if (isInSSRComponentSetup) {
+    if (flush === "sync") {
+      const ctx = useSSRContext();
+      ssrCleanup = ctx.__watcherHandles || (ctx.__watcherHandles = []);
+    } else if (!runsImmediately) {
+      const watchStopHandle = () => {
+      };
+      watchStopHandle.stop = NOOP;
+      watchStopHandle.resume = NOOP;
+      watchStopHandle.pause = NOOP;
+      return watchStopHandle;
+    }
+  }
+  const instance = currentInstance;
+  baseWatchOptions.call = (fn, type, args) => callWithAsyncErrorHandling(fn, instance, type, args);
+  let isPre = false;
+  if (flush === "post") {
+    baseWatchOptions.scheduler = (job) => {
+      queuePostRenderEffect(job, instance && instance.suspense);
+    };
+  } else if (flush !== "sync") {
+    isPre = true;
+    baseWatchOptions.scheduler = (job, isFirstRun) => {
+      if (isFirstRun) {
+        job();
+      } else {
+        queueJob(job);
+      }
+    };
+  }
+  baseWatchOptions.augmentJob = (job) => {
+    if (cb) {
+      job.flags |= 4;
+    }
+    if (isPre) {
+      job.flags |= 2;
+      if (instance) {
+        job.id = instance.uid;
+        job.i = instance;
+      }
+    }
+  };
+  const watchHandle = watch$1(source, cb, baseWatchOptions);
+  if (isInSSRComponentSetup) {
+    if (ssrCleanup) {
+      ssrCleanup.push(watchHandle);
+    } else if (runsImmediately) {
+      watchHandle();
+    }
+  }
+  return watchHandle;
+}
+function instanceWatch(source, value, options) {
+  const publicThis = this.proxy;
+  const getter = isString(source) ? source.includes(".") ? createPathGetter(publicThis, source) : () => publicThis[source] : source.bind(publicThis, publicThis);
+  let cb;
+  if (isFunction(value)) {
+    cb = value;
+  } else {
+    cb = value.handler;
+    options = value;
+  }
+  const reset = setCurrentInstance(this);
+  const res = doWatch(getter, cb.bind(publicThis), options);
+  reset();
+  return res;
+}
+function createPathGetter(ctx, path) {
+  const segments = path.split(".");
+  return () => {
+    let cur = ctx;
+    for (let i = 0; i < segments.length && cur; i++) {
+      cur = cur[segments[i]];
+    }
+    return cur;
+  };
+}
+const getModelModifiers = (props, modelName) => {
+  return modelName === "modelValue" || modelName === "model-value" ? props.modelModifiers : props[`${modelName}Modifiers`] || props[`${camelize(modelName)}Modifiers`] || props[`${hyphenate(modelName)}Modifiers`];
+};
+function emit(instance, event, ...rawArgs) {
+  if (instance.isUnmounted) return;
+  const props = instance.vnode.props || EMPTY_OBJ;
+  let args = rawArgs;
+  const isModelListener2 = event.startsWith("update:");
+  const modifiers = isModelListener2 && getModelModifiers(props, event.slice(7));
+  if (modifiers) {
+    if (modifiers.trim) {
+      args = rawArgs.map((a) => isString(a) ? a.trim() : a);
+    }
+    if (modifiers.number) {
+      args = rawArgs.map(looseToNumber);
+    }
+  }
+  let handlerName;
+  let handler = props[handlerName = toHandlerKey(event)] || // also try camelCase event handler (#2249)
+  props[handlerName = toHandlerKey(camelize(event))];
+  if (!handler && isModelListener2) {
+    handler = props[handlerName = toHandlerKey(hyphenate(event))];
+  }
+  if (handler) {
+    callWithAsyncErrorHandling(
+      handler,
+      instance,
+      6,
+      args
+    );
+  }
+  const onceHandler = props[handlerName + `Once`];
+  if (onceHandler) {
+    if (!instance.emitted) {
+      instance.emitted = {};
+    } else if (instance.emitted[handlerName]) {
+      return;
+    }
+    instance.emitted[handlerName] = true;
+    callWithAsyncErrorHandling(
+      onceHandler,
+      instance,
+      6,
+      args
+    );
+  }
+}
+const mixinEmitsCache = /* @__PURE__ */ new WeakMap();
+function normalizeEmitsOptions(comp, appContext, asMixin = false) {
+  const cache = asMixin ? mixinEmitsCache : appContext.emitsCache;
+  const cached = cache.get(comp);
+  if (cached !== void 0) {
+    return cached;
+  }
+  const raw = comp.emits;
+  let normalized = {};
+  let hasExtends = false;
+  if (!isFunction(comp)) {
+    const extendEmits = (raw2) => {
+      const normalizedFromExtend = normalizeEmitsOptions(raw2, appContext, true);
+      if (normalizedFromExtend) {
+        hasExtends = true;
+        extend(normalized, normalizedFromExtend);
+      }
+    };
+    if (!asMixin && appContext.mixins.length) {
+      appContext.mixins.forEach(extendEmits);
+    }
+    if (comp.extends) {
+      extendEmits(comp.extends);
+    }
+    if (comp.mixins) {
+      comp.mixins.forEach(extendEmits);
+    }
+  }
+  if (!raw && !hasExtends) {
+    if (isObject(comp)) {
+      cache.set(comp, null);
+    }
+    return null;
+  }
+  if (isArray(raw)) {
+    raw.forEach((key) => normalized[key] = null);
+  } else {
+    extend(normalized, raw);
+  }
+  if (isObject(comp)) {
+    cache.set(comp, normalized);
+  }
+  return normalized;
+}
+function isEmitListener(options, key) {
+  if (!options || !isOn(key)) {
+    return false;
+  }
+  key = key.slice(2).replace(/Once$/, "");
+  return hasOwn(options, key[0].toLowerCase() + key.slice(1)) || hasOwn(options, hyphenate(key)) || hasOwn(options, key);
+}
+function markAttrsAccessed() {
+}
+function renderComponentRoot(instance) {
+  const {
+    type: Component,
+    vnode,
+    proxy,
+    withProxy,
+    propsOptions: [propsOptions],
+    slots,
+    attrs,
+    emit: emit2,
+    render,
+    renderCache,
+    props,
+    data,
+    setupState,
+    ctx,
+    inheritAttrs
+  } = instance;
+  const prev = setCurrentRenderingInstance(instance);
+  let result;
+  let fallthroughAttrs;
+  try {
+    if (vnode.shapeFlag & 4) {
+      const proxyToUse = withProxy || proxy;
+      const thisProxy = false ? new Proxy(proxyToUse, {
+        get(target, key, receiver) {
+          warn$1(
+            `Property '${String(
+              key
+            )}' was accessed via 'this'. Avoid using 'this' in templates.`
+          );
+          return Reflect.get(target, key, receiver);
+        }
+      }) : proxyToUse;
+      result = normalizeVNode(
+        render.call(
+          thisProxy,
+          proxyToUse,
+          renderCache,
+          false ? shallowReadonly(props) : props,
+          setupState,
+          data,
+          ctx
+        )
+      );
+      fallthroughAttrs = attrs;
+    } else {
+      const render2 = Component;
+      if (false) ;
+      result = normalizeVNode(
+        render2.length > 1 ? render2(
+          false ? shallowReadonly(props) : props,
+          false ? {
+            get attrs() {
+              markAttrsAccessed();
+              return shallowReadonly(attrs);
+            },
+            slots,
+            emit: emit2
+          } : { attrs, slots, emit: emit2 }
+        ) : render2(
+          false ? shallowReadonly(props) : props,
+          null
+        )
+      );
+      fallthroughAttrs = Component.props ? attrs : getFunctionalFallthrough(attrs);
+    }
+  } catch (err) {
+    blockStack.length = 0;
+    handleError(err, instance, 1);
+    result = createVNode(Comment);
+  }
+  let root = result;
+  if (fallthroughAttrs && inheritAttrs !== false) {
+    const keys = Object.keys(fallthroughAttrs);
+    const { shapeFlag } = root;
+    if (keys.length) {
+      if (shapeFlag & (1 | 6)) {
+        if (propsOptions && keys.some(isModelListener)) {
+          fallthroughAttrs = filterModelListeners(
+            fallthroughAttrs,
+            propsOptions
+          );
+        }
+        root = cloneVNode(root, fallthroughAttrs, false, true);
+      }
+    }
+  }
+  if (vnode.dirs) {
+    root = cloneVNode(root, null, false, true);
+    root.dirs = root.dirs ? root.dirs.concat(vnode.dirs) : vnode.dirs;
+  }
+  if (vnode.transition) {
+    setTransitionHooks(root, vnode.transition);
+  }
+  {
+    result = root;
+  }
+  setCurrentRenderingInstance(prev);
+  return result;
+}
+const getFunctionalFallthrough = (attrs) => {
+  let res;
+  for (const key in attrs) {
+    if (key === "class" || key === "style" || isOn(key)) {
+      (res || (res = {}))[key] = attrs[key];
+    }
+  }
+  return res;
+};
+const filterModelListeners = (attrs, props) => {
+  const res = {};
+  for (const key in attrs) {
+    if (!isModelListener(key) || !(key.slice(9) in props)) {
+      res[key] = attrs[key];
+    }
+  }
+  return res;
+};
+function shouldUpdateComponent(prevVNode, nextVNode, optimized) {
+  const { props: prevProps, children: prevChildren, component } = prevVNode;
+  const { props: nextProps, children: nextChildren, patchFlag } = nextVNode;
+  const emits = component.emitsOptions;
+  if (nextVNode.dirs || nextVNode.transition) {
+    return true;
+  }
+  if (optimized && patchFlag >= 0) {
+    if (patchFlag & 1024) {
+      return true;
+    }
+    if (patchFlag & 16) {
+      if (!prevProps) {
+        return !!nextProps;
+      }
+      return hasPropsChanged(prevProps, nextProps, emits);
+    } else if (patchFlag & 8) {
+      const dynamicProps = nextVNode.dynamicProps;
+      for (let i = 0; i < dynamicProps.length; i++) {
+        const key = dynamicProps[i];
+        if (nextProps[key] !== prevProps[key] && !isEmitListener(emits, key)) {
+          return true;
+        }
+      }
+    }
+  } else {
+    if (prevChildren || nextChildren) {
+      if (!nextChildren || !nextChildren.$stable) {
+        return true;
+      }
+    }
+    if (prevProps === nextProps) {
+      return false;
+    }
+    if (!prevProps) {
+      return !!nextProps;
+    }
+    if (!nextProps) {
+      return true;
+    }
+    return hasPropsChanged(prevProps, nextProps, emits);
+  }
+  return false;
+}
+function hasPropsChanged(prevProps, nextProps, emitsOptions) {
+  const nextKeys = Object.keys(nextProps);
+  if (nextKeys.length !== Object.keys(prevProps).length) {
+    return true;
+  }
+  for (let i = 0; i < nextKeys.length; i++) {
+    const key = nextKeys[i];
+    if (nextProps[key] !== prevProps[key] && !isEmitListener(emitsOptions, key)) {
+      return true;
+    }
+  }
+  return false;
+}
+function updateHOCHostEl({ vnode, parent }, el) {
+  while (parent) {
+    const root = parent.subTree;
+    if (root.suspense && root.suspense.activeBranch === vnode) {
+      root.el = vnode.el;
+    }
+    if (root === vnode) {
+      (vnode = parent.vnode).el = el;
+      parent = parent.parent;
+    } else {
+      break;
+    }
+  }
+}
+const internalObjectProto = {};
+const createInternalObject = () => Object.create(internalObjectProto);
+const isInternalObject = (obj) => Object.getPrototypeOf(obj) === internalObjectProto;
+function initProps(instance, rawProps, isStateful, isSSR = false) {
+  const props = {};
+  const attrs = createInternalObject();
+  instance.propsDefaults = /* @__PURE__ */ Object.create(null);
+  setFullProps(instance, rawProps, props, attrs);
+  for (const key in instance.propsOptions[0]) {
+    if (!(key in props)) {
+      props[key] = void 0;
+    }
+  }
+  if (isStateful) {
+    instance.props = isSSR ? props : shallowReactive(props);
+  } else {
+    if (!instance.type.props) {
+      instance.props = attrs;
+    } else {
+      instance.props = props;
+    }
+  }
+  instance.attrs = attrs;
+}
+function updateProps(instance, rawProps, rawPrevProps, optimized) {
+  const {
+    props,
+    attrs,
+    vnode: { patchFlag }
+  } = instance;
+  const rawCurrentProps = toRaw(props);
+  const [options] = instance.propsOptions;
+  let hasAttrsChanged = false;
+  if (
+    // always force full diff in dev
+    // - #1942 if hmr is enabled with sfc component
+    // - vite#872 non-sfc component used by sfc component
+    (optimized || patchFlag > 0) && !(patchFlag & 16)
+  ) {
+    if (patchFlag & 8) {
+      const propsToUpdate = instance.vnode.dynamicProps;
+      for (let i = 0; i < propsToUpdate.length; i++) {
+        let key = propsToUpdate[i];
+        if (isEmitListener(instance.emitsOptions, key)) {
+          continue;
+        }
+        const value = rawProps[key];
+        if (options) {
+          if (hasOwn(attrs, key)) {
+            if (value !== attrs[key]) {
+              attrs[key] = value;
+              hasAttrsChanged = true;
+            }
+          } else {
+            const camelizedKey = camelize(key);
+            props[camelizedKey] = resolvePropValue(
+              options,
+              rawCurrentProps,
+              camelizedKey,
+              value,
+              instance,
+              false
+            );
+          }
+        } else {
+          if (value !== attrs[key]) {
+            attrs[key] = value;
+            hasAttrsChanged = true;
+          }
+        }
+      }
+    }
+  } else {
+    if (setFullProps(instance, rawProps, props, attrs)) {
+      hasAttrsChanged = true;
+    }
+    let kebabKey;
+    for (const key in rawCurrentProps) {
+      if (!rawProps || // for camelCase
+      !hasOwn(rawProps, key) && // it's possible the original props was passed in as kebab-case
+      // and converted to camelCase (#955)
+      ((kebabKey = hyphenate(key)) === key || !hasOwn(rawProps, kebabKey))) {
+        if (options) {
+          if (rawPrevProps && // for camelCase
+          (rawPrevProps[key] !== void 0 || // for kebab-case
+          rawPrevProps[kebabKey] !== void 0)) {
+            props[key] = resolvePropValue(
+              options,
+              rawCurrentProps,
+              key,
+              void 0,
+              instance,
+              true
+            );
+          }
+        } else {
+          delete props[key];
+        }
+      }
+    }
+    if (attrs !== rawCurrentProps) {
+      for (const key in attrs) {
+        if (!rawProps || !hasOwn(rawProps, key) && true) {
+          delete attrs[key];
+          hasAttrsChanged = true;
+        }
+      }
+    }
+  }
+  if (hasAttrsChanged) {
+    trigger(instance.attrs, "set", "");
+  }
+}
+function setFullProps(instance, rawProps, props, attrs) {
+  const [options, needCastKeys] = instance.propsOptions;
+  let hasAttrsChanged = false;
+  let rawCastValues;
+  if (rawProps) {
+    for (let key in rawProps) {
+      if (isReservedProp(key)) {
+        continue;
+      }
+      const value = rawProps[key];
+      let camelKey;
+      if (options && hasOwn(options, camelKey = camelize(key))) {
+        if (!needCastKeys || !needCastKeys.includes(camelKey)) {
+          props[camelKey] = value;
+        } else {
+          (rawCastValues || (rawCastValues = {}))[camelKey] = value;
+        }
+      } else if (!isEmitListener(instance.emitsOptions, key)) {
+        if (!(key in attrs) || value !== attrs[key]) {
+          attrs[key] = value;
+          hasAttrsChanged = true;
+        }
+      }
+    }
+  }
+  if (needCastKeys) {
+    const rawCurrentProps = toRaw(props);
+    const castValues = rawCastValues || EMPTY_OBJ;
+    for (let i = 0; i < needCastKeys.length; i++) {
+      const key = needCastKeys[i];
+      props[key] = resolvePropValue(
+        options,
+        rawCurrentProps,
+        key,
+        castValues[key],
+        instance,
+        !hasOwn(castValues, key)
+      );
+    }
+  }
+  return hasAttrsChanged;
+}
+function resolvePropValue(options, props, key, value, instance, isAbsent) {
+  const opt = options[key];
+  if (opt != null) {
+    const hasDefault = hasOwn(opt, "default");
+    if (hasDefault && value === void 0) {
+      const defaultValue = opt.default;
+      if (opt.type !== Function && !opt.skipFactory && isFunction(defaultValue)) {
+        const { propsDefaults } = instance;
+        if (key in propsDefaults) {
+          value = propsDefaults[key];
+        } else {
+          const reset = setCurrentInstance(instance);
+          value = propsDefaults[key] = defaultValue.call(
+            null,
+            props
+          );
+          reset();
+        }
+      } else {
+        value = defaultValue;
+      }
+      if (instance.ce) {
+        instance.ce._setProp(key, value);
+      }
+    }
+    if (opt[
+      0
+      /* shouldCast */
+    ]) {
+      if (isAbsent && !hasDefault) {
+        value = false;
+      } else if (opt[
+        1
+        /* shouldCastTrue */
+      ] && (value === "" || value === hyphenate(key))) {
+        value = true;
+      }
+    }
+  }
+  return value;
+}
+const mixinPropsCache = /* @__PURE__ */ new WeakMap();
+function normalizePropsOptions(comp, appContext, asMixin = false) {
+  const cache = asMixin ? mixinPropsCache : appContext.propsCache;
+  const cached = cache.get(comp);
+  if (cached) {
+    return cached;
+  }
+  const raw = comp.props;
+  const normalized = {};
+  const needCastKeys = [];
+  let hasExtends = false;
+  if (!isFunction(comp)) {
+    const extendProps = (raw2) => {
+      hasExtends = true;
+      const [props, keys] = normalizePropsOptions(raw2, appContext, true);
+      extend(normalized, props);
+      if (keys) needCastKeys.push(...keys);
+    };
+    if (!asMixin && appContext.mixins.length) {
+      appContext.mixins.forEach(extendProps);
+    }
+    if (comp.extends) {
+      extendProps(comp.extends);
+    }
+    if (comp.mixins) {
+      comp.mixins.forEach(extendProps);
+    }
+  }
+  if (!raw && !hasExtends) {
+    if (isObject(comp)) {
+      cache.set(comp, EMPTY_ARR);
+    }
+    return EMPTY_ARR;
+  }
+  if (isArray(raw)) {
+    for (let i = 0; i < raw.length; i++) {
+      const normalizedKey = camelize(raw[i]);
+      if (validatePropName(normalizedKey)) {
+        normalized[normalizedKey] = EMPTY_OBJ;
+      }
+    }
+  } else if (raw) {
+    for (const key in raw) {
+      const normalizedKey = camelize(key);
+      if (validatePropName(normalizedKey)) {
+        const opt = raw[key];
+        const prop = normalized[normalizedKey] = isArray(opt) || isFunction(opt) ? { type: opt } : extend({}, opt);
+        const propType = prop.type;
+        let shouldCast = false;
+        let shouldCastTrue = true;
+        if (isArray(propType)) {
+          for (let index = 0; index < propType.length; ++index) {
+            const type = propType[index];
+            const typeName = isFunction(type) && type.name;
+            if (typeName === "Boolean") {
+              shouldCast = true;
+              break;
+            } else if (typeName === "String") {
+              shouldCastTrue = false;
+            }
+          }
+        } else {
+          shouldCast = isFunction(propType) && propType.name === "Boolean";
+        }
+        prop[
+          0
+          /* shouldCast */
+        ] = shouldCast;
+        prop[
+          1
+          /* shouldCastTrue */
+        ] = shouldCastTrue;
+        if (shouldCast || hasOwn(prop, "default")) {
+          needCastKeys.push(normalizedKey);
+        }
+      }
+    }
+  }
+  const res = [normalized, needCastKeys];
+  if (isObject(comp)) {
+    cache.set(comp, res);
+  }
+  return res;
+}
+function validatePropName(key) {
+  if (key[0] !== "$" && !isReservedProp(key)) {
+    return true;
+  }
+  return false;
+}
+const isInternalKey = (key) => key === "_" || key === "_ctx" || key === "$stable";
+const normalizeSlotValue = (value) => isArray(value) ? value.map(normalizeVNode) : [normalizeVNode(value)];
+const normalizeSlot = (key, rawSlot, ctx) => {
+  if (rawSlot._n) {
+    return rawSlot;
+  }
+  const normalized = withCtx((...args) => {
+    if (false) ;
+    return normalizeSlotValue(rawSlot(...args));
+  }, ctx);
+  normalized._c = false;
+  return normalized;
+};
+const normalizeObjectSlots = (rawSlots, slots, instance) => {
+  const ctx = rawSlots._ctx;
+  for (const key in rawSlots) {
+    if (isInternalKey(key)) continue;
+    const value = rawSlots[key];
+    if (isFunction(value)) {
+      slots[key] = normalizeSlot(key, value, ctx);
+    } else if (value != null) {
+      const normalized = normalizeSlotValue(value);
+      slots[key] = () => normalized;
+    }
+  }
+};
+const normalizeVNodeSlots = (instance, children) => {
+  const normalized = normalizeSlotValue(children);
+  instance.slots.default = () => normalized;
+};
+const assignSlots = (slots, children, optimized) => {
+  for (const key in children) {
+    if (optimized || !isInternalKey(key)) {
+      slots[key] = children[key];
+    }
+  }
+};
+const initSlots = (instance, children, optimized) => {
+  const slots = instance.slots = createInternalObject();
+  if (instance.vnode.shapeFlag & 32) {
+    const type = children._;
+    if (type) {
+      assignSlots(slots, children, optimized);
+      if (optimized) {
+        def(slots, "_", type, true);
+      }
+    } else {
+      normalizeObjectSlots(children, slots);
+    }
+  } else if (children) {
+    normalizeVNodeSlots(instance, children);
+  }
+};
+const updateSlots = (instance, children, optimized) => {
+  const { vnode, slots } = instance;
+  let needDeletionCheck = true;
+  let deletionComparisonTarget = EMPTY_OBJ;
+  if (vnode.shapeFlag & 32) {
+    const type = children._;
+    if (type) {
+      if (optimized && type === 1) {
+        needDeletionCheck = false;
+      } else {
+        assignSlots(slots, children, optimized);
+      }
+    } else {
+      needDeletionCheck = !children.$stable;
+      normalizeObjectSlots(children, slots);
+    }
+    deletionComparisonTarget = children;
+  } else if (children) {
+    normalizeVNodeSlots(instance, children);
+    deletionComparisonTarget = { default: 1 };
+  }
+  if (needDeletionCheck) {
+    for (const key in slots) {
+      if (!isInternalKey(key) && deletionComparisonTarget[key] == null) {
+        delete slots[key];
+      }
+    }
+  }
+};
+const queuePostRenderEffect = queueEffectWithSuspense;
+function createRenderer(options) {
+  return baseCreateRenderer(options);
+}
+function baseCreateRenderer(options, createHydrationFns) {
+  const target = getGlobalThis();
+  target.__VUE__ = true;
+  const {
+    insert: hostInsert,
+    remove: hostRemove,
+    patchProp: hostPatchProp,
+    createElement: hostCreateElement,
+    createText: hostCreateText,
+    createComment: hostCreateComment,
+    setText: hostSetText,
+    setElementText: hostSetElementText,
+    parentNode: hostParentNode,
+    nextSibling: hostNextSibling,
+    setScopeId: hostSetScopeId = NOOP,
+    insertStaticContent: hostInsertStaticContent
+  } = options;
+  const patch = (n1, n2, container, anchor = null, parentComponent = null, parentSuspense = null, namespace = void 0, slotScopeIds = null, optimized = !!n2.dynamicChildren) => {
+    if (n1 === n2) {
+      return;
+    }
+    if (n1 && !isSameVNodeType(n1, n2)) {
+      anchor = getNextHostNode(n1);
+      unmount(n1, parentComponent, parentSuspense, true);
+      n1 = null;
+    }
+    if (n2.patchFlag === -2) {
+      optimized = false;
+      n2.dynamicChildren = null;
+    }
+    const { type, ref: ref3, shapeFlag } = n2;
+    switch (type) {
+      case Text:
+        processText(n1, n2, container, anchor);
+        break;
+      case Comment:
+        processCommentNode(n1, n2, container, anchor);
+        break;
+      case Static:
+        if (n1 == null) {
+          mountStaticNode(n2, container, anchor, namespace);
+        }
+        break;
+      case Fragment:
+        processFragment(
+          n1,
+          n2,
+          container,
+          anchor,
+          parentComponent,
+          parentSuspense,
+          namespace,
+          slotScopeIds,
+          optimized
+        );
+        break;
+      default:
+        if (shapeFlag & 1) {
+          processElement(
+            n1,
+            n2,
+            container,
+            anchor,
+            parentComponent,
+            parentSuspense,
+            namespace,
+            slotScopeIds,
+            optimized
+          );
+        } else if (shapeFlag & 6) {
+          processComponent(
+            n1,
+            n2,
+            container,
+            anchor,
+            parentComponent,
+            parentSuspense,
+            namespace,
+            slotScopeIds,
+            optimized
+          );
+        } else if (shapeFlag & 64) {
+          type.process(
+            n1,
+            n2,
+            container,
+            anchor,
+            parentComponent,
+            parentSuspense,
+            namespace,
+            slotScopeIds,
+            optimized,
+            internals
+          );
+        } else if (shapeFlag & 128) {
+          type.process(
+            n1,
+            n2,
+            container,
+            anchor,
+            parentComponent,
+            parentSuspense,
+            namespace,
+            slotScopeIds,
+            optimized,
+            internals
+          );
+        } else ;
+    }
+    if (ref3 != null && parentComponent) {
+      setRef(ref3, n1 && n1.ref, parentSuspense, n2 || n1, !n2);
+    } else if (ref3 == null && n1 && n1.ref != null) {
+      setRef(n1.ref, null, parentSuspense, n1, true);
+    }
+  };
+  const processText = (n1, n2, container, anchor) => {
+    if (n1 == null) {
+      hostInsert(
+        n2.el = hostCreateText(n2.children),
+        container,
+        anchor
+      );
+    } else {
+      const el = n2.el = n1.el;
+      if (n2.children !== n1.children) {
+        hostSetText(el, n2.children);
+      }
+    }
+  };
+  const processCommentNode = (n1, n2, container, anchor) => {
+    if (n1 == null) {
+      hostInsert(
+        n2.el = hostCreateComment(n2.children || ""),
+        container,
+        anchor
+      );
+    } else {
+      n2.el = n1.el;
+    }
+  };
+  const mountStaticNode = (n2, container, anchor, namespace) => {
+    [n2.el, n2.anchor] = hostInsertStaticContent(
+      n2.children,
+      container,
+      anchor,
+      namespace,
+      n2.el,
+      n2.anchor
+    );
+  };
+  const moveStaticNode = ({ el, anchor }, container, nextSibling) => {
+    let next;
+    while (el && el !== anchor) {
+      next = hostNextSibling(el);
+      hostInsert(el, container, nextSibling);
+      el = next;
+    }
+    hostInsert(anchor, container, nextSibling);
+  };
+  const removeStaticNode = ({ el, anchor }) => {
+    let next;
+    while (el && el !== anchor) {
+      next = hostNextSibling(el);
+      hostRemove(el);
+      el = next;
+    }
+    hostRemove(anchor);
+  };
+  const processElement = (n1, n2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized) => {
+    if (n2.type === "svg") {
+      namespace = "svg";
+    } else if (n2.type === "math") {
+      namespace = "mathml";
+    }
+    if (n1 == null) {
+      mountElement(
+        n2,
+        container,
+        anchor,
+        parentComponent,
+        parentSuspense,
+        namespace,
+        slotScopeIds,
+        optimized
+      );
+    } else {
+      const customElement = !!(n1.el && n1.el._isVueCE) ? n1.el : null;
+      try {
+        if (customElement) {
+          customElement._beginPatch();
+        }
+        patchElement(
+          n1,
+          n2,
+          parentComponent,
+          parentSuspense,
+          namespace,
+          slotScopeIds,
+          optimized
+        );
+      } finally {
+        if (customElement) {
+          customElement._endPatch();
+        }
+      }
+    }
+  };
+  const mountElement = (vnode, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized) => {
+    let el;
+    let vnodeHook;
+    const { props, shapeFlag, transition, dirs } = vnode;
+    el = vnode.el = hostCreateElement(
+      vnode.type,
+      namespace,
+      props && props.is,
+      props
+    );
+    if (shapeFlag & 8) {
+      hostSetElementText(el, vnode.children);
+    } else if (shapeFlag & 16) {
+      mountChildren(
+        vnode.children,
+        el,
+        null,
+        parentComponent,
+        parentSuspense,
+        resolveChildrenNamespace(vnode, namespace),
+        slotScopeIds,
+        optimized
+      );
+    }
+    if (dirs) {
+      invokeDirectiveHook(vnode, null, parentComponent, "created");
+    }
+    setScopeId(el, vnode, vnode.scopeId, slotScopeIds, parentComponent);
+    if (props) {
+      for (const key in props) {
+        if (key !== "value" && !isReservedProp(key)) {
+          hostPatchProp(el, key, null, props[key], namespace, parentComponent);
+        }
+      }
+      if ("value" in props) {
+        hostPatchProp(el, "value", null, props.value, namespace);
+      }
+      if (vnodeHook = props.onVnodeBeforeMount) {
+        invokeVNodeHook(vnodeHook, parentComponent, vnode);
+      }
+    }
+    if (dirs) {
+      invokeDirectiveHook(vnode, null, parentComponent, "beforeMount");
+    }
+    const needCallTransitionHooks = needTransition(parentSuspense, transition);
+    if (needCallTransitionHooks) {
+      transition.beforeEnter(el);
+    }
+    hostInsert(el, container, anchor);
+    if ((vnodeHook = props && props.onVnodeMounted) || needCallTransitionHooks || dirs) {
+      queuePostRenderEffect(() => {
+        vnodeHook && invokeVNodeHook(vnodeHook, parentComponent, vnode);
+        needCallTransitionHooks && transition.enter(el);
+        dirs && invokeDirectiveHook(vnode, null, parentComponent, "mounted");
+      }, parentSuspense);
+    }
+  };
+  const setScopeId = (el, vnode, scopeId, slotScopeIds, parentComponent) => {
+    if (scopeId) {
+      hostSetScopeId(el, scopeId);
+    }
+    if (slotScopeIds) {
+      for (let i = 0; i < slotScopeIds.length; i++) {
+        hostSetScopeId(el, slotScopeIds[i]);
+      }
+    }
+    if (parentComponent) {
+      let subTree = parentComponent.subTree;
+      if (vnode === subTree || isSuspense(subTree.type) && (subTree.ssContent === vnode || subTree.ssFallback === vnode)) {
+        const parentVNode = parentComponent.vnode;
+        setScopeId(
+          el,
+          parentVNode,
+          parentVNode.scopeId,
+          parentVNode.slotScopeIds,
+          parentComponent.parent
+        );
+      }
+    }
+  };
+  const mountChildren = (children, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized, start = 0) => {
+    for (let i = start; i < children.length; i++) {
+      const child = children[i] = optimized ? cloneIfMounted(children[i]) : normalizeVNode(children[i]);
+      patch(
+        null,
+        child,
+        container,
+        anchor,
+        parentComponent,
+        parentSuspense,
+        namespace,
+        slotScopeIds,
+        optimized
+      );
+    }
+  };
+  const patchElement = (n1, n2, parentComponent, parentSuspense, namespace, slotScopeIds, optimized) => {
+    const el = n2.el = n1.el;
+    let { patchFlag, dynamicChildren, dirs } = n2;
+    patchFlag |= n1.patchFlag & 16;
+    const oldProps = n1.props || EMPTY_OBJ;
+    const newProps = n2.props || EMPTY_OBJ;
+    let vnodeHook;
+    parentComponent && toggleRecurse(parentComponent, false);
+    if (vnodeHook = newProps.onVnodeBeforeUpdate) {
+      invokeVNodeHook(vnodeHook, parentComponent, n2, n1);
+    }
+    if (dirs) {
+      invokeDirectiveHook(n2, n1, parentComponent, "beforeUpdate");
+    }
+    parentComponent && toggleRecurse(parentComponent, true);
+    if (oldProps.innerHTML && newProps.innerHTML == null || oldProps.textContent && newProps.textContent == null) {
+      hostSetElementText(el, "");
+    }
+    if (dynamicChildren) {
+      patchBlockChildren(
+        n1.dynamicChildren,
+        dynamicChildren,
+        el,
+        parentComponent,
+        parentSuspense,
+        resolveChildrenNamespace(n2, namespace),
+        slotScopeIds
+      );
+    } else if (!optimized) {
+      patchChildren(
+        n1,
+        n2,
+        el,
+        null,
+        parentComponent,
+        parentSuspense,
+        resolveChildrenNamespace(n2, namespace),
+        slotScopeIds,
+        false
+      );
+    }
+    if (patchFlag > 0) {
+      if (patchFlag & 16) {
+        patchProps(el, oldProps, newProps, parentComponent, namespace);
+      } else {
+        if (patchFlag & 2) {
+          if (oldProps.class !== newProps.class) {
+            hostPatchProp(el, "class", null, newProps.class, namespace);
+          }
+        }
+        if (patchFlag & 4) {
+          hostPatchProp(el, "style", oldProps.style, newProps.style, namespace);
+        }
+        if (patchFlag & 8) {
+          const propsToUpdate = n2.dynamicProps;
+          for (let i = 0; i < propsToUpdate.length; i++) {
+            const key = propsToUpdate[i];
+            const prev = oldProps[key];
+            const next = newProps[key];
+            if (next !== prev || key === "value") {
+              hostPatchProp(el, key, prev, next, namespace, parentComponent);
+            }
+          }
+        }
+      }
+      if (patchFlag & 1) {
+        if (n1.children !== n2.children) {
+          hostSetElementText(el, n2.children);
+        }
+      }
+    } else if (!optimized && dynamicChildren == null) {
+      patchProps(el, oldProps, newProps, parentComponent, namespace);
+    }
+    if ((vnodeHook = newProps.onVnodeUpdated) || dirs) {
+      queuePostRenderEffect(() => {
+        vnodeHook && invokeVNodeHook(vnodeHook, parentComponent, n2, n1);
+        dirs && invokeDirectiveHook(n2, n1, parentComponent, "updated");
+      }, parentSuspense);
+    }
+  };
+  const patchBlockChildren = (oldChildren, newChildren, fallbackContainer, parentComponent, parentSuspense, namespace, slotScopeIds) => {
+    for (let i = 0; i < newChildren.length; i++) {
+      const oldVNode = oldChildren[i];
+      const newVNode = newChildren[i];
+      const container = (
+        // oldVNode may be an errored async setup() component inside Suspense
+        // which will not have a mounted element
+        oldVNode.el && // - In the case of a Fragment, we need to provide the actual parent
+        // of the Fragment itself so it can move its children.
+        (oldVNode.type === Fragment || // - In the case of different nodes, there is going to be a replacement
+        // which also requires the correct parent container
+        !isSameVNodeType(oldVNode, newVNode) || // - In the case of a component, it could contain anything.
+        oldVNode.shapeFlag & (6 | 64 | 128)) ? hostParentNode(oldVNode.el) : (
+          // In other cases, the parent container is not actually used so we
+          // just pass the block element here to avoid a DOM parentNode call.
+          fallbackContainer
+        )
+      );
+      patch(
+        oldVNode,
+        newVNode,
+        container,
+        null,
+        parentComponent,
+        parentSuspense,
+        namespace,
+        slotScopeIds,
+        true
+      );
+    }
+  };
+  const patchProps = (el, oldProps, newProps, parentComponent, namespace) => {
+    if (oldProps !== newProps) {
+      if (oldProps !== EMPTY_OBJ) {
+        for (const key in oldProps) {
+          if (!isReservedProp(key) && !(key in newProps)) {
+            hostPatchProp(
+              el,
+              key,
+              oldProps[key],
+              null,
+              namespace,
+              parentComponent
+            );
+          }
+        }
+      }
+      for (const key in newProps) {
+        if (isReservedProp(key)) continue;
+        const next = newProps[key];
+        const prev = oldProps[key];
+        if (next !== prev && key !== "value") {
+          hostPatchProp(el, key, prev, next, namespace, parentComponent);
+        }
+      }
+      if ("value" in newProps) {
+        hostPatchProp(el, "value", oldProps.value, newProps.value, namespace);
+      }
+    }
+  };
+  const processFragment = (n1, n2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized) => {
+    const fragmentStartAnchor = n2.el = n1 ? n1.el : hostCreateText("");
+    const fragmentEndAnchor = n2.anchor = n1 ? n1.anchor : hostCreateText("");
+    let { patchFlag, dynamicChildren, slotScopeIds: fragmentSlotScopeIds } = n2;
+    if (fragmentSlotScopeIds) {
+      slotScopeIds = slotScopeIds ? slotScopeIds.concat(fragmentSlotScopeIds) : fragmentSlotScopeIds;
+    }
+    if (n1 == null) {
+      hostInsert(fragmentStartAnchor, container, anchor);
+      hostInsert(fragmentEndAnchor, container, anchor);
+      mountChildren(
+        // #10007
+        // such fragment like `<></>` will be compiled into
+        // a fragment which doesn't have a children.
+        // In this case fallback to an empty array
+        n2.children || [],
+        container,
+        fragmentEndAnchor,
+        parentComponent,
+        parentSuspense,
+        namespace,
+        slotScopeIds,
+        optimized
+      );
+    } else {
+      if (patchFlag > 0 && patchFlag & 64 && dynamicChildren && // #2715 the previous fragment could've been a BAILed one as a result
+      // of renderSlot() with no valid children
+      n1.dynamicChildren) {
+        patchBlockChildren(
+          n1.dynamicChildren,
+          dynamicChildren,
+          container,
+          parentComponent,
+          parentSuspense,
+          namespace,
+          slotScopeIds
+        );
+        if (
+          // #2080 if the stable fragment has a key, it's a <template v-for> that may
+          //  get moved around. Make sure all root level vnodes inherit el.
+          // #2134 or if it's a component root, it may also get moved around
+          // as the component is being moved.
+          n2.key != null || parentComponent && n2 === parentComponent.subTree
+        ) {
+          traverseStaticChildren(
+            n1,
+            n2,
+            true
+            /* shallow */
+          );
+        }
+      } else {
+        patchChildren(
+          n1,
+          n2,
+          container,
+          fragmentEndAnchor,
+          parentComponent,
+          parentSuspense,
+          namespace,
+          slotScopeIds,
+          optimized
+        );
+      }
+    }
+  };
+  const processComponent = (n1, n2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized) => {
+    n2.slotScopeIds = slotScopeIds;
+    if (n1 == null) {
+      if (n2.shapeFlag & 512) {
+        parentComponent.ctx.activate(
+          n2,
+          container,
+          anchor,
+          namespace,
+          optimized
+        );
+      } else {
+        mountComponent(
+          n2,
+          container,
+          anchor,
+          parentComponent,
+          parentSuspense,
+          namespace,
+          optimized
+        );
+      }
+    } else {
+      updateComponent(n1, n2, optimized);
+    }
+  };
+  const mountComponent = (initialVNode, container, anchor, parentComponent, parentSuspense, namespace, optimized) => {
+    const instance = initialVNode.component = createComponentInstance(
+      initialVNode,
+      parentComponent,
+      parentSuspense
+    );
+    if (isKeepAlive(initialVNode)) {
+      instance.ctx.renderer = internals;
+    }
+    {
+      setupComponent(instance, false, optimized);
+    }
+    if (instance.asyncDep) {
+      parentSuspense && parentSuspense.registerDep(instance, setupRenderEffect, optimized);
+      if (!initialVNode.el) {
+        const placeholder = instance.subTree = createVNode(Comment);
+        processCommentNode(null, placeholder, container, anchor);
+        initialVNode.placeholder = placeholder.el;
+      }
+    } else {
+      setupRenderEffect(
+        instance,
+        initialVNode,
+        container,
+        anchor,
+        parentSuspense,
+        namespace,
+        optimized
+      );
+    }
+  };
+  const updateComponent = (n1, n2, optimized) => {
+    const instance = n2.component = n1.component;
+    if (shouldUpdateComponent(n1, n2, optimized)) {
+      if (instance.asyncDep && !instance.asyncResolved) {
+        updateComponentPreRender(instance, n2, optimized);
+        return;
+      } else {
+        instance.next = n2;
+        instance.update();
+      }
+    } else {
+      n2.el = n1.el;
+      instance.vnode = n2;
+    }
+  };
+  const setupRenderEffect = (instance, initialVNode, container, anchor, parentSuspense, namespace, optimized) => {
+    const componentUpdateFn = () => {
+      if (!instance.isMounted) {
+        let vnodeHook;
+        const { el, props } = initialVNode;
+        const { bm, m, parent, root, type } = instance;
+        const isAsyncWrapperVNode = isAsyncWrapper(initialVNode);
+        toggleRecurse(instance, false);
+        if (bm) {
+          invokeArrayFns(bm);
+        }
+        if (!isAsyncWrapperVNode && (vnodeHook = props && props.onVnodeBeforeMount)) {
+          invokeVNodeHook(vnodeHook, parent, initialVNode);
+        }
+        toggleRecurse(instance, true);
+        {
+          if (root.ce && // @ts-expect-error _def is private
+          root.ce._def.shadowRoot !== false) {
+            root.ce._injectChildStyle(type);
+          }
+          const subTree = instance.subTree = renderComponentRoot(instance);
+          patch(
+            null,
+            subTree,
+            container,
+            anchor,
+            instance,
+            parentSuspense,
+            namespace
+          );
+          initialVNode.el = subTree.el;
+        }
+        if (m) {
+          queuePostRenderEffect(m, parentSuspense);
+        }
+        if (!isAsyncWrapperVNode && (vnodeHook = props && props.onVnodeMounted)) {
+          const scopedInitialVNode = initialVNode;
+          queuePostRenderEffect(
+            () => invokeVNodeHook(vnodeHook, parent, scopedInitialVNode),
+            parentSuspense
+          );
+        }
+        if (initialVNode.shapeFlag & 256 || parent && isAsyncWrapper(parent.vnode) && parent.vnode.shapeFlag & 256) {
+          instance.a && queuePostRenderEffect(instance.a, parentSuspense);
+        }
+        instance.isMounted = true;
+        initialVNode = container = anchor = null;
+      } else {
+        let { next, bu, u, parent, vnode } = instance;
+        {
+          const nonHydratedAsyncRoot = locateNonHydratedAsyncRoot(instance);
+          if (nonHydratedAsyncRoot) {
+            if (next) {
+              next.el = vnode.el;
+              updateComponentPreRender(instance, next, optimized);
+            }
+            nonHydratedAsyncRoot.asyncDep.then(() => {
+              if (!instance.isUnmounted) {
+                componentUpdateFn();
+              }
+            });
+            return;
+          }
+        }
+        let originNext = next;
+        let vnodeHook;
+        toggleRecurse(instance, false);
+        if (next) {
+          next.el = vnode.el;
+          updateComponentPreRender(instance, next, optimized);
+        } else {
+          next = vnode;
+        }
+        if (bu) {
+          invokeArrayFns(bu);
+        }
+        if (vnodeHook = next.props && next.props.onVnodeBeforeUpdate) {
+          invokeVNodeHook(vnodeHook, parent, next, vnode);
+        }
+        toggleRecurse(instance, true);
+        const nextTree = renderComponentRoot(instance);
+        const prevTree = instance.subTree;
+        instance.subTree = nextTree;
+        patch(
+          prevTree,
+          nextTree,
+          // parent may have changed if it's in a teleport
+          hostParentNode(prevTree.el),
+          // anchor may have changed if it's in a fragment
+          getNextHostNode(prevTree),
+          instance,
+          parentSuspense,
+          namespace
+        );
+        next.el = nextTree.el;
+        if (originNext === null) {
+          updateHOCHostEl(instance, nextTree.el);
+        }
+        if (u) {
+          queuePostRenderEffect(u, parentSuspense);
+        }
+        if (vnodeHook = next.props && next.props.onVnodeUpdated) {
+          queuePostRenderEffect(
+            () => invokeVNodeHook(vnodeHook, parent, next, vnode),
+            parentSuspense
+          );
+        }
+      }
+    };
+    instance.scope.on();
+    const effect2 = instance.effect = new ReactiveEffect(componentUpdateFn);
+    instance.scope.off();
+    const update = instance.update = effect2.run.bind(effect2);
+    const job = instance.job = effect2.runIfDirty.bind(effect2);
+    job.i = instance;
+    job.id = instance.uid;
+    effect2.scheduler = () => queueJob(job);
+    toggleRecurse(instance, true);
+    update();
+  };
+  const updateComponentPreRender = (instance, nextVNode, optimized) => {
+    nextVNode.component = instance;
+    const prevProps = instance.vnode.props;
+    instance.vnode = nextVNode;
+    instance.next = null;
+    updateProps(instance, nextVNode.props, prevProps, optimized);
+    updateSlots(instance, nextVNode.children, optimized);
+    pauseTracking();
+    flushPreFlushCbs(instance);
+    resetTracking();
+  };
+  const patchChildren = (n1, n2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized = false) => {
+    const c1 = n1 && n1.children;
+    const prevShapeFlag = n1 ? n1.shapeFlag : 0;
+    const c2 = n2.children;
+    const { patchFlag, shapeFlag } = n2;
+    if (patchFlag > 0) {
+      if (patchFlag & 128) {
+        patchKeyedChildren(
+          c1,
+          c2,
+          container,
+          anchor,
+          parentComponent,
+          parentSuspense,
+          namespace,
+          slotScopeIds,
+          optimized
+        );
+        return;
+      } else if (patchFlag & 256) {
+        patchUnkeyedChildren(
+          c1,
+          c2,
+          container,
+          anchor,
+          parentComponent,
+          parentSuspense,
+          namespace,
+          slotScopeIds,
+          optimized
+        );
+        return;
+      }
+    }
+    if (shapeFlag & 8) {
+      if (prevShapeFlag & 16) {
+        unmountChildren(c1, parentComponent, parentSuspense);
+      }
+      if (c2 !== c1) {
+        hostSetElementText(container, c2);
+      }
+    } else {
+      if (prevShapeFlag & 16) {
+        if (shapeFlag & 16) {
+          patchKeyedChildren(
+            c1,
+            c2,
+            container,
+            anchor,
+            parentComponent,
+            parentSuspense,
+            namespace,
+            slotScopeIds,
+            optimized
+          );
+        } else {
+          unmountChildren(c1, parentComponent, parentSuspense, true);
+        }
+      } else {
+        if (prevShapeFlag & 8) {
+          hostSetElementText(container, "");
+        }
+        if (shapeFlag & 16) {
+          mountChildren(
+            c2,
+            container,
+            anchor,
+            parentComponent,
+            parentSuspense,
+            namespace,
+            slotScopeIds,
+            optimized
+          );
+        }
+      }
+    }
+  };
+  const patchUnkeyedChildren = (c1, c2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized) => {
+    c1 = c1 || EMPTY_ARR;
+    c2 = c2 || EMPTY_ARR;
+    const oldLength = c1.length;
+    const newLength = c2.length;
+    const commonLength = Math.min(oldLength, newLength);
+    let i;
+    for (i = 0; i < commonLength; i++) {
+      const nextChild = c2[i] = optimized ? cloneIfMounted(c2[i]) : normalizeVNode(c2[i]);
+      patch(
+        c1[i],
+        nextChild,
+        container,
+        null,
+        parentComponent,
+        parentSuspense,
+        namespace,
+        slotScopeIds,
+        optimized
+      );
+    }
+    if (oldLength > newLength) {
+      unmountChildren(
+        c1,
+        parentComponent,
+        parentSuspense,
+        true,
+        false,
+        commonLength
+      );
+    } else {
+      mountChildren(
+        c2,
+        container,
+        anchor,
+        parentComponent,
+        parentSuspense,
+        namespace,
+        slotScopeIds,
+        optimized,
+        commonLength
+      );
+    }
+  };
+  const patchKeyedChildren = (c1, c2, container, parentAnchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized) => {
+    let i = 0;
+    const l2 = c2.length;
+    let e1 = c1.length - 1;
+    let e2 = l2 - 1;
+    while (i <= e1 && i <= e2) {
+      const n1 = c1[i];
+      const n2 = c2[i] = optimized ? cloneIfMounted(c2[i]) : normalizeVNode(c2[i]);
+      if (isSameVNodeType(n1, n2)) {
+        patch(
+          n1,
+          n2,
+          container,
+          null,
+          parentComponent,
+          parentSuspense,
+          namespace,
+          slotScopeIds,
+          optimized
+        );
+      } else {
+        break;
+      }
+      i++;
+    }
+    while (i <= e1 && i <= e2) {
+      const n1 = c1[e1];
+      const n2 = c2[e2] = optimized ? cloneIfMounted(c2[e2]) : normalizeVNode(c2[e2]);
+      if (isSameVNodeType(n1, n2)) {
+        patch(
+          n1,
+          n2,
+          container,
+          null,
+          parentComponent,
+          parentSuspense,
+          namespace,
+          slotScopeIds,
+          optimized
+        );
+      } else {
+        break;
+      }
+      e1--;
+      e2--;
+    }
+    if (i > e1) {
+      if (i <= e2) {
+        const nextPos = e2 + 1;
+        const anchor = nextPos < l2 ? c2[nextPos].el : parentAnchor;
+        while (i <= e2) {
+          patch(
+            null,
+            c2[i] = optimized ? cloneIfMounted(c2[i]) : normalizeVNode(c2[i]),
+            container,
+            anchor,
+            parentComponent,
+            parentSuspense,
+            namespace,
+            slotScopeIds,
+            optimized
+          );
+          i++;
+        }
+      }
+    } else if (i > e2) {
+      while (i <= e1) {
+        unmount(c1[i], parentComponent, parentSuspense, true);
+        i++;
+      }
+    } else {
+      const s1 = i;
+      const s2 = i;
+      const keyToNewIndexMap = /* @__PURE__ */ new Map();
+      for (i = s2; i <= e2; i++) {
+        const nextChild = c2[i] = optimized ? cloneIfMounted(c2[i]) : normalizeVNode(c2[i]);
+        if (nextChild.key != null) {
+          keyToNewIndexMap.set(nextChild.key, i);
+        }
+      }
+      let j;
+      let patched = 0;
+      const toBePatched = e2 - s2 + 1;
+      let moved = false;
+      let maxNewIndexSoFar = 0;
+      const newIndexToOldIndexMap = new Array(toBePatched);
+      for (i = 0; i < toBePatched; i++) newIndexToOldIndexMap[i] = 0;
+      for (i = s1; i <= e1; i++) {
+        const prevChild = c1[i];
+        if (patched >= toBePatched) {
+          unmount(prevChild, parentComponent, parentSuspense, true);
+          continue;
+        }
+        let newIndex;
+        if (prevChild.key != null) {
+          newIndex = keyToNewIndexMap.get(prevChild.key);
+        } else {
+          for (j = s2; j <= e2; j++) {
+            if (newIndexToOldIndexMap[j - s2] === 0 && isSameVNodeType(prevChild, c2[j])) {
+              newIndex = j;
+              break;
+            }
+          }
+        }
+        if (newIndex === void 0) {
+          unmount(prevChild, parentComponent, parentSuspense, true);
+        } else {
+          newIndexToOldIndexMap[newIndex - s2] = i + 1;
+          if (newIndex >= maxNewIndexSoFar) {
+            maxNewIndexSoFar = newIndex;
+          } else {
+            moved = true;
+          }
+          patch(
+            prevChild,
+            c2[newIndex],
+            container,
+            null,
+            parentComponent,
+            parentSuspense,
+            namespace,
+            slotScopeIds,
+            optimized
+          );
+          patched++;
+        }
+      }
+      const increasingNewIndexSequence = moved ? getSequence(newIndexToOldIndexMap) : EMPTY_ARR;
+      j = increasingNewIndexSequence.length - 1;
+      for (i = toBePatched - 1; i >= 0; i--) {
+        const nextIndex = s2 + i;
+        const nextChild = c2[nextIndex];
+        const anchorVNode = c2[nextIndex + 1];
+        const anchor = nextIndex + 1 < l2 ? (
+          // #13559, fallback to el placeholder for unresolved async component
+          anchorVNode.el || anchorVNode.placeholder
+        ) : parentAnchor;
+        if (newIndexToOldIndexMap[i] === 0) {
+          patch(
+            null,
+            nextChild,
+            container,
+            anchor,
+            parentComponent,
+            parentSuspense,
+            namespace,
+            slotScopeIds,
+            optimized
+          );
+        } else if (moved) {
+          if (j < 0 || i !== increasingNewIndexSequence[j]) {
+            move(nextChild, container, anchor, 2);
+          } else {
+            j--;
+          }
+        }
+      }
+    }
+  };
+  const move = (vnode, container, anchor, moveType, parentSuspense = null) => {
+    const { el, type, transition, children, shapeFlag } = vnode;
+    if (shapeFlag & 6) {
+      move(vnode.component.subTree, container, anchor, moveType);
+      return;
+    }
+    if (shapeFlag & 128) {
+      vnode.suspense.move(container, anchor, moveType);
+      return;
+    }
+    if (shapeFlag & 64) {
+      type.move(vnode, container, anchor, internals);
+      return;
+    }
+    if (type === Fragment) {
+      hostInsert(el, container, anchor);
+      for (let i = 0; i < children.length; i++) {
+        move(children[i], container, anchor, moveType);
+      }
+      hostInsert(vnode.anchor, container, anchor);
+      return;
+    }
+    if (type === Static) {
+      moveStaticNode(vnode, container, anchor);
+      return;
+    }
+    const needTransition2 = moveType !== 2 && shapeFlag & 1 && transition;
+    if (needTransition2) {
+      if (moveType === 0) {
+        transition.beforeEnter(el);
+        hostInsert(el, container, anchor);
+        queuePostRenderEffect(() => transition.enter(el), parentSuspense);
+      } else {
+        const { leave, delayLeave, afterLeave } = transition;
+        const remove22 = () => {
+          if (vnode.ctx.isUnmounted) {
+            hostRemove(el);
+          } else {
+            hostInsert(el, container, anchor);
+          }
+        };
+        const performLeave = () => {
+          if (el._isLeaving) {
+            el[leaveCbKey](
+              true
+              /* cancelled */
+            );
+          }
+          leave(el, () => {
+            remove22();
+            afterLeave && afterLeave();
+          });
+        };
+        if (delayLeave) {
+          delayLeave(el, remove22, performLeave);
+        } else {
+          performLeave();
+        }
+      }
+    } else {
+      hostInsert(el, container, anchor);
+    }
+  };
+  const unmount = (vnode, parentComponent, parentSuspense, doRemove = false, optimized = false) => {
+    const {
+      type,
+      props,
+      ref: ref3,
+      children,
+      dynamicChildren,
+      shapeFlag,
+      patchFlag,
+      dirs,
+      cacheIndex
+    } = vnode;
+    if (patchFlag === -2) {
+      optimized = false;
+    }
+    if (ref3 != null) {
+      pauseTracking();
+      setRef(ref3, null, parentSuspense, vnode, true);
+      resetTracking();
+    }
+    if (cacheIndex != null) {
+      parentComponent.renderCache[cacheIndex] = void 0;
+    }
+    if (shapeFlag & 256) {
+      parentComponent.ctx.deactivate(vnode);
+      return;
+    }
+    const shouldInvokeDirs = shapeFlag & 1 && dirs;
+    const shouldInvokeVnodeHook = !isAsyncWrapper(vnode);
+    let vnodeHook;
+    if (shouldInvokeVnodeHook && (vnodeHook = props && props.onVnodeBeforeUnmount)) {
+      invokeVNodeHook(vnodeHook, parentComponent, vnode);
+    }
+    if (shapeFlag & 6) {
+      unmountComponent(vnode.component, parentSuspense, doRemove);
+    } else {
+      if (shapeFlag & 128) {
+        vnode.suspense.unmount(parentSuspense, doRemove);
+        return;
+      }
+      if (shouldInvokeDirs) {
+        invokeDirectiveHook(vnode, null, parentComponent, "beforeUnmount");
+      }
+      if (shapeFlag & 64) {
+        vnode.type.remove(
+          vnode,
+          parentComponent,
+          parentSuspense,
+          internals,
+          doRemove
+        );
+      } else if (dynamicChildren && // #5154
+      // when v-once is used inside a block, setBlockTracking(-1) marks the
+      // parent block with hasOnce: true
+      // so that it doesn't take the fast path during unmount - otherwise
+      // components nested in v-once are never unmounted.
+      !dynamicChildren.hasOnce && // #1153: fast path should not be taken for non-stable (v-for) fragments
+      (type !== Fragment || patchFlag > 0 && patchFlag & 64)) {
+        unmountChildren(
+          dynamicChildren,
+          parentComponent,
+          parentSuspense,
+          false,
+          true
+        );
+      } else if (type === Fragment && patchFlag & (128 | 256) || !optimized && shapeFlag & 16) {
+        unmountChildren(children, parentComponent, parentSuspense);
+      }
+      if (doRemove) {
+        remove2(vnode);
+      }
+    }
+    if (shouldInvokeVnodeHook && (vnodeHook = props && props.onVnodeUnmounted) || shouldInvokeDirs) {
+      queuePostRenderEffect(() => {
+        vnodeHook && invokeVNodeHook(vnodeHook, parentComponent, vnode);
+        shouldInvokeDirs && invokeDirectiveHook(vnode, null, parentComponent, "unmounted");
+      }, parentSuspense);
+    }
+  };
+  const remove2 = (vnode) => {
+    const { type, el, anchor, transition } = vnode;
+    if (type === Fragment) {
+      {
+        removeFragment(el, anchor);
+      }
+      return;
+    }
+    if (type === Static) {
+      removeStaticNode(vnode);
+      return;
+    }
+    const performRemove = () => {
+      hostRemove(el);
+      if (transition && !transition.persisted && transition.afterLeave) {
+        transition.afterLeave();
+      }
+    };
+    if (vnode.shapeFlag & 1 && transition && !transition.persisted) {
+      const { leave, delayLeave } = transition;
+      const performLeave = () => leave(el, performRemove);
+      if (delayLeave) {
+        delayLeave(vnode.el, performRemove, performLeave);
+      } else {
+        performLeave();
+      }
+    } else {
+      performRemove();
+    }
+  };
+  const removeFragment = (cur, end) => {
+    let next;
+    while (cur !== end) {
+      next = hostNextSibling(cur);
+      hostRemove(cur);
+      cur = next;
+    }
+    hostRemove(end);
+  };
+  const unmountComponent = (instance, parentSuspense, doRemove) => {
+    const { bum, scope, job, subTree, um, m, a } = instance;
+    invalidateMount(m);
+    invalidateMount(a);
+    if (bum) {
+      invokeArrayFns(bum);
+    }
+    scope.stop();
+    if (job) {
+      job.flags |= 8;
+      unmount(subTree, instance, parentSuspense, doRemove);
+    }
+    if (um) {
+      queuePostRenderEffect(um, parentSuspense);
+    }
+    queuePostRenderEffect(() => {
+      instance.isUnmounted = true;
+    }, parentSuspense);
+  };
+  const unmountChildren = (children, parentComponent, parentSuspense, doRemove = false, optimized = false, start = 0) => {
+    for (let i = start; i < children.length; i++) {
+      unmount(children[i], parentComponent, parentSuspense, doRemove, optimized);
+    }
+  };
+  const getNextHostNode = (vnode) => {
+    if (vnode.shapeFlag & 6) {
+      return getNextHostNode(vnode.component.subTree);
+    }
+    if (vnode.shapeFlag & 128) {
+      return vnode.suspense.next();
+    }
+    const el = hostNextSibling(vnode.anchor || vnode.el);
+    const teleportEnd = el && el[TeleportEndKey];
+    return teleportEnd ? hostNextSibling(teleportEnd) : el;
+  };
+  let isFlushing = false;
+  const render = (vnode, container, namespace) => {
+    if (vnode == null) {
+      if (container._vnode) {
+        unmount(container._vnode, null, null, true);
+      }
+    } else {
+      patch(
+        container._vnode || null,
+        vnode,
+        container,
+        null,
+        null,
+        null,
+        namespace
+      );
+    }
+    container._vnode = vnode;
+    if (!isFlushing) {
+      isFlushing = true;
+      flushPreFlushCbs();
+      flushPostFlushCbs();
+      isFlushing = false;
+    }
+  };
+  const internals = {
+    p: patch,
+    um: unmount,
+    m: move,
+    r: remove2,
+    mt: mountComponent,
+    mc: mountChildren,
+    pc: patchChildren,
+    pbc: patchBlockChildren,
+    n: getNextHostNode,
+    o: options
+  };
+  let hydrate;
+  return {
+    render,
+    hydrate,
+    createApp: createAppAPI(render)
+  };
+}
+function resolveChildrenNamespace({ type, props }, currentNamespace) {
+  return currentNamespace === "svg" && type === "foreignObject" || currentNamespace === "mathml" && type === "annotation-xml" && props && props.encoding && props.encoding.includes("html") ? void 0 : currentNamespace;
+}
+function toggleRecurse({ effect: effect2, job }, allowed) {
+  if (allowed) {
+    effect2.flags |= 32;
+    job.flags |= 4;
+  } else {
+    effect2.flags &= -33;
+    job.flags &= -5;
+  }
+}
+function needTransition(parentSuspense, transition) {
+  return (!parentSuspense || parentSuspense && !parentSuspense.pendingBranch) && transition && !transition.persisted;
+}
+function traverseStaticChildren(n1, n2, shallow = false) {
+  const ch1 = n1.children;
+  const ch2 = n2.children;
+  if (isArray(ch1) && isArray(ch2)) {
+    for (let i = 0; i < ch1.length; i++) {
+      const c1 = ch1[i];
+      let c2 = ch2[i];
+      if (c2.shapeFlag & 1 && !c2.dynamicChildren) {
+        if (c2.patchFlag <= 0 || c2.patchFlag === 32) {
+          c2 = ch2[i] = cloneIfMounted(ch2[i]);
+          c2.el = c1.el;
+        }
+        if (!shallow && c2.patchFlag !== -2)
+          traverseStaticChildren(c1, c2);
+      }
+      if (c2.type === Text && // avoid cached text nodes retaining detached dom nodes
+      c2.patchFlag !== -1) {
+        c2.el = c1.el;
+      }
+      if (c2.type === Comment && !c2.el) {
+        c2.el = c1.el;
+      }
+    }
+  }
+}
+function getSequence(arr) {
+  const p2 = arr.slice();
+  const result = [0];
+  let i, j, u, v, c;
+  const len = arr.length;
+  for (i = 0; i < len; i++) {
+    const arrI = arr[i];
+    if (arrI !== 0) {
+      j = result[result.length - 1];
+      if (arr[j] < arrI) {
+        p2[i] = j;
+        result.push(i);
+        continue;
+      }
+      u = 0;
+      v = result.length - 1;
+      while (u < v) {
+        c = u + v >> 1;
+        if (arr[result[c]] < arrI) {
+          u = c + 1;
+        } else {
+          v = c;
+        }
+      }
+      if (arrI < arr[result[u]]) {
+        if (u > 0) {
+          p2[i] = result[u - 1];
+        }
+        result[u] = i;
+      }
+    }
+  }
+  u = result.length;
+  v = result[u - 1];
+  while (u-- > 0) {
+    result[u] = v;
+    v = p2[v];
+  }
+  return result;
+}
+function locateNonHydratedAsyncRoot(instance) {
+  const subComponent = instance.subTree.component;
+  if (subComponent) {
+    if (subComponent.asyncDep && !subComponent.asyncResolved) {
+      return subComponent;
+    } else {
+      return locateNonHydratedAsyncRoot(subComponent);
+    }
+  }
+}
+function invalidateMount(hooks) {
+  if (hooks) {
+    for (let i = 0; i < hooks.length; i++)
+      hooks[i].flags |= 8;
+  }
+}
+const isSuspense = (type) => type.__isSuspense;
+function queueEffectWithSuspense(fn, suspense) {
+  if (suspense && suspense.pendingBranch) {
+    if (isArray(fn)) {
+      suspense.effects.push(...fn);
+    } else {
+      suspense.effects.push(fn);
+    }
+  } else {
+    queuePostFlushCb(fn);
+  }
+}
+const Fragment = Symbol.for("v-fgt");
+const Text = Symbol.for("v-txt");
+const Comment = Symbol.for("v-cmt");
+const Static = Symbol.for("v-stc");
+const blockStack = [];
+let currentBlock = null;
+function openBlock(disableTracking = false) {
+  blockStack.push(currentBlock = disableTracking ? null : []);
+}
+function closeBlock() {
+  blockStack.pop();
+  currentBlock = blockStack[blockStack.length - 1] || null;
+}
+let isBlockTreeEnabled = 1;
+function setBlockTracking(value, inVOnce = false) {
+  isBlockTreeEnabled += value;
+  if (value < 0 && currentBlock && inVOnce) {
+    currentBlock.hasOnce = true;
+  }
+}
+function setupBlock(vnode) {
+  vnode.dynamicChildren = isBlockTreeEnabled > 0 ? currentBlock || EMPTY_ARR : null;
+  closeBlock();
+  if (isBlockTreeEnabled > 0 && currentBlock) {
+    currentBlock.push(vnode);
+  }
+  return vnode;
+}
+function createElementBlock(type, props, children, patchFlag, dynamicProps, shapeFlag) {
+  return setupBlock(
+    createBaseVNode(
+      type,
+      props,
+      children,
+      patchFlag,
+      dynamicProps,
+      shapeFlag,
+      true
+    )
+  );
+}
+function createBlock(type, props, children, patchFlag, dynamicProps) {
+  return setupBlock(
+    createVNode(
+      type,
+      props,
+      children,
+      patchFlag,
+      dynamicProps,
+      true
+    )
+  );
+}
+function isVNode(value) {
+  return value ? value.__v_isVNode === true : false;
+}
+function isSameVNodeType(n1, n2) {
+  return n1.type === n2.type && n1.key === n2.key;
+}
+const normalizeKey = ({ key }) => key != null ? key : null;
+const normalizeRef = ({
+  ref: ref3,
+  ref_key,
+  ref_for
+}) => {
+  if (typeof ref3 === "number") {
+    ref3 = "" + ref3;
+  }
+  return ref3 != null ? isString(ref3) || isRef(ref3) || isFunction(ref3) ? { i: currentRenderingInstance, r: ref3, k: ref_key, f: !!ref_for } : ref3 : null;
+};
+function createBaseVNode(type, props = null, children = null, patchFlag = 0, dynamicProps = null, shapeFlag = type === Fragment ? 0 : 1, isBlockNode = false, needFullChildrenNormalization = false) {
+  const vnode = {
+    __v_isVNode: true,
+    __v_skip: true,
+    type,
+    props,
+    key: props && normalizeKey(props),
+    ref: props && normalizeRef(props),
+    scopeId: currentScopeId,
+    slotScopeIds: null,
+    children,
+    component: null,
+    suspense: null,
+    ssContent: null,
+    ssFallback: null,
+    dirs: null,
+    transition: null,
+    el: null,
+    anchor: null,
+    target: null,
+    targetStart: null,
+    targetAnchor: null,
+    staticCount: 0,
+    shapeFlag,
+    patchFlag,
+    dynamicProps,
+    dynamicChildren: null,
+    appContext: null,
+    ctx: currentRenderingInstance
+  };
+  if (needFullChildrenNormalization) {
+    normalizeChildren(vnode, children);
+    if (shapeFlag & 128) {
+      type.normalize(vnode);
+    }
+  } else if (children) {
+    vnode.shapeFlag |= isString(children) ? 8 : 16;
+  }
+  if (isBlockTreeEnabled > 0 && // avoid a block node from tracking itself
+  !isBlockNode && // has current parent block
+  currentBlock && // presence of a patch flag indicates this node needs patching on updates.
+  // component nodes also should always be patched, because even if the
+  // component doesn't need to update, it needs to persist the instance on to
+  // the next vnode so that it can be properly unmounted later.
+  (vnode.patchFlag > 0 || shapeFlag & 6) && // the EVENTS flag is only for hydration and if it is the only flag, the
+  // vnode should not be considered dynamic due to handler caching.
+  vnode.patchFlag !== 32) {
+    currentBlock.push(vnode);
+  }
+  return vnode;
+}
+const createVNode = _createVNode;
+function _createVNode(type, props = null, children = null, patchFlag = 0, dynamicProps = null, isBlockNode = false) {
+  if (!type || type === NULL_DYNAMIC_COMPONENT) {
+    type = Comment;
+  }
+  if (isVNode(type)) {
+    const cloned = cloneVNode(
+      type,
+      props,
+      true
+      /* mergeRef: true */
+    );
+    if (children) {
+      normalizeChildren(cloned, children);
+    }
+    if (isBlockTreeEnabled > 0 && !isBlockNode && currentBlock) {
+      if (cloned.shapeFlag & 6) {
+        currentBlock[currentBlock.indexOf(type)] = cloned;
+      } else {
+        currentBlock.push(cloned);
+      }
+    }
+    cloned.patchFlag = -2;
+    return cloned;
+  }
+  if (isClassComponent(type)) {
+    type = type.__vccOpts;
+  }
+  if (props) {
+    props = guardReactiveProps(props);
+    let { class: klass, style } = props;
+    if (klass && !isString(klass)) {
+      props.class = normalizeClass(klass);
+    }
+    if (isObject(style)) {
+      if (isProxy(style) && !isArray(style)) {
+        style = extend({}, style);
+      }
+      props.style = normalizeStyle(style);
+    }
+  }
+  const shapeFlag = isString(type) ? 1 : isSuspense(type) ? 128 : isTeleport(type) ? 64 : isObject(type) ? 4 : isFunction(type) ? 2 : 0;
+  return createBaseVNode(
+    type,
+    props,
+    children,
+    patchFlag,
+    dynamicProps,
+    shapeFlag,
+    isBlockNode,
+    true
+  );
+}
+function guardReactiveProps(props) {
+  if (!props) return null;
+  return isProxy(props) || isInternalObject(props) ? extend({}, props) : props;
+}
+function cloneVNode(vnode, extraProps, mergeRef = false, cloneTransition = false) {
+  const { props, ref: ref3, patchFlag, children, transition } = vnode;
+  const mergedProps = extraProps ? mergeProps(props || {}, extraProps) : props;
+  const cloned = {
+    __v_isVNode: true,
+    __v_skip: true,
+    type: vnode.type,
+    props: mergedProps,
+    key: mergedProps && normalizeKey(mergedProps),
+    ref: extraProps && extraProps.ref ? (
+      // #2078 in the case of <component :is="vnode" ref="extra"/>
+      // if the vnode itself already has a ref, cloneVNode will need to merge
+      // the refs so the single vnode can be set on multiple refs
+      mergeRef && ref3 ? isArray(ref3) ? ref3.concat(normalizeRef(extraProps)) : [ref3, normalizeRef(extraProps)] : normalizeRef(extraProps)
+    ) : ref3,
+    scopeId: vnode.scopeId,
+    slotScopeIds: vnode.slotScopeIds,
+    children,
+    target: vnode.target,
+    targetStart: vnode.targetStart,
+    targetAnchor: vnode.targetAnchor,
+    staticCount: vnode.staticCount,
+    shapeFlag: vnode.shapeFlag,
+    // if the vnode is cloned with extra props, we can no longer assume its
+    // existing patch flag to be reliable and need to add the FULL_PROPS flag.
+    // note: preserve flag for fragments since they use the flag for children
+    // fast paths only.
+    patchFlag: extraProps && vnode.type !== Fragment ? patchFlag === -1 ? 16 : patchFlag | 16 : patchFlag,
+    dynamicProps: vnode.dynamicProps,
+    dynamicChildren: vnode.dynamicChildren,
+    appContext: vnode.appContext,
+    dirs: vnode.dirs,
+    transition,
+    // These should technically only be non-null on mounted VNodes. However,
+    // they *should* be copied for kept-alive vnodes. So we just always copy
+    // them since them being non-null during a mount doesn't affect the logic as
+    // they will simply be overwritten.
+    component: vnode.component,
+    suspense: vnode.suspense,
+    ssContent: vnode.ssContent && cloneVNode(vnode.ssContent),
+    ssFallback: vnode.ssFallback && cloneVNode(vnode.ssFallback),
+    placeholder: vnode.placeholder,
+    el: vnode.el,
+    anchor: vnode.anchor,
+    ctx: vnode.ctx,
+    ce: vnode.ce
+  };
+  if (transition && cloneTransition) {
+    setTransitionHooks(
+      cloned,
+      transition.clone(cloned)
+    );
+  }
+  return cloned;
+}
+function createTextVNode(text = " ", flag = 0) {
+  return createVNode(Text, null, text, flag);
+}
+function createStaticVNode(content, numberOfNodes) {
+  const vnode = createVNode(Static, null, content);
+  vnode.staticCount = numberOfNodes;
+  return vnode;
+}
+function createCommentVNode(text = "", asBlock = false) {
+  return asBlock ? (openBlock(), createBlock(Comment, null, text)) : createVNode(Comment, null, text);
+}
+function normalizeVNode(child) {
+  if (child == null || typeof child === "boolean") {
+    return createVNode(Comment);
+  } else if (isArray(child)) {
+    return createVNode(
+      Fragment,
+      null,
+      // #3666, avoid reference pollution when reusing vnode
+      child.slice()
+    );
+  } else if (isVNode(child)) {
+    return cloneIfMounted(child);
+  } else {
+    return createVNode(Text, null, String(child));
+  }
+}
+function cloneIfMounted(child) {
+  return child.el === null && child.patchFlag !== -1 || child.memo ? child : cloneVNode(child);
+}
+function normalizeChildren(vnode, children) {
+  let type = 0;
+  const { shapeFlag } = vnode;
+  if (children == null) {
+    children = null;
+  } else if (isArray(children)) {
+    type = 16;
+  } else if (typeof children === "object") {
+    if (shapeFlag & (1 | 64)) {
+      const slot = children.default;
+      if (slot) {
+        slot._c && (slot._d = false);
+        normalizeChildren(vnode, slot());
+        slot._c && (slot._d = true);
+      }
+      return;
+    } else {
+      type = 32;
+      const slotFlag = children._;
+      if (!slotFlag && !isInternalObject(children)) {
+        children._ctx = currentRenderingInstance;
+      } else if (slotFlag === 3 && currentRenderingInstance) {
+        if (currentRenderingInstance.slots._ === 1) {
+          children._ = 1;
+        } else {
+          children._ = 2;
+          vnode.patchFlag |= 1024;
+        }
+      }
+    }
+  } else if (isFunction(children)) {
+    children = { default: children, _ctx: currentRenderingInstance };
+    type = 32;
+  } else {
+    children = String(children);
+    if (shapeFlag & 64) {
+      type = 16;
+      children = [createTextVNode(children)];
+    } else {
+      type = 8;
+    }
+  }
+  vnode.children = children;
+  vnode.shapeFlag |= type;
+}
+function mergeProps(...args) {
+  const ret = {};
+  for (let i = 0; i < args.length; i++) {
+    const toMerge = args[i];
+    for (const key in toMerge) {
+      if (key === "class") {
+        if (ret.class !== toMerge.class) {
+          ret.class = normalizeClass([ret.class, toMerge.class]);
+        }
+      } else if (key === "style") {
+        ret.style = normalizeStyle([ret.style, toMerge.style]);
+      } else if (isOn(key)) {
+        const existing = ret[key];
+        const incoming = toMerge[key];
+        if (incoming && existing !== incoming && !(isArray(existing) && existing.includes(incoming))) {
+          ret[key] = existing ? [].concat(existing, incoming) : incoming;
+        }
+      } else if (key !== "") {
+        ret[key] = toMerge[key];
+      }
+    }
+  }
+  return ret;
+}
+function invokeVNodeHook(hook, instance, vnode, prevVNode = null) {
+  callWithAsyncErrorHandling(hook, instance, 7, [
+    vnode,
+    prevVNode
+  ]);
+}
+const emptyAppContext = createAppContext();
+let uid = 0;
+function createComponentInstance(vnode, parent, suspense) {
+  const type = vnode.type;
+  const appContext = (parent ? parent.appContext : vnode.appContext) || emptyAppContext;
+  const instance = {
+    uid: uid++,
+    vnode,
+    type,
+    parent,
+    appContext,
+    root: null,
+    // to be immediately set
+    next: null,
+    subTree: null,
+    // will be set synchronously right after creation
+    effect: null,
+    update: null,
+    // will be set synchronously right after creation
+    job: null,
+    scope: new EffectScope(
+      true
+      /* detached */
+    ),
+    render: null,
+    proxy: null,
+    exposed: null,
+    exposeProxy: null,
+    withProxy: null,
+    provides: parent ? parent.provides : Object.create(appContext.provides),
+    ids: parent ? parent.ids : ["", 0, 0],
+    accessCache: null,
+    renderCache: [],
+    // local resolved assets
+    components: null,
+    directives: null,
+    // resolved props and emits options
+    propsOptions: normalizePropsOptions(type, appContext),
+    emitsOptions: normalizeEmitsOptions(type, appContext),
+    // emit
+    emit: null,
+    // to be set immediately
+    emitted: null,
+    // props default value
+    propsDefaults: EMPTY_OBJ,
+    // inheritAttrs
+    inheritAttrs: type.inheritAttrs,
+    // state
+    ctx: EMPTY_OBJ,
+    data: EMPTY_OBJ,
+    props: EMPTY_OBJ,
+    attrs: EMPTY_OBJ,
+    slots: EMPTY_OBJ,
+    refs: EMPTY_OBJ,
+    setupState: EMPTY_OBJ,
+    setupContext: null,
+    // suspense related
+    suspense,
+    suspenseId: suspense ? suspense.pendingId : 0,
+    asyncDep: null,
+    asyncResolved: false,
+    // lifecycle hooks
+    // not using enums here because it results in computed properties
+    isMounted: false,
+    isUnmounted: false,
+    isDeactivated: false,
+    bc: null,
+    c: null,
+    bm: null,
+    m: null,
+    bu: null,
+    u: null,
+    um: null,
+    bum: null,
+    da: null,
+    a: null,
+    rtg: null,
+    rtc: null,
+    ec: null,
+    sp: null
+  };
+  {
+    instance.ctx = { _: instance };
+  }
+  instance.root = parent ? parent.root : instance;
+  instance.emit = emit.bind(null, instance);
+  if (vnode.ce) {
+    vnode.ce(instance);
+  }
+  return instance;
+}
+let currentInstance = null;
+const getCurrentInstance = () => currentInstance || currentRenderingInstance;
+let internalSetCurrentInstance;
+let setInSSRSetupState;
+{
+  const g = getGlobalThis();
+  const registerGlobalSetter = (key, setter) => {
+    let setters;
+    if (!(setters = g[key])) setters = g[key] = [];
+    setters.push(setter);
+    return (v) => {
+      if (setters.length > 1) setters.forEach((set) => set(v));
+      else setters[0](v);
+    };
+  };
+  internalSetCurrentInstance = registerGlobalSetter(
+    `__VUE_INSTANCE_SETTERS__`,
+    (v) => currentInstance = v
+  );
+  setInSSRSetupState = registerGlobalSetter(
+    `__VUE_SSR_SETTERS__`,
+    (v) => isInSSRComponentSetup = v
+  );
+}
+const setCurrentInstance = (instance) => {
+  const prev = currentInstance;
+  internalSetCurrentInstance(instance);
+  instance.scope.on();
+  return () => {
+    instance.scope.off();
+    internalSetCurrentInstance(prev);
+  };
+};
+const unsetCurrentInstance = () => {
+  currentInstance && currentInstance.scope.off();
+  internalSetCurrentInstance(null);
+};
+function isStatefulComponent(instance) {
+  return instance.vnode.shapeFlag & 4;
+}
+let isInSSRComponentSetup = false;
+function setupComponent(instance, isSSR = false, optimized = false) {
+  isSSR && setInSSRSetupState(isSSR);
+  const { props, children } = instance.vnode;
+  const isStateful = isStatefulComponent(instance);
+  initProps(instance, props, isStateful, isSSR);
+  initSlots(instance, children, optimized || isSSR);
+  const setupResult = isStateful ? setupStatefulComponent(instance, isSSR) : void 0;
+  isSSR && setInSSRSetupState(false);
+  return setupResult;
+}
+function setupStatefulComponent(instance, isSSR) {
+  const Component = instance.type;
+  instance.accessCache = /* @__PURE__ */ Object.create(null);
+  instance.proxy = new Proxy(instance.ctx, PublicInstanceProxyHandlers);
+  const { setup } = Component;
+  if (setup) {
+    pauseTracking();
+    const setupContext = instance.setupContext = setup.length > 1 ? createSetupContext(instance) : null;
+    const reset = setCurrentInstance(instance);
+    const setupResult = callWithErrorHandling(
+      setup,
+      instance,
+      0,
+      [
+        instance.props,
+        setupContext
+      ]
+    );
+    const isAsyncSetup = isPromise(setupResult);
+    resetTracking();
+    reset();
+    if ((isAsyncSetup || instance.sp) && !isAsyncWrapper(instance)) {
+      markAsyncBoundary(instance);
+    }
+    if (isAsyncSetup) {
+      setupResult.then(unsetCurrentInstance, unsetCurrentInstance);
+      if (isSSR) {
+        return setupResult.then((resolvedResult) => {
+          handleSetupResult(instance, resolvedResult);
+        }).catch((e) => {
+          handleError(e, instance, 0);
+        });
+      } else {
+        instance.asyncDep = setupResult;
+      }
+    } else {
+      handleSetupResult(instance, setupResult);
+    }
+  } else {
+    finishComponentSetup(instance);
+  }
+}
+function handleSetupResult(instance, setupResult, isSSR) {
+  if (isFunction(setupResult)) {
+    if (instance.type.__ssrInlineRender) {
+      instance.ssrRender = setupResult;
+    } else {
+      instance.render = setupResult;
+    }
+  } else if (isObject(setupResult)) {
+    instance.setupState = proxyRefs(setupResult);
+  } else ;
+  finishComponentSetup(instance);
+}
+function finishComponentSetup(instance, isSSR, skipOptions) {
+  const Component = instance.type;
+  if (!instance.render) {
+    instance.render = Component.render || NOOP;
+  }
+  {
+    const reset = setCurrentInstance(instance);
+    pauseTracking();
+    try {
+      applyOptions(instance);
+    } finally {
+      resetTracking();
+      reset();
+    }
+  }
+}
+const attrsProxyHandlers = {
+  get(target, key) {
+    track(target, "get", "");
+    return target[key];
+  }
+};
+function createSetupContext(instance) {
+  const expose = (exposed) => {
+    instance.exposed = exposed || {};
+  };
+  {
+    return {
+      attrs: new Proxy(instance.attrs, attrsProxyHandlers),
+      slots: instance.slots,
+      emit: instance.emit,
+      expose
+    };
+  }
+}
+function getComponentPublicInstance(instance) {
+  if (instance.exposed) {
+    return instance.exposeProxy || (instance.exposeProxy = new Proxy(proxyRefs(markRaw(instance.exposed)), {
+      get(target, key) {
+        if (key in target) {
+          return target[key];
+        } else if (key in publicPropertiesMap) {
+          return publicPropertiesMap[key](instance);
+        }
+      },
+      has(target, key) {
+        return key in target || key in publicPropertiesMap;
+      }
+    }));
+  } else {
+    return instance.proxy;
+  }
+}
+const classifyRE = /(?:^|[-_])\w/g;
+const classify = (str) => str.replace(classifyRE, (c) => c.toUpperCase()).replace(/[-_]/g, "");
+function getComponentName(Component, includeInferred = true) {
+  return isFunction(Component) ? Component.displayName || Component.name : Component.name || includeInferred && Component.__name;
+}
+function formatComponentName(instance, Component, isRoot = false) {
+  let name = getComponentName(Component);
+  if (!name && Component.__file) {
+    const match = Component.__file.match(/([^/\\]+)\.\w+$/);
+    if (match) {
+      name = match[1];
+    }
+  }
+  if (!name && instance) {
+    const inferFromRegistry = (registry) => {
+      for (const key in registry) {
+        if (registry[key] === Component) {
+          return key;
+        }
+      }
+    };
+    name = inferFromRegistry(instance.components) || instance.parent && inferFromRegistry(
+      instance.parent.type.components
+    ) || inferFromRegistry(instance.appContext.components);
+  }
+  return name ? classify(name) : isRoot ? `App` : `Anonymous`;
+}
+function isClassComponent(value) {
+  return isFunction(value) && "__vccOpts" in value;
+}
+const computed = (getterOrOptions, debugOptions) => {
+  const c = computed$1(getterOrOptions, debugOptions, isInSSRComponentSetup);
+  return c;
+};
+const version = "3.5.25";
+/**
 * @vue/runtime-dom v3.5.25
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
-**/let co;const Qo=typeof window<"u"&&window.trustedTypes;if(Qo)try{co=Qo.createPolicy("vue",{createHTML:e=>e})}catch{}const Er=co?e=>co.createHTML(e):e=>e,Rl="http://www.w3.org/2000/svg",Nl="http://www.w3.org/1998/Math/MathML",qe=typeof document<"u"?document:null,en=qe&&qe.createElement("template"),jl={insert:(e,t,s)=>{t.insertBefore(e,s||null)},remove:e=>{const t=e.parentNode;t&&t.removeChild(e)},createElement:(e,t,s,o)=>{const n=t==="svg"?qe.createElementNS(Rl,e):t==="mathml"?qe.createElementNS(Nl,e):s?qe.createElement(e,{is:s}):qe.createElement(e);return e==="select"&&o&&o.multiple!=null&&n.setAttribute("multiple",o.multiple),n},createText:e=>qe.createTextNode(e),createComment:e=>qe.createComment(e),setText:(e,t)=>{e.nodeValue=t},setElementText:(e,t)=>{e.textContent=t},parentNode:e=>e.parentNode,nextSibling:e=>e.nextSibling,querySelector:e=>qe.querySelector(e),setScopeId(e,t){e.setAttribute(t,"")},insertStaticContent(e,t,s,o,n,r){const i=s?s.previousSibling:t.lastChild;if(n&&(n===r||n.nextSibling))for(;t.insertBefore(n.cloneNode(!0),s),!(n===r||!(n=n.nextSibling)););else{en.innerHTML=Er(o==="svg"?`<svg>${e}</svg>`:o==="mathml"?`<math>${e}</math>`:e);const l=en.content;if(o==="svg"||o==="mathml"){const a=l.firstChild;for(;a.firstChild;)l.appendChild(a.firstChild);l.removeChild(a)}t.insertBefore(l,s)}return[i?i.nextSibling:t.firstChild,s?s.previousSibling:t.lastChild]}},Fl=Symbol("_vtc");function Ll(e,t,s){const o=e[Fl];o&&(t=(t?[t,...o]:[...o]).join(" ")),t==null?e.removeAttribute("class"):s?e.setAttribute("class",t):e.className=t}const Ss=Symbol("_vod"),kr=Symbol("_vsh"),zs={name:"show",beforeMount(e,{value:t},{transition:s}){e[Ss]=e.style.display==="none"?"":e.style.display,s&&t?s.beforeEnter(e):Bt(e,t)},mounted(e,{value:t},{transition:s}){s&&t&&s.enter(e)},updated(e,{value:t,oldValue:s},{transition:o}){!t!=!s&&(o?t?(o.beforeEnter(e),Bt(e,!0),o.enter(e)):o.leave(e,()=>{Bt(e,!1)}):Bt(e,t))},beforeUnmount(e,{value:t}){Bt(e,t)}};function Bt(e,t){e.style.display=t?e[Ss]:"none",e[kr]=!t}const Vl=Symbol(""),Hl=/(?:^|;)\s*display\s*:/;function Ul(e,t,s){const o=e.style,n=ae(s);let r=!1;if(s&&!n){if(t)if(ae(t))for(const i of t.split(";")){const l=i.slice(0,i.indexOf(":")).trim();s[l]==null&&gs(o,l,"")}else for(const i in t)s[i]==null&&gs(o,i,"");for(const i in s)i==="display"&&(r=!0),gs(o,i,s[i])}else if(n){if(t!==s){const i=o[Vl];i&&(s+=";"+i),o.cssText=s,r=Hl.test(s)}}else t&&e.removeAttribute("style");Ss in e&&(e[Ss]=r?o.display:"",e[kr]&&(o.display="none"))}const tn=/\s*!important$/;function gs(e,t,s){if(A(s))s.forEach(o=>gs(e,t,o));else if(s==null&&(s=""),t.startsWith("--"))e.setProperty(t,s);else{const o=Bl(e,t);tn.test(s)?e.setProperty(dt(o),s.replace(tn,""),"important"):e[o]=s}}const sn=["Webkit","Moz","ms"],Xs={};function Bl(e,t){const s=Xs[t];if(s)return s;let o=Ie(t);if(o!=="filter"&&o in e)return Xs[t]=o;o=Ts(o);for(let n=0;n<sn.length;n++){const r=sn[n]+o;if(r in e)return Xs[t]=r}return t}const on="http://www.w3.org/1999/xlink";function nn(e,t,s,o,n,r=Jr(t)){o&&t.startsWith("xlink:")?s==null?e.removeAttributeNS(on,t.slice(6,t.length)):e.setAttributeNS(on,t,s):s==null||r&&!wn(s)?e.removeAttribute(t):e.setAttribute(t,r?"":De(s)?String(s):s)}function rn(e,t,s,o,n){if(t==="innerHTML"||t==="textContent"){s!=null&&(e[t]=t==="innerHTML"?Er(s):s);return}const r=e.tagName;if(t==="value"&&r!=="PROGRESS"&&!r.includes("-")){const l=r==="OPTION"?e.getAttribute("value")||"":e.value,a=s==null?e.type==="checkbox"?"on":"":String(s);(l!==a||!("_value"in e))&&(e.value=a),s==null&&e.removeAttribute(t),e._value=s;return}let i=!1;if(s===""||s==null){const l=typeof e[t];l==="boolean"?s=wn(s):s==null&&l==="string"?(s="",i=!0):l==="number"&&(s=0,i=!0)}try{e[t]=s}catch{}i&&e.removeAttribute(n||t)}function ct(e,t,s,o){e.addEventListener(t,s,o)}function Kl(e,t,s,o){e.removeEventListener(t,s,o)}const ln=Symbol("_vei");function Wl(e,t,s,o,n=null){const r=e[ln]||(e[ln]={}),i=r[t];if(o&&i)i.value=o;else{const[l,a]=Jl(t);if(o){const f=r[t]=Yl(o,n);ct(e,l,f,a)}else i&&(Kl(e,l,i,a),r[t]=void 0)}}const an=/(?:Once|Passive|Capture)$/;function Jl(e){let t;if(an.test(e)){t={};let o;for(;o=e.match(an);)e=e.slice(0,e.length-o[0].length),t[o[0].toLowerCase()]=!0}return[e[2]===":"?e.slice(3):dt(e.slice(2)),t]}let Zs=0;const ql=Promise.resolve(),Gl=()=>Zs||(ql.then(()=>Zs=0),Zs=Date.now());function Yl(e,t){const s=o=>{if(!o._vts)o._vts=Date.now();else if(o._vts<=s.attached)return;Be(zl(o,s.value),t,5,[o])};return s.value=e,s.attached=Gl(),s}function zl(e,t){if(A(t)){const s=e.stopImmediatePropagation;return e.stopImmediatePropagation=()=>{s.call(e),e._stopped=!0},t.map(o=>n=>!n._stopped&&o&&o(n))}else return t}const cn=e=>e.charCodeAt(0)===111&&e.charCodeAt(1)===110&&e.charCodeAt(2)>96&&e.charCodeAt(2)<123,Xl=(e,t,s,o,n,r)=>{const i=n==="svg";t==="class"?Ll(e,o,i):t==="style"?Ul(e,s,o):$s(t)?ho(t)||Wl(e,t,s,o,r):(t[0]==="."?(t=t.slice(1),!0):t[0]==="^"?(t=t.slice(1),!1):Zl(e,t,o,i))?(rn(e,t,o),!e.tagName.includes("-")&&(t==="value"||t==="checked"||t==="selected")&&nn(e,t,o,i,r,t!=="value")):e._isVueCE&&(/[A-Z]/.test(t)||!ae(o))?rn(e,Ie(t),o,r,t):(t==="true-value"?e._trueValue=o:t==="false-value"&&(e._falseValue=o),nn(e,t,o,i))};function Zl(e,t,s,o){if(o)return!!(t==="innerHTML"||t==="textContent"||t in e&&cn(t)&&D(s));if(t==="spellcheck"||t==="draggable"||t==="translate"||t==="autocorrect"||t==="sandbox"&&e.tagName==="IFRAME"||t==="form"||t==="list"&&e.tagName==="INPUT"||t==="type"&&e.tagName==="TEXTAREA")return!1;if(t==="width"||t==="height"){const n=e.tagName;if(n==="IMG"||n==="VIDEO"||n==="CANVAS"||n==="SOURCE")return!1}return cn(t)&&ae(s)?!1:t in e}const Nt=e=>{const t=e.props["onUpdate:modelValue"]||!1;return A(t)?s=>ps(t,s):t};function Ql(e){e.target.composing=!0}function un(e){const t=e.target;t.composing&&(t.composing=!1,t.dispatchEvent(new Event("input")))}const Xe=Symbol("_assign");function fn(e,t,s){return t&&(e=e.trim()),s&&(e=Es(e)),e}const Pe={created(e,{modifiers:{lazy:t,trim:s,number:o}},n){e[Xe]=Nt(n);const r=o||n.props&&n.props.type==="number";ct(e,t?"change":"input",i=>{i.target.composing||e[Xe](fn(e.value,s,r))}),(s||r)&&ct(e,"change",()=>{e.value=fn(e.value,s,r)}),t||(ct(e,"compositionstart",Ql),ct(e,"compositionend",un),ct(e,"change",un))},mounted(e,{value:t}){e.value=t??""},beforeUpdate(e,{value:t,oldValue:s,modifiers:{lazy:o,trim:n,number:r}},i){if(e[Xe]=Nt(i),e.composing)return;const l=(r||e.type==="number")&&!/^0\d/.test(e.value)?Es(e.value):e.value,a=t??"";l!==a&&(document.activeElement===e&&e.type!=="range"&&(o&&t===s||n&&e.value.trim()===a)||(e.value=a))}},$t={deep:!0,created(e,t,s){e[Xe]=Nt(s),ct(e,"change",()=>{const o=e._modelValue,n=ns(e),r=e.checked,i=e[Xe];if(A(o)){const l=go(o,n),a=l!==-1;if(r&&!a)i(o.concat(n));else if(!r&&a){const f=[...o];f.splice(l,1),i(f)}}else if(jt(o)){const l=new Set(o);r?l.add(n):l.delete(n),i(l)}else i(Ar(e,r))})},mounted:dn,beforeUpdate(e,t,s){e[Xe]=Nt(s),dn(e,t,s)}};function dn(e,{value:t,oldValue:s},o){e._modelValue=t;let n;if(A(t))n=go(t,o.props.value)>-1;else if(jt(t))n=t.has(o.props.value);else{if(t===s)return;n=ls(t,Ar(e,!0))}e.checked!==n&&(e.checked=n)}const ea={deep:!0,created(e,{value:t,modifiers:{number:s}},o){const n=jt(t);ct(e,"change",()=>{const r=Array.prototype.filter.call(e.options,i=>i.selected).map(i=>s?Es(ns(i)):ns(i));e[Xe](e.multiple?n?new Set(r):r:r[0]),e._assigning=!0,Rs(()=>{e._assigning=!1})}),e[Xe]=Nt(o)},mounted(e,{value:t}){pn(e,t)},beforeUpdate(e,t,s){e[Xe]=Nt(s)},updated(e,{value:t}){e._assigning||pn(e,t)}};function pn(e,t){const s=e.multiple,o=A(t);if(!(s&&!o&&!jt(t))){for(let n=0,r=e.options.length;n<r;n++){const i=e.options[n],l=ns(i);if(s)if(o){const a=typeof l;a==="string"||a==="number"?i.selected=t.some(f=>String(f)===String(l)):i.selected=go(t,l)>-1}else i.selected=t.has(l);else if(ls(ns(i),t)){e.selectedIndex!==n&&(e.selectedIndex=n);return}}!s&&e.selectedIndex!==-1&&(e.selectedIndex=-1)}}function ns(e){return"_value"in e?e._value:e.value}function Ar(e,t){const s=t?"_trueValue":"_falseValue";return s in e?e[s]:t}const ta={esc:"escape",space:" ",up:"arrow-up",left:"arrow-left",right:"arrow-right",down:"arrow-down",delete:"backspace"},sa=(e,t)=>{const s=e._withKeys||(e._withKeys={}),o=t.join(".");return s[o]||(s[o]=n=>{if(!("key"in n))return;const r=dt(n.key);if(t.some(i=>i===r||ta[i]===r))return e(n)})},oa=ye({patchProp:Xl},jl);let hn;function na(){return hn||(hn=vl(oa))}const ra=(...e)=>{const t=na().createApp(...e),{mount:s}=t;return t.mount=o=>{const n=la(o);if(!n)return;const r=t._component;!D(r)&&!r.render&&!r.template&&(r.template=n.innerHTML),n.nodeType===1&&(n.textContent="");const i=s(n,!1,ia(n));return n instanceof Element&&(n.removeAttribute("v-cloak"),n.setAttribute("data-v-app","")),i},t};function ia(e){if(e instanceof SVGElement)return"svg";if(typeof MathMLElement=="function"&&e instanceof MathMLElement)return"mathml"}function la(e){return ae(e)?document.querySelector(e):e}/*!
+**/
+let policy = void 0;
+const tt = typeof window !== "undefined" && window.trustedTypes;
+if (tt) {
+  try {
+    policy = /* @__PURE__ */ tt.createPolicy("vue", {
+      createHTML: (val) => val
+    });
+  } catch (e) {
+  }
+}
+const unsafeToTrustedHTML = policy ? (val) => policy.createHTML(val) : (val) => val;
+const svgNS = "http://www.w3.org/2000/svg";
+const mathmlNS = "http://www.w3.org/1998/Math/MathML";
+const doc = typeof document !== "undefined" ? document : null;
+const templateContainer = doc && /* @__PURE__ */ doc.createElement("template");
+const nodeOps = {
+  insert: (child, parent, anchor) => {
+    parent.insertBefore(child, anchor || null);
+  },
+  remove: (child) => {
+    const parent = child.parentNode;
+    if (parent) {
+      parent.removeChild(child);
+    }
+  },
+  createElement: (tag, namespace, is, props) => {
+    const el = namespace === "svg" ? doc.createElementNS(svgNS, tag) : namespace === "mathml" ? doc.createElementNS(mathmlNS, tag) : is ? doc.createElement(tag, { is }) : doc.createElement(tag);
+    if (tag === "select" && props && props.multiple != null) {
+      el.setAttribute("multiple", props.multiple);
+    }
+    return el;
+  },
+  createText: (text) => doc.createTextNode(text),
+  createComment: (text) => doc.createComment(text),
+  setText: (node, text) => {
+    node.nodeValue = text;
+  },
+  setElementText: (el, text) => {
+    el.textContent = text;
+  },
+  parentNode: (node) => node.parentNode,
+  nextSibling: (node) => node.nextSibling,
+  querySelector: (selector) => doc.querySelector(selector),
+  setScopeId(el, id) {
+    el.setAttribute(id, "");
+  },
+  // __UNSAFE__
+  // Reason: innerHTML.
+  // Static content here can only come from compiled templates.
+  // As long as the user only uses trusted templates, this is safe.
+  insertStaticContent(content, parent, anchor, namespace, start, end) {
+    const before = anchor ? anchor.previousSibling : parent.lastChild;
+    if (start && (start === end || start.nextSibling)) {
+      while (true) {
+        parent.insertBefore(start.cloneNode(true), anchor);
+        if (start === end || !(start = start.nextSibling)) break;
+      }
+    } else {
+      templateContainer.innerHTML = unsafeToTrustedHTML(
+        namespace === "svg" ? `<svg>${content}</svg>` : namespace === "mathml" ? `<math>${content}</math>` : content
+      );
+      const template = templateContainer.content;
+      if (namespace === "svg" || namespace === "mathml") {
+        const wrapper = template.firstChild;
+        while (wrapper.firstChild) {
+          template.appendChild(wrapper.firstChild);
+        }
+        template.removeChild(wrapper);
+      }
+      parent.insertBefore(template, anchor);
+    }
+    return [
+      // first
+      before ? before.nextSibling : parent.firstChild,
+      // last
+      anchor ? anchor.previousSibling : parent.lastChild
+    ];
+  }
+};
+const vtcKey = Symbol("_vtc");
+function patchClass(el, value, isSVG) {
+  const transitionClasses = el[vtcKey];
+  if (transitionClasses) {
+    value = (value ? [value, ...transitionClasses] : [...transitionClasses]).join(" ");
+  }
+  if (value == null) {
+    el.removeAttribute("class");
+  } else if (isSVG) {
+    el.setAttribute("class", value);
+  } else {
+    el.className = value;
+  }
+}
+const vShowOriginalDisplay = Symbol("_vod");
+const vShowHidden = Symbol("_vsh");
+const vShow = {
+  // used for prop mismatch check during hydration
+  name: "show",
+  beforeMount(el, { value }, { transition }) {
+    el[vShowOriginalDisplay] = el.style.display === "none" ? "" : el.style.display;
+    if (transition && value) {
+      transition.beforeEnter(el);
+    } else {
+      setDisplay(el, value);
+    }
+  },
+  mounted(el, { value }, { transition }) {
+    if (transition && value) {
+      transition.enter(el);
+    }
+  },
+  updated(el, { value, oldValue }, { transition }) {
+    if (!value === !oldValue) return;
+    if (transition) {
+      if (value) {
+        transition.beforeEnter(el);
+        setDisplay(el, true);
+        transition.enter(el);
+      } else {
+        transition.leave(el, () => {
+          setDisplay(el, false);
+        });
+      }
+    } else {
+      setDisplay(el, value);
+    }
+  },
+  beforeUnmount(el, { value }) {
+    setDisplay(el, value);
+  }
+};
+function setDisplay(el, value) {
+  el.style.display = value ? el[vShowOriginalDisplay] : "none";
+  el[vShowHidden] = !value;
+}
+const CSS_VAR_TEXT = Symbol("");
+const displayRE = /(?:^|;)\s*display\s*:/;
+function patchStyle(el, prev, next) {
+  const style = el.style;
+  const isCssString = isString(next);
+  let hasControlledDisplay = false;
+  if (next && !isCssString) {
+    if (prev) {
+      if (!isString(prev)) {
+        for (const key in prev) {
+          if (next[key] == null) {
+            setStyle(style, key, "");
+          }
+        }
+      } else {
+        for (const prevStyle of prev.split(";")) {
+          const key = prevStyle.slice(0, prevStyle.indexOf(":")).trim();
+          if (next[key] == null) {
+            setStyle(style, key, "");
+          }
+        }
+      }
+    }
+    for (const key in next) {
+      if (key === "display") {
+        hasControlledDisplay = true;
+      }
+      setStyle(style, key, next[key]);
+    }
+  } else {
+    if (isCssString) {
+      if (prev !== next) {
+        const cssVarText = style[CSS_VAR_TEXT];
+        if (cssVarText) {
+          next += ";" + cssVarText;
+        }
+        style.cssText = next;
+        hasControlledDisplay = displayRE.test(next);
+      }
+    } else if (prev) {
+      el.removeAttribute("style");
+    }
+  }
+  if (vShowOriginalDisplay in el) {
+    el[vShowOriginalDisplay] = hasControlledDisplay ? style.display : "";
+    if (el[vShowHidden]) {
+      style.display = "none";
+    }
+  }
+}
+const importantRE = /\s*!important$/;
+function setStyle(style, name, val) {
+  if (isArray(val)) {
+    val.forEach((v) => setStyle(style, name, v));
+  } else {
+    if (val == null) val = "";
+    if (name.startsWith("--")) {
+      style.setProperty(name, val);
+    } else {
+      const prefixed = autoPrefix(style, name);
+      if (importantRE.test(val)) {
+        style.setProperty(
+          hyphenate(prefixed),
+          val.replace(importantRE, ""),
+          "important"
+        );
+      } else {
+        style[prefixed] = val;
+      }
+    }
+  }
+}
+const prefixes = ["Webkit", "Moz", "ms"];
+const prefixCache = {};
+function autoPrefix(style, rawName) {
+  const cached = prefixCache[rawName];
+  if (cached) {
+    return cached;
+  }
+  let name = camelize(rawName);
+  if (name !== "filter" && name in style) {
+    return prefixCache[rawName] = name;
+  }
+  name = capitalize(name);
+  for (let i = 0; i < prefixes.length; i++) {
+    const prefixed = prefixes[i] + name;
+    if (prefixed in style) {
+      return prefixCache[rawName] = prefixed;
+    }
+  }
+  return rawName;
+}
+const xlinkNS = "http://www.w3.org/1999/xlink";
+function patchAttr(el, key, value, isSVG, instance, isBoolean = isSpecialBooleanAttr(key)) {
+  if (isSVG && key.startsWith("xlink:")) {
+    if (value == null) {
+      el.removeAttributeNS(xlinkNS, key.slice(6, key.length));
+    } else {
+      el.setAttributeNS(xlinkNS, key, value);
+    }
+  } else {
+    if (value == null || isBoolean && !includeBooleanAttr(value)) {
+      el.removeAttribute(key);
+    } else {
+      el.setAttribute(
+        key,
+        isBoolean ? "" : isSymbol(value) ? String(value) : value
+      );
+    }
+  }
+}
+function patchDOMProp(el, key, value, parentComponent, attrName) {
+  if (key === "innerHTML" || key === "textContent") {
+    if (value != null) {
+      el[key] = key === "innerHTML" ? unsafeToTrustedHTML(value) : value;
+    }
+    return;
+  }
+  const tag = el.tagName;
+  if (key === "value" && tag !== "PROGRESS" && // custom elements may use _value internally
+  !tag.includes("-")) {
+    const oldValue = tag === "OPTION" ? el.getAttribute("value") || "" : el.value;
+    const newValue = value == null ? (
+      // #11647: value should be set as empty string for null and undefined,
+      // but <input type="checkbox"> should be set as 'on'.
+      el.type === "checkbox" ? "on" : ""
+    ) : String(value);
+    if (oldValue !== newValue || !("_value" in el)) {
+      el.value = newValue;
+    }
+    if (value == null) {
+      el.removeAttribute(key);
+    }
+    el._value = value;
+    return;
+  }
+  let needRemove = false;
+  if (value === "" || value == null) {
+    const type = typeof el[key];
+    if (type === "boolean") {
+      value = includeBooleanAttr(value);
+    } else if (value == null && type === "string") {
+      value = "";
+      needRemove = true;
+    } else if (type === "number") {
+      value = 0;
+      needRemove = true;
+    }
+  }
+  try {
+    el[key] = value;
+  } catch (e) {
+  }
+  needRemove && el.removeAttribute(attrName || key);
+}
+function addEventListener(el, event, handler, options) {
+  el.addEventListener(event, handler, options);
+}
+function removeEventListener(el, event, handler, options) {
+  el.removeEventListener(event, handler, options);
+}
+const veiKey = Symbol("_vei");
+function patchEvent(el, rawName, prevValue, nextValue, instance = null) {
+  const invokers = el[veiKey] || (el[veiKey] = {});
+  const existingInvoker = invokers[rawName];
+  if (nextValue && existingInvoker) {
+    existingInvoker.value = nextValue;
+  } else {
+    const [name, options] = parseName(rawName);
+    if (nextValue) {
+      const invoker = invokers[rawName] = createInvoker(
+        nextValue,
+        instance
+      );
+      addEventListener(el, name, invoker, options);
+    } else if (existingInvoker) {
+      removeEventListener(el, name, existingInvoker, options);
+      invokers[rawName] = void 0;
+    }
+  }
+}
+const optionsModifierRE = /(?:Once|Passive|Capture)$/;
+function parseName(name) {
+  let options;
+  if (optionsModifierRE.test(name)) {
+    options = {};
+    let m;
+    while (m = name.match(optionsModifierRE)) {
+      name = name.slice(0, name.length - m[0].length);
+      options[m[0].toLowerCase()] = true;
+    }
+  }
+  const event = name[2] === ":" ? name.slice(3) : hyphenate(name.slice(2));
+  return [event, options];
+}
+let cachedNow = 0;
+const p = /* @__PURE__ */ Promise.resolve();
+const getNow = () => cachedNow || (p.then(() => cachedNow = 0), cachedNow = Date.now());
+function createInvoker(initialValue, instance) {
+  const invoker = (e) => {
+    if (!e._vts) {
+      e._vts = Date.now();
+    } else if (e._vts <= invoker.attached) {
+      return;
+    }
+    callWithAsyncErrorHandling(
+      patchStopImmediatePropagation(e, invoker.value),
+      instance,
+      5,
+      [e]
+    );
+  };
+  invoker.value = initialValue;
+  invoker.attached = getNow();
+  return invoker;
+}
+function patchStopImmediatePropagation(e, value) {
+  if (isArray(value)) {
+    const originalStop = e.stopImmediatePropagation;
+    e.stopImmediatePropagation = () => {
+      originalStop.call(e);
+      e._stopped = true;
+    };
+    return value.map(
+      (fn) => (e2) => !e2._stopped && fn && fn(e2)
+    );
+  } else {
+    return value;
+  }
+}
+const isNativeOn = (key) => key.charCodeAt(0) === 111 && key.charCodeAt(1) === 110 && // lowercase letter
+key.charCodeAt(2) > 96 && key.charCodeAt(2) < 123;
+const patchProp = (el, key, prevValue, nextValue, namespace, parentComponent) => {
+  const isSVG = namespace === "svg";
+  if (key === "class") {
+    patchClass(el, nextValue, isSVG);
+  } else if (key === "style") {
+    patchStyle(el, prevValue, nextValue);
+  } else if (isOn(key)) {
+    if (!isModelListener(key)) {
+      patchEvent(el, key, prevValue, nextValue, parentComponent);
+    }
+  } else if (key[0] === "." ? (key = key.slice(1), true) : key[0] === "^" ? (key = key.slice(1), false) : shouldSetAsProp(el, key, nextValue, isSVG)) {
+    patchDOMProp(el, key, nextValue);
+    if (!el.tagName.includes("-") && (key === "value" || key === "checked" || key === "selected")) {
+      patchAttr(el, key, nextValue, isSVG, parentComponent, key !== "value");
+    }
+  } else if (
+    // #11081 force set props for possible async custom element
+    el._isVueCE && (/[A-Z]/.test(key) || !isString(nextValue))
+  ) {
+    patchDOMProp(el, camelize(key), nextValue, parentComponent, key);
+  } else {
+    if (key === "true-value") {
+      el._trueValue = nextValue;
+    } else if (key === "false-value") {
+      el._falseValue = nextValue;
+    }
+    patchAttr(el, key, nextValue, isSVG);
+  }
+};
+function shouldSetAsProp(el, key, value, isSVG) {
+  if (isSVG) {
+    if (key === "innerHTML" || key === "textContent") {
+      return true;
+    }
+    if (key in el && isNativeOn(key) && isFunction(value)) {
+      return true;
+    }
+    return false;
+  }
+  if (key === "spellcheck" || key === "draggable" || key === "translate" || key === "autocorrect") {
+    return false;
+  }
+  if (key === "sandbox" && el.tagName === "IFRAME") {
+    return false;
+  }
+  if (key === "form") {
+    return false;
+  }
+  if (key === "list" && el.tagName === "INPUT") {
+    return false;
+  }
+  if (key === "type" && el.tagName === "TEXTAREA") {
+    return false;
+  }
+  if (key === "width" || key === "height") {
+    const tag = el.tagName;
+    if (tag === "IMG" || tag === "VIDEO" || tag === "CANVAS" || tag === "SOURCE") {
+      return false;
+    }
+  }
+  if (isNativeOn(key) && isString(value)) {
+    return false;
+  }
+  return key in el;
+}
+const getModelAssigner = (vnode) => {
+  const fn = vnode.props["onUpdate:modelValue"] || false;
+  return isArray(fn) ? (value) => invokeArrayFns(fn, value) : fn;
+};
+function onCompositionStart(e) {
+  e.target.composing = true;
+}
+function onCompositionEnd(e) {
+  const target = e.target;
+  if (target.composing) {
+    target.composing = false;
+    target.dispatchEvent(new Event("input"));
+  }
+}
+const assignKey = Symbol("_assign");
+function castValue(value, trim, number) {
+  if (trim) value = value.trim();
+  if (number) value = looseToNumber(value);
+  return value;
+}
+const vModelText = {
+  created(el, { modifiers: { lazy, trim, number } }, vnode) {
+    el[assignKey] = getModelAssigner(vnode);
+    const castToNumber = number || vnode.props && vnode.props.type === "number";
+    addEventListener(el, lazy ? "change" : "input", (e) => {
+      if (e.target.composing) return;
+      el[assignKey](castValue(el.value, trim, castToNumber));
+    });
+    if (trim || castToNumber) {
+      addEventListener(el, "change", () => {
+        el.value = castValue(el.value, trim, castToNumber);
+      });
+    }
+    if (!lazy) {
+      addEventListener(el, "compositionstart", onCompositionStart);
+      addEventListener(el, "compositionend", onCompositionEnd);
+      addEventListener(el, "change", onCompositionEnd);
+    }
+  },
+  // set value on mounted so it's after min/max for type="range"
+  mounted(el, { value }) {
+    el.value = value == null ? "" : value;
+  },
+  beforeUpdate(el, { value, oldValue, modifiers: { lazy, trim, number } }, vnode) {
+    el[assignKey] = getModelAssigner(vnode);
+    if (el.composing) return;
+    const elValue = (number || el.type === "number") && !/^0\d/.test(el.value) ? looseToNumber(el.value) : el.value;
+    const newValue = value == null ? "" : value;
+    if (elValue === newValue) {
+      return;
+    }
+    if (document.activeElement === el && el.type !== "range") {
+      if (lazy && value === oldValue) {
+        return;
+      }
+      if (trim && el.value.trim() === newValue) {
+        return;
+      }
+    }
+    el.value = newValue;
+  }
+};
+const vModelCheckbox = {
+  // #4096 array checkboxes need to be deep traversed
+  deep: true,
+  created(el, _, vnode) {
+    el[assignKey] = getModelAssigner(vnode);
+    addEventListener(el, "change", () => {
+      const modelValue = el._modelValue;
+      const elementValue = getValue(el);
+      const checked = el.checked;
+      const assign2 = el[assignKey];
+      if (isArray(modelValue)) {
+        const index = looseIndexOf(modelValue, elementValue);
+        const found = index !== -1;
+        if (checked && !found) {
+          assign2(modelValue.concat(elementValue));
+        } else if (!checked && found) {
+          const filtered = [...modelValue];
+          filtered.splice(index, 1);
+          assign2(filtered);
+        }
+      } else if (isSet(modelValue)) {
+        const cloned = new Set(modelValue);
+        if (checked) {
+          cloned.add(elementValue);
+        } else {
+          cloned.delete(elementValue);
+        }
+        assign2(cloned);
+      } else {
+        assign2(getCheckboxValue(el, checked));
+      }
+    });
+  },
+  // set initial checked on mount to wait for true-value/false-value
+  mounted: setChecked,
+  beforeUpdate(el, binding, vnode) {
+    el[assignKey] = getModelAssigner(vnode);
+    setChecked(el, binding, vnode);
+  }
+};
+function setChecked(el, { value, oldValue }, vnode) {
+  el._modelValue = value;
+  let checked;
+  if (isArray(value)) {
+    checked = looseIndexOf(value, vnode.props.value) > -1;
+  } else if (isSet(value)) {
+    checked = value.has(vnode.props.value);
+  } else {
+    if (value === oldValue) return;
+    checked = looseEqual(value, getCheckboxValue(el, true));
+  }
+  if (el.checked !== checked) {
+    el.checked = checked;
+  }
+}
+const vModelSelect = {
+  // <select multiple> value need to be deep traversed
+  deep: true,
+  created(el, { value, modifiers: { number } }, vnode) {
+    const isSetModel = isSet(value);
+    addEventListener(el, "change", () => {
+      const selectedVal = Array.prototype.filter.call(el.options, (o) => o.selected).map(
+        (o) => number ? looseToNumber(getValue(o)) : getValue(o)
+      );
+      el[assignKey](
+        el.multiple ? isSetModel ? new Set(selectedVal) : selectedVal : selectedVal[0]
+      );
+      el._assigning = true;
+      nextTick(() => {
+        el._assigning = false;
+      });
+    });
+    el[assignKey] = getModelAssigner(vnode);
+  },
+  // set value in mounted & updated because <select> relies on its children
+  // <option>s.
+  mounted(el, { value }) {
+    setSelected(el, value);
+  },
+  beforeUpdate(el, _binding, vnode) {
+    el[assignKey] = getModelAssigner(vnode);
+  },
+  updated(el, { value }) {
+    if (!el._assigning) {
+      setSelected(el, value);
+    }
+  }
+};
+function setSelected(el, value) {
+  const isMultiple = el.multiple;
+  const isArrayValue = isArray(value);
+  if (isMultiple && !isArrayValue && !isSet(value)) {
+    return;
+  }
+  for (let i = 0, l = el.options.length; i < l; i++) {
+    const option = el.options[i];
+    const optionValue = getValue(option);
+    if (isMultiple) {
+      if (isArrayValue) {
+        const optionType = typeof optionValue;
+        if (optionType === "string" || optionType === "number") {
+          option.selected = value.some((v) => String(v) === String(optionValue));
+        } else {
+          option.selected = looseIndexOf(value, optionValue) > -1;
+        }
+      } else {
+        option.selected = value.has(optionValue);
+      }
+    } else if (looseEqual(getValue(option), value)) {
+      if (el.selectedIndex !== i) el.selectedIndex = i;
+      return;
+    }
+  }
+  if (!isMultiple && el.selectedIndex !== -1) {
+    el.selectedIndex = -1;
+  }
+}
+function getValue(el) {
+  return "_value" in el ? el._value : el.value;
+}
+function getCheckboxValue(el, checked) {
+  const key = checked ? "_trueValue" : "_falseValue";
+  return key in el ? el[key] : checked;
+}
+const keyNames = {
+  esc: "escape",
+  space: " ",
+  up: "arrow-up",
+  left: "arrow-left",
+  right: "arrow-right",
+  down: "arrow-down",
+  delete: "backspace"
+};
+const withKeys = (fn, modifiers) => {
+  const cache = fn._withKeys || (fn._withKeys = {});
+  const cacheKey = modifiers.join(".");
+  return cache[cacheKey] || (cache[cacheKey] = (event) => {
+    if (!("key" in event)) {
+      return;
+    }
+    const eventKey = hyphenate(event.key);
+    if (modifiers.some(
+      (k) => k === eventKey || keyNames[k] === eventKey
+    )) {
+      return fn(event);
+    }
+  });
+};
+const rendererOptions = /* @__PURE__ */ extend({ patchProp }, nodeOps);
+let renderer;
+function ensureRenderer() {
+  return renderer || (renderer = createRenderer(rendererOptions));
+}
+const createApp = (...args) => {
+  const app2 = ensureRenderer().createApp(...args);
+  const { mount } = app2;
+  app2.mount = (containerOrSelector) => {
+    const container = normalizeContainer(containerOrSelector);
+    if (!container) return;
+    const component = app2._component;
+    if (!isFunction(component) && !component.render && !component.template) {
+      component.template = container.innerHTML;
+    }
+    if (container.nodeType === 1) {
+      container.textContent = "";
+    }
+    const proxy = mount(container, false, resolveRootNamespace(container));
+    if (container instanceof Element) {
+      container.removeAttribute("v-cloak");
+      container.setAttribute("data-v-app", "");
+    }
+    return proxy;
+  };
+  return app2;
+};
+function resolveRootNamespace(container) {
+  if (container instanceof SVGElement) {
+    return "svg";
+  }
+  if (typeof MathMLElement === "function" && container instanceof MathMLElement) {
+    return "mathml";
+  }
+}
+function normalizeContainer(container) {
+  if (isString(container)) {
+    const res = document.querySelector(container);
+    return res;
+  }
+  return container;
+}
+/*!
  * pinia v2.3.1
  * (c) 2025 Eduardo San Martin Morote
  * @license MIT
- */let Ir;const Vs=e=>Ir=e,Mr=Symbol();function uo(e){return e&&typeof e=="object"&&Object.prototype.toString.call(e)==="[object Object]"&&typeof e.toJSON!="function"}var Zt;(function(e){e.direct="direct",e.patchObject="patch object",e.patchFunction="patch function"})(Zt||(Zt={}));function aa(){const e=On(!0),t=e.run(()=>J({}));let s=[],o=[];const n=Tt({install(r){Vs(n),n._a=r,r.provide(Mr,n),r.config.globalProperties.$pinia=n,o.forEach(i=>s.push(i)),o=[]},use(r){return this._a?s.push(r):o.push(r),this},_p:s,_a:null,_e:e,_s:new Map,state:t});return n}const Dr=()=>{};function mn(e,t,s,o=Dr){e.push(t);const n=()=>{const r=e.indexOf(t);r>-1&&(e.splice(r,1),o())};return!s&&Tn()&&Gr(n),n}function wt(e,...t){e.slice().forEach(s=>{s(...t)})}const ca=e=>e(),gn=Symbol(),Qs=Symbol();function fo(e,t){e instanceof Map&&t instanceof Map?t.forEach((s,o)=>e.set(o,s)):e instanceof Set&&t instanceof Set&&t.forEach(e.add,e);for(const s in t){if(!t.hasOwnProperty(s))continue;const o=t[s],n=e[s];uo(n)&&uo(o)&&e.hasOwnProperty(s)&&!le(o)&&!ze(o)?e[s]=fo(n,o):e[s]=o}return e}const ua=Symbol();function fa(e){return!uo(e)||!e.hasOwnProperty(ua)}const{assign:rt}=Object;function da(e){return!!(le(e)&&e.effect)}function pa(e,t,s,o){const{state:n,actions:r,getters:i}=t,l=s.state.value[e];let a;function f(){l||(s.state.value[e]=n?n():{});const p=bi(s.state.value[e]);return rt(p,r,Object.keys(i||{}).reduce((m,C)=>(m[C]=Tt(Tr(()=>{Vs(s);const $=s._s.get(e);return i[C].call($,$)})),m),{}))}return a=Rr(e,f,t,s,o,!0),a}function Rr(e,t,s={},o,n,r){let i;const l=rt({actions:{}},s),a={deep:!0};let f,p,m=[],C=[],$;const I=o.state.value[e];!r&&!I&&(o.state.value[e]={}),J({});let R;function se(N){let H;f=p=!1,typeof N=="function"?(N(o.state.value[e]),H={type:Zt.patchFunction,storeId:e,events:$}):(fo(o.state.value[e],N),H={type:Zt.patchObject,payload:N,storeId:e,events:$});const ie=R=Symbol();Rs().then(()=>{R===ie&&(f=!0)}),p=!0,wt(m,H,o.state.value[e])}const L=r?function(){const{state:H}=s,ie=H?H():{};this.$patch(_e=>{rt(_e,ie)})}:Dr;function q(){i.stop(),m=[],C=[],o._s.delete(e)}const G=(N,H="")=>{if(gn in N)return N[Qs]=H,N;const ie=function(){Vs(o);const _e=Array.from(arguments),ke=[],Se=[];function pt(F){ke.push(F)}function yt(F){Se.push(F)}wt(C,{args:_e,name:ie[Qs],store:V,after:pt,onError:yt});let oe;try{oe=N.apply(this&&this.$id===e?this:V,_e)}catch(F){throw wt(Se,F),F}return oe instanceof Promise?oe.then(F=>(wt(ke,F),F)).catch(F=>(wt(Se,F),Promise.reject(F))):(wt(ke,oe),oe)};return ie[gn]=!0,ie[Qs]=H,ie},T={_p:o,$id:e,$onAction:mn.bind(null,C),$patch:se,$reset:L,$subscribe(N,H={}){const ie=mn(m,N,H.detached,()=>_e()),_e=i.run(()=>At(()=>o.state.value[e],ke=>{(H.flush==="sync"?p:f)&&N({storeId:e,type:Zt.direct,events:$},ke)},rt({},a,H)));return ie},$dispose:q},V=Is(T);o._s.set(e,V);const ce=(o._a&&o._a.runWithContext||ca)(()=>o._e.run(()=>(i=On()).run(()=>t({action:G}))));for(const N in ce){const H=ce[N];if(le(H)&&!da(H)||ze(H))r||(I&&fa(H)&&(le(H)?H.value=I[N]:fo(H,I[N])),o.state.value[e][N]=H);else if(typeof H=="function"){const ie=G(H,N);ce[N]=ie,l.actions[N]=H}}return rt(V,ce),rt(W(V),ce),Object.defineProperty(V,"$state",{get:()=>o.state.value[e],set:N=>{se(H=>{rt(H,N)})}}),o._p.forEach(N=>{rt(V,i.run(()=>N({store:V,app:o._a,pinia:o,options:l})))}),I&&r&&s.hydrate&&s.hydrate(V.$state,I),f=!0,p=!0,V}/*! #__NO_SIDE_EFFECTS__ */function ha(e,t,s){let o,n;const r=typeof t=="function";o=e,n=r?s:t;function i(l,a){const f=el();return l=l||(f?zt(Mr,null):null),l&&Vs(l),l=Ir,l._s.has(o)||(r?Rr(o,t,n,l):pa(o,n,l)),l._s.get(o)}return i.$id=o,i}const ma=ha("doors",()=>{const e=J([]),t=J([]),s=J({}),o=J({}),n=J(!1);function r(p){e.value=p}function i(p){t.value=p}function l(p){s.value=p}function a(p){o.value=p}function f(p){n.value=p}return{doors:e,logs:t,stats:s,playerInfo:o,isLoading:n,setDoors:r,setLogs:i,setStats:l,setPlayerInfo:a,setLoading:f}}),ga={class:"header"},va={class:"header-right"},ba={__name:"AppHeader",emits:["close"],setup(e){return(t,s)=>(j(),K("div",ga,[s[2]||(s[2]=Rt('<div class="header-content"><div class="header-icon-wrapper"><svg class="header-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2" ry="2" stroke="currentColor" fill="none"></rect><path d="M7 4v16" stroke="currentColor" fill="none"></path><path d="M7 12h10" stroke="currentColor" fill="none"></path><circle cx="9" cy="12" r="1" stroke="currentColor" fill="none"></circle></svg></div><div><div class="title">Portas</div></div></div>',1)),c("div",va,[c("button",{class:"close-btn",onClick:s[0]||(s[0]=o=>t.$emit("close")),title:"Fechar"},[...s[1]||(s[1]=[c("svg",{viewBox:"0 0 24 24",fill:"none",stroke:"currentColor","stroke-width":"2"},[c("path",{d:"M18 6L6 18M6 6L18 18",stroke:"currentColor","stroke-linecap":"round","stroke-linejoin":"round"})],-1)])])])]))}},Ao=(e,t)=>{const s=e.__vccOpts||e;for(const[o,n]of t)s[o]=n;return s},ya={class:"footer"},_a={class:"footer-left"},xa={class:"footer-user"},Ca={class:"footer-user-avatar"},wa=["src"],Sa={class:"footer-text"},$a={class:"player-name"},Pa={class:"player-info-row"},Oa={class:"player-info-item"},Ta={class:"player-info-value"},Ea={class:"footer-nav"},ka={__name:"AppFooter",props:{playerInfo:{type:Object,default:()=>({})},activeTab:{type:String,default:"portas"}},emits:["switch-tab","close"],setup(e){function t(s){s.target.src="https://i.imgur.com/8ciNGcq.png"}return(s,o)=>(j(),K("div",ya,[c("div",_a,[c("div",xa,[c("div",Ca,[c("img",{src:e.playerInfo.avatar||"https://i.imgur.com/default-avatar.png",alt:"Avatar",onError:t},null,40,wa)]),c("div",Sa,[o[5]||(o[5]=c("span",{class:"footer-greeting"},"Olá, seja bem-vindo(a)",-1)),c("span",$a,ee(e.playerInfo.fullName||"Carregando..."),1),c("div",Pa,[c("span",Oa,[o[4]||(o[4]=c("i",{class:"fas fa-id-card"},null,-1)),c("span",Ta,ee(e.playerInfo.passport||"-"),1)])])])])]),c("div",Ea,[c("button",{class:we(["nav-icon-btn",{active:e.activeTab==="portas"}]),onClick:o[0]||(o[0]=n=>s.$emit("switch-tab","portas")),title:"Portas"},[...o[6]||(o[6]=[Rt('<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-v-3eb8e96f><rect x="3" y="4" width="18" height="16" rx="2" ry="2" stroke="currentColor" fill="none" data-v-3eb8e96f></rect><path d="M7 4v16" stroke="currentColor" fill="none" data-v-3eb8e96f></path><path d="M7 12h10" stroke="currentColor" fill="none" data-v-3eb8e96f></path><circle cx="9" cy="12" r="1" stroke="currentColor" fill="none" data-v-3eb8e96f></circle></svg>',1)])],2),c("button",{class:we(["nav-icon-btn",{active:e.activeTab==="logs"}]),onClick:o[1]||(o[1]=n=>s.$emit("switch-tab","logs")),title:"Logs"},[...o[7]||(o[7]=[Rt('<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-v-3eb8e96f><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" fill="none" data-v-3eb8e96f></path><polyline points="14 2 14 8 20 8" stroke="currentColor" fill="none" data-v-3eb8e96f></polyline><line x1="16" y1="13" x2="8" y2="13" stroke="currentColor" fill="none" data-v-3eb8e96f></line><line x1="16" y1="17" x2="8" y2="17" stroke="currentColor" fill="none" data-v-3eb8e96f></line><polyline points="10 9 9 9 8 9" stroke="currentColor" fill="none" data-v-3eb8e96f></polyline></svg>',1)])],2),c("button",{class:we(["nav-icon-btn",{active:e.activeTab==="estatisticas"}]),onClick:o[2]||(o[2]=n=>s.$emit("switch-tab","estatisticas")),title:"Estatísticas"},[...o[8]||(o[8]=[c("svg",{width:"20",height:"20",viewBox:"0 0 24 24",fill:"none",stroke:"currentColor","stroke-width":"2"},[c("line",{x1:"18",y1:"20",x2:"18",y2:"10",stroke:"currentColor",fill:"none"}),c("line",{x1:"12",y1:"20",x2:"12",y2:"4",stroke:"currentColor",fill:"none"}),c("line",{x1:"6",y1:"20",x2:"6",y2:"14",stroke:"currentColor",fill:"none"})],-1)])],2),c("button",{class:"nav-icon-btn close-btn",onClick:o[3]||(o[3]=n=>s.$emit("close")),title:"Sair"},[...o[9]||(o[9]=[c("svg",{width:"20",height:"20",viewBox:"0 0 24 24",fill:"none",stroke:"currentColor","stroke-width":"2"},[c("path",{d:"M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4",stroke:"currentColor",fill:"none"}),c("polyline",{points:"16 17 21 12 16 7",stroke:"currentColor",fill:"none"}),c("line",{x1:"21",y1:"12",x2:"9",y2:"12",stroke:"currentColor",fill:"none"})],-1)])])])]))}},Aa=Ao(ka,[["__scopeId","data-v-3eb8e96f"]]),Ia=["data-doorid"],Ma={class:"door-item-header"},Da={class:"door-item-name"},Ra={class:"door-item-info"},Na={class:"door-item-details"},ja={class:"door-detail-item"},Fa={class:"door-detail-content"},La={class:"door-detail-value"},Va={class:"door-detail-item"},Ha={class:"door-detail-content"},Ua={class:"door-detail-value"},Ba={key:0,class:"door-detail-item"},Ka={class:"door-detail-content"},Wa={class:"door-detail-value"},Ja={class:"door-detail-item"},qa={class:"door-detail-content"},Ga={class:"door-detail-value"},Ya={class:"door-detail-item"},za={class:"door-detail-content"},Xa={class:"door-detail-value"},Za={class:"door-item-actions"},Qa={__name:"DoorItem",props:{door:{type:Object,required:!0}},emits:["edit","remove"],setup(e){return(t,s)=>(j(),K("div",{class:"door-item","data-doorid":e.door.id},[c("div",Ma,[c("div",Da,[s[2]||(s[2]=c("i",{class:"fas fa-door-closed"},null,-1)),c("span",null,ee(e.door.name),1)]),c("span",{class:we(["ticket-badge",e.door.state==1?"ticket-badge-primary":""]),style:is(e.door.state!=1?"background: rgb(34 197 94);":"")},[c("i",{class:we(e.door.state==1?"fas fa-lock":"fas fa-unlock")},null,2),me(" "+ee(e.door.state==1?"Trancada":"Destrancada"),1)],6)]),c("div",Ra,[c("div",Na,[c("div",ja,[s[4]||(s[4]=c("i",{class:"fas fa-map-marker-alt"},null,-1)),c("div",Fa,[s[3]||(s[3]=c("span",{class:"door-detail-label"},"Localização",-1)),c("span",La,ee(e.door.coords),1)])]),c("div",Va,[s[6]||(s[6]=c("i",{class:"fas fa-hashtag"},null,-1)),c("div",Ha,[s[5]||(s[5]=c("span",{class:"door-detail-label"},"Hash",-1)),c("span",Ua,ee(e.door.hash),1)])]),e.door.model>0?(j(),K("div",Ba,[s[8]||(s[8]=c("i",{class:"fas fa-cube"},null,-1)),c("div",Ka,[s[7]||(s[7]=c("span",{class:"door-detail-label"},"Modelo",-1)),c("span",Wa,ee(e.door.model),1)])])):ut("",!0),c("div",Ja,[c("i",{class:we(e.door.permission?"fas fa-key":"fas fa-unlock")},null,2),c("div",qa,[s[9]||(s[9]=c("span",{class:"door-detail-label"},"Acesso",-1)),c("span",Ga,ee(e.door.permission||"Público"),1)])]),c("div",Ya,[s[11]||(s[11]=c("i",{class:"fas fa-ruler"},null,-1)),c("div",za,[s[10]||(s[10]=c("span",{class:"door-detail-label"},"Distância",-1)),c("span",Xa,ee(e.door.distance||1.75)+"m",1)])])])]),c("div",Za,[c("button",{class:"btn-edit-door",onClick:s[0]||(s[0]=o=>t.$emit("edit",e.door))},[...s[12]||(s[12]=[c("i",{class:"fas fa-edit"},null,-1),c("span",null,"Editar",-1)])]),c("button",{class:"btn-remove-door",onClick:s[1]||(s[1]=o=>t.$emit("remove",e.door.id))},[...s[13]||(s[13]=[c("i",{class:"fas fa-trash"},null,-1),c("span",null,"Remover",-1)])])])],8,Ia))}},ec={class:"empty-state"},tc={__name:"EmptyState",emits:["create"],setup(e){return(t,s)=>(j(),K("div",ec,[s[2]||(s[2]=Rt('<div class="empty-icon"><svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="16" rx="2" ry="2" stroke="currentColor" fill="none"></rect><path d="M7 4v16" stroke="currentColor" fill="none"></path><path d="M7 12h10" stroke="currentColor" fill="none"></path><circle cx="9" cy="12" r="1" stroke="currentColor" fill="none"></circle></svg></div><div class="empty-message">Nenhuma porta configurada</div><div class="empty-hint">Comece criando sua primeira porta para gerenciar o acesso aos locais do servidor</div>',3)),c("button",{class:"btn-create-door",style:{"margin-top":"1.5rem"},onClick:s[0]||(s[0]=o=>t.$emit("create"))},[...s[1]||(s[1]=[c("i",{class:"fas fa-plus"},null,-1),me(" Criar Primeira Porta ",-1)])])]))}},sc={class:"command-section"},oc={key:0,class:"empty-state"},nc={style:{"margin-bottom":"1.5rem","margin-top":"1rem"}},rc={class:"doors-list"},ic={__name:"DoorList",props:{doors:{type:Array,default:()=>[]},loading:{type:Boolean,default:!1}},emits:["create","edit","remove"],setup(e){return(t,s)=>(j(),K("div",sc,[s[6]||(s[6]=c("div",{class:"section-title"},[c("i",{class:"fas fa-door-open"}),me(" Portas Configuradas ")],-1)),e.loading?(j(),K("div",oc,[...s[4]||(s[4]=[c("div",{class:"empty-message"},"Carregando portas...",-1)])])):e.doors.length===0?(j(),Mt(tc,{key:1,onCreate:s[0]||(s[0]=o=>t.$emit("create"))})):(j(),K(fe,{key:2},[c("div",nc,[c("button",{class:"btn-create-door",onClick:s[1]||(s[1]=o=>t.$emit("create"))},[...s[5]||(s[5]=[c("i",{class:"fas fa-plus"},null,-1),me(" Nova Porta ",-1)])])]),c("div",rc,[(j(!0),K(fe,null,sr(e.doors,o=>(j(),Mt(Qa,{key:o.id,door:o,onEdit:s[2]||(s[2]=n=>t.$emit("edit",n)),onRemove:s[3]||(s[3]=n=>t.$emit("remove",n))},null,8,["door"]))),128))])],64))]))}},lc={class:"command-section"},ac={key:0,class:"empty-state"},cc={key:1,class:"empty-state"},uc={key:2,class:"logs-list"},fc={class:"log-item-header"},dc={class:"log-item-info"},pc={class:"log-item-action"},hc={class:"log-item-meta"},mc={key:0,class:"log-item-details"},gc={class:"log-detail-item"},vc={key:0,class:"log-detail-item"},bc={key:1,class:"log-detail-item"},yc={key:2,class:"log-detail-item"},_c={__name:"LogsList",props:{logs:{type:Array,default:()=>[]},loading:{type:Boolean,default:!1}},setup(e){function t(r){return r.includes("Criar")?"fa-plus-circle":r.includes("Remover")?"fa-trash":r.includes("Editar")?"fa-edit":"fa-door-closed"}function s(r){return r.includes("Criar")?"rgb(34 197 94)":r.includes("Remover")?"rgb(239 68 68)":r.includes("Editar")?"rgb(251 191 36)":"rgb(var(--main))"}function o(r){if(!r)return"N/A";const i=new Date(r),l=String(i.getDate()).padStart(2,"0"),a=String(i.getMonth()+1).padStart(2,"0"),f=i.getFullYear(),p=String(i.getHours()).padStart(2,"0"),m=String(i.getMinutes()).padStart(2,"0");return`${l}/${a}/${f} ${p}:${m}`}function n(r){return r.replace(/\*\*/g,"").replace(/\n/g," | ")}return(r,i)=>(j(),K("div",lc,[i[11]||(i[11]=c("div",{class:"section-title"},[c("i",{class:"fas fa-file-alt"}),me(" Logs de Ações ")],-1)),e.loading?(j(),K("div",ac,[...i[0]||(i[0]=[c("div",{class:"empty-message"},"Carregando logs...",-1)])])):e.logs.length===0?(j(),K("div",cc,[...i[1]||(i[1]=[Rt('<div class="empty-icon"><svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" fill="none"></path><polyline points="14 2 14 8 20 8" stroke="currentColor" fill="none"></polyline><line x1="16" y1="13" x2="8" y2="13" stroke="currentColor" fill="none"></line><line x1="16" y1="17" x2="8" y2="17" stroke="currentColor" fill="none"></line><polyline points="10 9 9 9 8 9" stroke="currentColor" fill="none"></polyline></svg></div><div class="empty-message">Nenhum log encontrado</div><div class="empty-hint">Os logs de ações das portas aparecerão aqui</div>',3)])])):(j(),K("div",uc,[(j(!0),K(fe,null,sr(e.logs,l=>(j(),K("div",{key:l.id,class:"log-item"},[c("div",fc,[c("div",{class:"log-item-icon",style:is({background:s(l.action)})},[c("i",{class:we("fas "+t(l.action))},null,2)],4),c("div",dc,[c("div",pc,ee(l.action),1),c("div",hc,[c("span",null,[i[2]||(i[2]=c("i",{class:"fas fa-user"},null,-1)),me(" "+ee(l.staffName)+" (#"+ee(l.staffPassport)+")",1)]),c("span",null,[i[3]||(i[3]=c("i",{class:"fas fa-clock"},null,-1)),me(" "+ee(o(l.createdAt)),1)])])])]),l.doorName?(j(),K("div",mc,[c("div",gc,[i[5]||(i[5]=c("i",{class:"fas fa-door-closed"},null,-1)),c("span",null,[i[4]||(i[4]=c("strong",null,"Porta:",-1)),me(" "+ee(l.doorName),1)])]),l.doorCoords?(j(),K("div",vc,[i[7]||(i[7]=c("i",{class:"fas fa-map-marker-alt"},null,-1)),c("span",null,[i[6]||(i[6]=c("strong",null,"Coords Porta:",-1)),me(" "+ee(l.doorCoords),1)])])):ut("",!0),l.staffCoords?(j(),K("div",bc,[i[9]||(i[9]=c("i",{class:"fas fa-user-location"},null,-1)),c("span",null,[i[8]||(i[8]=c("strong",null,"Coords Staff:",-1)),me(" "+ee(l.staffCoords),1)])])):ut("",!0),l.additionalInfo?(j(),K("div",yc,[i[10]||(i[10]=c("i",{class:"fas fa-info-circle"},null,-1)),c("span",null,ee(n(l.additionalInfo)),1)])):ut("",!0)])):ut("",!0)]))),128))]))]))}},xc={class:"command-section"},Cc={key:0,class:"empty-state"},wc={key:1,class:"doors-list",style:{"grid-template-columns":"repeat(auto-fill, minmax(280px, 1fr))"}},Sc={class:"door-item"},$c={class:"door-item-info"},Pc={class:"stat-value"},Oc={class:"door-item"},Tc={class:"door-item-info"},Ec={class:"stat-value"},kc={class:"door-item"},Ac={class:"door-item-info"},Ic={class:"stat-value stat-green"},Mc={class:"door-item"},Dc={class:"door-item-info"},Rc={class:"stat-value stat-yellow"},Nc={class:"door-item"},jc={class:"door-item-info"},Fc={class:"stat-value stat-green"},Lc={__name:"StatsList",props:{stats:{type:Object,default:()=>({})},loading:{type:Boolean,default:!1}},setup(e){return(t,s)=>(j(),K("div",xc,[s[6]||(s[6]=c("div",{class:"section-title"},[c("i",{class:"fas fa-chart-bar"}),me(" Estatísticas do Sistema ")],-1)),e.loading?(j(),K("div",Cc,[...s[0]||(s[0]=[Rt('<div class="empty-icon" data-v-76adbb88><svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-v-76adbb88><line x1="18" y1="20" x2="18" y2="10" stroke="currentColor" fill="none" data-v-76adbb88></line><line x1="12" y1="20" x2="12" y2="4" stroke="currentColor" fill="none" data-v-76adbb88></line><line x1="6" y1="20" x2="6" y2="14" stroke="currentColor" fill="none" data-v-76adbb88></line></svg></div><div class="empty-message" data-v-76adbb88>Carregando Estatísticas</div><div class="empty-hint" data-v-76adbb88>Aguarde enquanto buscamos as informações do sistema</div>',3)])])):(j(),K("div",wc,[c("div",Sc,[s[1]||(s[1]=c("div",{class:"door-item-header"},[c("div",{class:"door-item-name"},[c("i",{class:"fas fa-door-open"}),c("span",null,"Total de Portas")])],-1)),c("div",$c,[c("div",Pc,ee(e.stats.totalPortas||0),1)])]),c("div",Oc,[s[2]||(s[2]=c("div",{class:"door-item-header"},[c("div",{class:"door-item-name"},[c("i",{class:"fas fa-lock"}),c("span",null,"Portas Trancadas")])],-1)),c("div",Tc,[c("div",Ec,ee(e.stats.portasTrancadas||0),1)])]),c("div",kc,[s[3]||(s[3]=c("div",{class:"door-item-header"},[c("div",{class:"door-item-name"},[c("i",{class:"fas fa-unlock"}),c("span",null,"Portas Destrancadas")])],-1)),c("div",Ac,[c("div",Ic,ee(e.stats.portasDestrancadas||0),1)])]),c("div",Mc,[s[4]||(s[4]=c("div",{class:"door-item-header"},[c("div",{class:"door-item-name"},[c("i",{class:"fas fa-key"}),c("span",null,"Com Permissão")])],-1)),c("div",Dc,[c("div",Rc,ee(e.stats.portasComPermissao||0),1)])]),c("div",Nc,[s[5]||(s[5]=c("div",{class:"door-item-header"},[c("div",{class:"door-item-name"},[c("i",{class:"fas fa-unlock-alt"}),c("span",null,"Portas Públicas")])],-1)),c("div",jc,[c("div",Fc,ee(e.stats.portasPublicas||0),1)])])]))]))}},Vc=Ao(Lc,[["__scopeId","data-v-76adbb88"]]),Hc={class:"modal-content"},Uc={class:"modal-header"},Bc={class:"modal-body"},Kc={key:0,class:"modal-footer"},Wc={__name:"Modal",props:{visible:{type:Boolean,default:!1},title:{type:String,default:"Título"},showFooter:{type:Boolean,default:!0}},emits:["close","confirm"],setup(e){return(t,s)=>(j(),K("div",{class:we(["modal",{hidden:!e.visible}])},[c("div",Hc,[c("div",Uc,[c("h2",null,ee(e.title),1),c("button",{onClick:s[0]||(s[0]=o=>t.$emit("close"))},[...s[3]||(s[3]=[c("svg",{viewBox:"0 0 24 24",fill:"none",xmlns:"http://www.w3.org/2000/svg"},[c("path",{d:"M18 6L6 18M6 6L18 18",stroke:"currentColor","stroke-width":"2","stroke-linecap":"round","stroke-linejoin":"round"})],-1)])])]),c("div",Bc,[Wi(t.$slots,"body")]),e.showFooter?(j(),K("div",Kc,[c("button",{class:"btn-cancel",onClick:s[1]||(s[1]=o=>t.$emit("close"))},"Cancelar"),c("button",{class:"btn-confirm",onClick:s[2]||(s[2]=o=>t.$emit("confirm"))},"Confirmar")])):ut("",!0)])],2))}},Jc={class:"modal-content",style:{width:"450px"}},qc={class:"modal-header",style:{background:"linear-gradient(135deg, #ef4444 0%, #dc2626 100%)"}},Gc={class:"modal-body"},Yc={class:"confirm-message-container"},zc=["innerHTML"],Xc={class:"modal-footer"},Zc={__name:"ConfirmModal",props:{visible:{type:Boolean,default:!1},title:{type:String,default:"Confirmar Ação"},message:{type:String,default:""}},emits:["close","confirm"],setup(e){return(t,s)=>(j(),K("div",{class:we(["modal",{hidden:!e.visible}])},[c("div",Jc,[c("div",qc,[c("h2",null,ee(e.title),1),c("button",{onClick:s[0]||(s[0]=o=>t.$emit("close"))},[...s[3]||(s[3]=[c("svg",{viewBox:"0 0 24 24",fill:"none",xmlns:"http://www.w3.org/2000/svg"},[c("path",{d:"M18 6L6 18M6 6L18 18",stroke:"currentColor","stroke-width":"2","stroke-linecap":"round","stroke-linejoin":"round"})],-1)])])]),c("div",Gc,[c("div",Yc,[s[4]||(s[4]=c("i",{class:"fas fa-exclamation-triangle confirm-icon"},null,-1)),c("p",{class:"confirm-message-text",innerHTML:e.message},null,8,zc)])]),c("div",Xc,[c("button",{class:"btn-cancel",onClick:s[1]||(s[1]=o=>t.$emit("close"))},"Cancelar"),c("button",{class:"btn-confirm",style:{background:"linear-gradient(135deg, #ef4444 0%, #dc2626 100%)"},onClick:s[2]||(s[2]=o=>t.$emit("confirm"))}," Confirmar ")])])],2))}},Qc=Ao(Zc,[["__scopeId","data-v-24e06cd2"]]),eu={class:"modal-content",style:{width:"400px","max-width":"90vw"}},tu={class:"modal-header"},su={class:"modal-body"},ou={class:"form-group"},nu={class:"modal-footer"},ru={__name:"PasswordModal",props:{visible:{type:Boolean,default:!1},doorName:{type:String,default:"Porta"}},emits:["close","submit"],setup(e,{emit:t}){const s=e,o=t,n=J(""),r=J(null);At(()=>s.visible,l=>{l&&(n.value="",Rs(()=>{var a;(a=r.value)==null||a.focus()}))});function i(){o("submit",n.value.trim()),n.value=""}return(l,a)=>(j(),K("div",{class:we(["modal",{hidden:!e.visible}])},[c("div",eu,[c("div",tu,[c("h2",null,"Código de Acesso - "+ee(e.doorName),1),c("button",{onClick:a[0]||(a[0]=f=>l.$emit("close"))},[...a[3]||(a[3]=[c("svg",{viewBox:"0 0 24 24",fill:"none",xmlns:"http://www.w3.org/2000/svg"},[c("path",{d:"M18 6L6 18M6 6L18 18",stroke:"currentColor","stroke-width":"2","stroke-linecap":"round","stroke-linejoin":"round"})],-1)])])]),c("div",su,[c("div",ou,[a[4]||(a[4]=c("label",null,"Digite o código de acesso:",-1)),ne(c("input",{type:"password","onUpdate:modelValue":a[1]||(a[1]=f=>n.value=f),placeholder:"Código...",autocomplete:"off",ref_key:"passwordInput",ref:r,onKeypress:sa(i,["enter"])},null,544),[[Pe,n.value]])])]),c("div",nu,[c("button",{class:"btn-cancel",onClick:a[2]||(a[2]=f=>l.$emit("close"))},"Cancelar"),c("button",{class:"btn-confirm",onClick:i},"Confirmar")])])],2))}},iu={class:"form-group"},lu={style:{display:"flex","align-items":"center",gap:"0.5rem","margin-bottom":"1rem"}},au={__name:"CreateDoorForm",props:{onStartSelection:{type:Function,required:!0},onClose:{type:Function,required:!0}},setup(e){const t=e,s=J(!1);function o(){t.onStartSelection(s.value)}return(n,r)=>(j(),K("div",null,[c("div",iu,[c("label",lu,[ne(c("input",{type:"checkbox","onUpdate:modelValue":r[0]||(r[0]=i=>s.value=i),style:{width:"auto",margin:"0"}},null,512),[[$t,s.value]]),r[1]||(r[1]=c("span",null,"Porta Dupla (selecionar duas portas)",-1))]),r[2]||(r[2]=c("p",{class:"item-info-text"},[c("i",{class:"fas fa-info-circle"}),me(" Marque esta opção se a porta é composta por duas portas controladas juntas ")],-1))]),c("div",{class:"form-group"},[c("button",{class:"btn-start-selection",onClick:o},[...r[3]||(r[3]=[c("i",{class:"fas fa-door-open"},null,-1),me(" Iniciar Seleção de Porta ",-1)])])])]))}},cu={class:"modal-scroll-container"},uu={class:"form-group"},fu={class:"form-group"},du=["value"],pu={class:"form-group"},hu=["value"],mu={class:"form-group"},gu=["value"],vu={class:"form-group"},bu=["value"],yu={class:"form-group"},_u=["value"],xu={class:"form-group"},Cu=["value"],wu={class:"form-group"},Su=["readonly"],$u={key:0,class:"item-info-text"},Pu={class:"form-group"},Ou=["readonly"],Tu={class:"form-group"},Eu=["readonly"],ku={class:"form-group"},Au={class:"form-group"},Iu={class:"form-group"},Mu={class:"form-group"},Du={class:"form-group"},Ru={class:"form-group"},Nu={class:"form-group"},ju={class:"form-group"},Fu={class:"form-group"},Lu={key:2,class:"checkbox-group"},Vu={class:"checkbox-group"},Hu={class:"checkbox-group"},Uu={class:"checkbox-group"},Bu={class:"checkbox-group"},vn={__name:"EditDoorForm",props:{doorData:{type:Object,default:()=>({})},isDouble:{type:Boolean,default:!1},isNew:{type:Boolean,default:!1},onSubmit:{type:Function,default:null}},setup(e,{expose:t}){const s=e,o=J({name:"",coords:"",hash:0,model:0,passcode:"",permission:"",grade:0,characters:"",items:"",state:1,distance:1.75,autolock:0,doorRate:5,double:!1,automatic:!1,lockpick:!1,hideUI:!1,holdOpen:!1});function n(l){return l?typeof l=="string"?l:`${l.x}, ${l.y}, ${l.z}`:""}function r(){var a,f;const l=s.doorData;s.isNew&&!s.isDouble?(o.value.coords=n(l.coords),o.value.hash=l.hash||0,o.value.model=l.model||0,o.value.double=!1):s.isNew&&s.isDouble?(o.value.double=!0,o.value.hash=((a=l.door1)==null?void 0:a.hash)||0,o.value.model=((f=l.door1)==null?void 0:f.model)||0):(o.value.name=l.name||"",o.value.coords=l.coords||"",o.value.hash=l.hash||0,o.value.model=l.model||0,o.value.passcode=l.passcode||"",o.value.permission=l.permission||"",o.value.grade=l.grade||0,o.value.characters=Array.isArray(l.characters)?l.characters.join(","):"",o.value.items=Array.isArray(l.items)?l.items.join(","):"",o.value.state=l.state??1,o.value.distance=l.distance||1.75,o.value.autolock=l.autolock||0,o.value.doorRate=l.doorRate||5,o.value.double=l.double||!1,o.value.automatic=l.automatic||!1,o.value.lockpick=l.lockpick||!1,o.value.hideUI=l.hideUI||!1,o.value.holdOpen=l.holdOpen||!1)}$o(()=>{r()}),At(()=>s.doorData,()=>{r()},{deep:!0});function i(){var p;if(!o.value.name)return null;let l=null;o.value.characters&&(l=o.value.characters.split(",").map(m=>parseInt(m.trim())).filter(m=>!isNaN(m)),l.length===0&&(l=null));let a=null;o.value.items&&(a=o.value.items.split(",").map(m=>m.trim()).filter(m=>m.length>0),a.length===0&&(a=null));const f={doorid:(p=s.doorData)==null?void 0:p.id,name:o.value.name,coords:o.value.coords,hash:o.value.hash,model:o.value.model,passcode:o.value.passcode||"",permission:o.value.permission||"",grade:o.value.grade,characters:l,items:a,state:o.value.state,distance:o.value.distance,autolock:o.value.autolock,doorRate:o.value.doorRate,double:s.isDouble||o.value.double,automatic:o.value.automatic,lockpick:o.value.lockpick,hideUI:o.value.hideUI,holdOpen:o.value.holdOpen};return s.isNew&&s.isDouble&&s.doorData.door1&&s.doorData.door2&&(f.doors={door1:{coords:n(s.doorData.door1.coords),hash:s.doorData.door1.hash,model:s.doorData.door1.model},door2:{coords:n(s.doorData.door2.coords),hash:s.doorData.door2.hash,model:s.doorData.door2.model}}),s.onSubmit&&s.onSubmit(f),f}return t({submit:i}),(l,a)=>(j(),K("div",cu,[c("div",uu,[a[18]||(a[18]=c("label",null,"Nome da Porta *",-1)),ne(c("input",{type:"text","onUpdate:modelValue":a[0]||(a[0]=f=>o.value.name=f),placeholder:"Ex: Porta Principal",required:""},null,512),[[Pe,o.value.name]])]),e.isDouble&&e.doorData.door1&&e.doorData.door2?(j(),K(fe,{key:0},[c("div",fu,[a[19]||(a[19]=c("label",null,"Porta 1 - Coordenadas *",-1)),c("input",{type:"text",value:n(e.doorData.door1.coords),readonly:""},null,8,du)]),c("div",pu,[a[20]||(a[20]=c("label",null,"Porta 1 - Hash *",-1)),c("input",{type:"number",value:e.doorData.door1.hash,readonly:""},null,8,hu)]),c("div",mu,[a[21]||(a[21]=c("label",null,"Porta 1 - Model",-1)),c("input",{type:"number",value:e.doorData.door1.model,readonly:""},null,8,gu)]),c("div",vu,[a[22]||(a[22]=c("label",null,"Porta 2 - Coordenadas *",-1)),c("input",{type:"text",value:n(e.doorData.door2.coords),readonly:""},null,8,bu)]),c("div",yu,[a[23]||(a[23]=c("label",null,"Porta 2 - Hash *",-1)),c("input",{type:"number",value:e.doorData.door2.hash,readonly:""},null,8,_u)]),c("div",xu,[a[24]||(a[24]=c("label",null,"Porta 2 - Model",-1)),c("input",{type:"number",value:e.doorData.door2.model,readonly:""},null,8,Cu)])],64)):(j(),K(fe,{key:1},[c("div",wu,[a[26]||(a[26]=c("label",null,"Coordenadas *",-1)),ne(c("input",{type:"text","onUpdate:modelValue":a[1]||(a[1]=f=>o.value.coords=f),readonly:e.isNew},null,8,Su),[[Pe,o.value.coords]]),e.isNew?(j(),K("p",$u,[...a[25]||(a[25]=[c("i",{class:"fas fa-info-circle"},null,-1),me(" Coordenadas exatas da porta selecionada ",-1)])])):ut("",!0)]),c("div",Pu,[a[27]||(a[27]=c("label",null,"Hash da Porta *",-1)),ne(c("input",{type:"number","onUpdate:modelValue":a[2]||(a[2]=f=>o.value.hash=f),readonly:e.isNew},null,8,Ou),[[Pe,o.value.hash,void 0,{number:!0}]])]),c("div",Tu,[a[28]||(a[28]=c("label",null,"Model",-1)),ne(c("input",{type:"number","onUpdate:modelValue":a[3]||(a[3]=f=>o.value.model=f),readonly:e.isNew},null,8,Eu),[[Pe,o.value.model,void 0,{number:!0}]])])],64)),c("div",ku,[a[29]||(a[29]=c("label",null,"Código de Acesso (Opcional)",-1)),ne(c("input",{type:"text","onUpdate:modelValue":a[4]||(a[4]=f=>o.value.passcode=f),placeholder:"Ex: 1234 ou frase secreta"},null,512),[[Pe,o.value.passcode]]),a[30]||(a[30]=c("p",{class:"item-info-text"},[c("i",{class:"fas fa-info-circle"}),me(" Código ou frase para abrir a porta ")],-1))]),c("div",Au,[a[31]||(a[31]=c("label",null,"Permissão/Grupo (Opcional)",-1)),ne(c("input",{type:"text","onUpdate:modelValue":a[5]||(a[5]=f=>o.value.permission=f),placeholder:"Ex: Admin, Policia"},null,512),[[Pe,o.value.permission]])]),c("div",Iu,[a[32]||(a[32]=c("label",null,"Grade Mínima do Grupo (Opcional)",-1)),ne(c("input",{type:"number","onUpdate:modelValue":a[6]||(a[6]=f=>o.value.grade=f),min:"0",max:"10"},null,512),[[Pe,o.value.grade,void 0,{number:!0}]])]),c("div",Mu,[a[33]||(a[33]=c("label",null,"IDs de Personagens Permitidos (Opcional)",-1)),ne(c("input",{type:"text","onUpdate:modelValue":a[7]||(a[7]=f=>o.value.characters=f),placeholder:"Ex: 1,2,3 (separados por vírgula)"},null,512),[[Pe,o.value.characters]])]),c("div",Du,[a[34]||(a[34]=c("label",null,"Itens Necessários (Opcional)",-1)),ne(c("input",{type:"text","onUpdate:modelValue":a[8]||(a[8]=f=>o.value.items=f),placeholder:"Ex: keycard,lockpick (separados por vírgula)"},null,512),[[Pe,o.value.items]])]),c("div",Ru,[a[36]||(a[36]=c("label",null,"Estado Inicial",-1)),ne(c("select",{"onUpdate:modelValue":a[9]||(a[9]=f=>o.value.state=f)},[...a[35]||(a[35]=[c("option",{value:1},"Trancada",-1),c("option",{value:0},"Destrancada",-1)])],512),[[ea,o.value.state,void 0,{number:!0}]])]),c("div",Nu,[a[37]||(a[37]=c("label",null,"Distância de Interação",-1)),ne(c("input",{type:"number","onUpdate:modelValue":a[10]||(a[10]=f=>o.value.distance=f),step:"0.1",min:"0.5",max:"5.0"},null,512),[[Pe,o.value.distance,void 0,{number:!0}]])]),c("div",ju,[a[38]||(a[38]=c("label",null,"Auto-Trancar Após (Segundos)",-1)),ne(c("input",{type:"number","onUpdate:modelValue":a[11]||(a[11]=f=>o.value.autolock=f),min:"0",step:"1"},null,512),[[Pe,o.value.autolock,void 0,{number:!0}]])]),c("div",Fu,[a[39]||(a[39]=c("label",null,"Velocidade da Porta (Door Rate)",-1)),ne(c("input",{type:"number","onUpdate:modelValue":a[12]||(a[12]=f=>o.value.doorRate=f),step:"0.1",min:"0.1",max:"10.0"},null,512),[[Pe,o.value.doorRate,void 0,{number:!0}]])]),e.isNew?ut("",!0):(j(),K("div",Lu,[ne(c("input",{type:"checkbox","onUpdate:modelValue":a[13]||(a[13]=f=>o.value.double=f),id:"double"},null,512),[[$t,o.value.double]]),a[40]||(a[40]=c("label",{for:"double"},"Porta Dupla",-1))])),c("div",Vu,[ne(c("input",{type:"checkbox","onUpdate:modelValue":a[14]||(a[14]=f=>o.value.automatic=f),id:"automatic"},null,512),[[$t,o.value.automatic]]),a[41]||(a[41]=c("label",{for:"automatic"},"Porta Automática",-1))]),c("div",Hu,[ne(c("input",{type:"checkbox","onUpdate:modelValue":a[15]||(a[15]=f=>o.value.lockpick=f),id:"lockpick"},null,512),[[$t,o.value.lockpick]]),a[42]||(a[42]=c("label",{for:"lockpick"},"Pode ser Lockpickada",-1))]),c("div",Uu,[ne(c("input",{type:"checkbox","onUpdate:modelValue":a[16]||(a[16]=f=>o.value.hideUI=f),id:"hideUI"},null,512),[[$t,o.value.hideUI]]),a[43]||(a[43]=c("label",{for:"hideUI"},"Esconder UI",-1))]),c("div",Bu,[ne(c("input",{type:"checkbox","onUpdate:modelValue":a[17]||(a[17]=f=>o.value.holdOpen=f),id:"holdOpen"},null,512),[[$t,o.value.holdOpen]]),a[44]||(a[44]=c("label",{for:"holdOpen"},"Manter Aberta (Hold Open)",-1))])]))}},Ku={class:"tablet-container bg-default shadow-tablet"},Wu={class:"main-wrapper"},Ju={class:"content"},qu={class:"tab-content active"},Gu={class:"tab-container"},Yu={class:"commands-area"},zu={class:"tab-content active"},Xu={class:"tab-container"},Zu={class:"commands-area"},Qu={class:"tab-content active"},ef={class:"tab-container"},tf={class:"commands-area"},sf={__name:"App",setup(e){ma();const t=J(!1),s=J("portas"),o=J([]),n=J([]),r=J({}),i=J({}),l=J(!1),a=J(!1),f=J(!1),p=J(!1),m=J(""),C=J(!0),$=mi(null),I=J({}),R=J(null),se=J(!1),L=J(""),q=J(""),G=J(null),T=J(!1),V=J("");lr("resourceName","node-doors");function re(){return"node-doors"}function ce(P){const O=document.documentElement;P.main&&O.style.setProperty("--main",P.main),P.mainHover&&O.style.setProperty("--mainHover",P.mainHover),P.mainText&&O.style.setProperty("--mainText",P.mainText),P.from&&O.style.setProperty("--from",P.from),P.to&&O.style.setProperty("--to",P.to)}async function N(){l.value=!0;try{const O=await(await fetch(`https://${re()}/executarComando`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({comando:"getDoors",parametros:{}})})).json();O&&O.success&&O.data?o.value=O.data:o.value=[]}catch{o.value=[]}l.value=!1}async function H(){a.value=!0;try{const O=await(await fetch(`https://${re()}/executarComando`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({comando:"getLogs",parametros:{}})})).json();O&&O.success&&O.data?n.value=O.data:n.value=[]}catch{n.value=[]}a.value=!1}async function ie(){f.value=!0;try{const O=await(await fetch(`https://${re()}/executarComando`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({comando:"getEstatisticas",parametros:{}})})).json();O&&O.success&&O.data?r.value=O.data:r.value={}}catch{r.value={}}f.value=!1}function _e(P){s.value=P,P==="portas"?N():P==="logs"?H():P==="estatisticas"&&ie()}function ke(P){P&&P.themeColors&&ce(P.themeColors),P&&P.playerInfo&&P.playerInfo.success&&(i.value=P.playerInfo),t.value=!0,N()}function Se(){t.value=!1,fetch(`https://${re()}/Close`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({})}).catch(()=>{})}function pt(){m.value="Criar Porta",C.value=!1,$.value=Tt(au),I.value={onStartSelection:Ae,onClose:B},p.value=!0}function yt(P){m.value="Editar Porta",C.value=!0,$.value=Tt(vn),I.value={doorData:P},p.value=!0}async function oe(P){try{const u=await(await fetch(`https://${re()}/executarComando`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({comando:"editDoor",parametros:P})})).json();u&&u.success&&(B(),N())}catch(O){console.error("Erro ao editar porta:",O)}}function F(P){L.value="Confirmar Remoção",q.value="Deseja realmente remover esta porta?<br>Esta ação não pode ser desfeita.",G.value=async()=>{try{const u=await(await fetch(`https://${re()}/executarComando`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({comando:"removeDoor",parametros:{doorid:P}})})).json();u&&u.success&&N()}catch(O){console.error("Erro ao remover porta:",O)}},se.value=!0}function B(){p.value=!1,$.value=null,I.value={}}function Ke(){if(R.value&&typeof R.value.submit=="function"){const P=R.value.submit();P&&oe(P)}}function ot(){se.value=!1,G.value=null}function We(){G.value&&G.value(),ot()}async function Ae(P){B(),Se(),setTimeout(async()=>{try{await fetch(`https://${re()}/startDoorSelection`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({isDouble:P})})}catch(O){console.error("Erro ao iniciar seleção:",O)}},300)}function Ft(P,O){m.value="Criar Porta",C.value=!0,$.value=Tt(vn),I.value={doorData:P,isDouble:O,isNew:!0,onSubmit:Hs},p.value=!0}async function Hs(P){try{const u=await(await fetch(`https://${re()}/executarComando`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({comando:"createDoor",parametros:P})})).json();u&&u.success&&(B(),N())}catch(O){console.error("Erro ao criar porta:",O)}}function Us(P){V.value=P,T.value=!0}function nt(){T.value=!1,V.value="",fetch(`https://${re()}/doorPasswordCancel`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({})}).catch(()=>{})}async function _t(P){try{await fetch(`https://${re()}/doorPasswordSubmit`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({password:P})})}catch(O){console.error("Erro ao enviar senha:",O)}T.value=!1,V.value=""}function xt(P){const O=P.data;if(O.Action==="Open"||O.action==="open"){const u=O.Payload||O;ke(u)}else if(O.Action==="Close"||O.action==="close")t.value=!1;else if(O.action==="reopen")t.value=!0,O.themeColors&&ce(O.themeColors),O.playerInfo&&O.playerInfo.success&&(i.value=O.playerInfo);else if(O.action==="doorSelected"){const u=O.doorData,d=O.isDouble||!1;fetch(`https://${re()}/reopenPanel`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({})}).then(()=>{setTimeout(()=>{Ft(u,d)},300)}).catch(()=>{setTimeout(()=>{Ft(u,d)},500)})}else O.action==="doorSelectionCancelled"?fetch(`https://${re()}/reopenPanel`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({})}):O.action==="openPasswordInput"&&Us(O.doorName||"Porta")}function Lt(P){P.key==="Escape"&&t.value&&(T.value?nt():se.value?ot():p.value?B():Se())}return $o(()=>{window.addEventListener("message",xt),document.addEventListener("keyup",Lt)}),Po(()=>{window.removeEventListener("message",xt),document.removeEventListener("keyup",Lt)}),(P,O)=>(j(),K(fe,null,[c("div",{id:"nui-app",class:we({hidden:!t.value})},[c("div",Ku,[ue(ba,{onClose:Se}),c("div",Wu,[c("div",Ju,[ne(c("div",qu,[c("div",Gu,[c("div",Yu,[ue(ic,{doors:o.value,loading:l.value,onCreate:pt,onEdit:yt,onRemove:F},null,8,["doors","loading"])])])],512),[[zs,s.value==="portas"]]),ne(c("div",zu,[c("div",Xu,[c("div",Zu,[ue(_c,{logs:n.value,loading:a.value},null,8,["logs","loading"])])])],512),[[zs,s.value==="logs"]]),ne(c("div",Qu,[c("div",ef,[c("div",tf,[ue(Vc,{stats:r.value,loading:f.value},null,8,["stats","loading"])])])],512),[[zs,s.value==="estatisticas"]])])]),ue(Aa,{"player-info":i.value,"active-tab":s.value,onSwitchTab:_e,onClose:Se},null,8,["player-info","active-tab"])])],2),ue(Wc,{visible:p.value,title:m.value,"show-footer":C.value,onClose:B,onConfirm:Ke},{body:Xn(()=>[(j(),Mt(Bi($.value),Sr(I.value,{ref_key:"modalContent",ref:R}),null,16))]),_:1},8,["visible","title","show-footer"]),ue(Qc,{visible:se.value,title:L.value,message:q.value,onClose:ot,onConfirm:We},null,8,["visible","title","message"]),ue(ru,{visible:T.value,"door-name":V.value,onClose:nt,onSubmit:_t},null,8,["visible","door-name"])],64))}},Nr=ra(sf),of=aa();Nr.use(of);Nr.mount("#app");
+ */
+let activePinia;
+const setActivePinia = (pinia2) => activePinia = pinia2;
+const piniaSymbol = (
+  /* istanbul ignore next */
+  Symbol()
+);
+function isPlainObject(o) {
+  return o && typeof o === "object" && Object.prototype.toString.call(o) === "[object Object]" && typeof o.toJSON !== "function";
+}
+var MutationType;
+(function(MutationType2) {
+  MutationType2["direct"] = "direct";
+  MutationType2["patchObject"] = "patch object";
+  MutationType2["patchFunction"] = "patch function";
+})(MutationType || (MutationType = {}));
+function createPinia() {
+  const scope = effectScope(true);
+  const state = scope.run(() => ref({}));
+  let _p = [];
+  let toBeInstalled = [];
+  const pinia2 = markRaw({
+    install(app2) {
+      setActivePinia(pinia2);
+      {
+        pinia2._a = app2;
+        app2.provide(piniaSymbol, pinia2);
+        app2.config.globalProperties.$pinia = pinia2;
+        toBeInstalled.forEach((plugin) => _p.push(plugin));
+        toBeInstalled = [];
+      }
+    },
+    use(plugin) {
+      if (!this._a && true) {
+        toBeInstalled.push(plugin);
+      } else {
+        _p.push(plugin);
+      }
+      return this;
+    },
+    _p,
+    // it's actually undefined here
+    // @ts-expect-error
+    _a: null,
+    _e: scope,
+    _s: /* @__PURE__ */ new Map(),
+    state
+  });
+  return pinia2;
+}
+const noop = () => {
+};
+function addSubscription(subscriptions, callback, detached, onCleanup = noop) {
+  subscriptions.push(callback);
+  const removeSubscription = () => {
+    const idx = subscriptions.indexOf(callback);
+    if (idx > -1) {
+      subscriptions.splice(idx, 1);
+      onCleanup();
+    }
+  };
+  if (!detached && getCurrentScope()) {
+    onScopeDispose(removeSubscription);
+  }
+  return removeSubscription;
+}
+function triggerSubscriptions(subscriptions, ...args) {
+  subscriptions.slice().forEach((callback) => {
+    callback(...args);
+  });
+}
+const fallbackRunWithContext = (fn) => fn();
+const ACTION_MARKER = Symbol();
+const ACTION_NAME = Symbol();
+function mergeReactiveObjects(target, patchToApply) {
+  if (target instanceof Map && patchToApply instanceof Map) {
+    patchToApply.forEach((value, key) => target.set(key, value));
+  } else if (target instanceof Set && patchToApply instanceof Set) {
+    patchToApply.forEach(target.add, target);
+  }
+  for (const key in patchToApply) {
+    if (!patchToApply.hasOwnProperty(key))
+      continue;
+    const subPatch = patchToApply[key];
+    const targetValue = target[key];
+    if (isPlainObject(targetValue) && isPlainObject(subPatch) && target.hasOwnProperty(key) && !isRef(subPatch) && !isReactive(subPatch)) {
+      target[key] = mergeReactiveObjects(targetValue, subPatch);
+    } else {
+      target[key] = subPatch;
+    }
+  }
+  return target;
+}
+const skipHydrateSymbol = (
+  /* istanbul ignore next */
+  Symbol()
+);
+function shouldHydrate(obj) {
+  return !isPlainObject(obj) || !obj.hasOwnProperty(skipHydrateSymbol);
+}
+const { assign } = Object;
+function isComputed(o) {
+  return !!(isRef(o) && o.effect);
+}
+function createOptionsStore(id, options, pinia2, hot) {
+  const { state, actions, getters } = options;
+  const initialState = pinia2.state.value[id];
+  let store;
+  function setup() {
+    if (!initialState && true) {
+      {
+        pinia2.state.value[id] = state ? state() : {};
+      }
+    }
+    const localState = toRefs(pinia2.state.value[id]);
+    return assign(localState, actions, Object.keys(getters || {}).reduce((computedGetters, name) => {
+      computedGetters[name] = markRaw(computed(() => {
+        setActivePinia(pinia2);
+        const store2 = pinia2._s.get(id);
+        return getters[name].call(store2, store2);
+      }));
+      return computedGetters;
+    }, {}));
+  }
+  store = createSetupStore(id, setup, options, pinia2, hot, true);
+  return store;
+}
+function createSetupStore($id, setup, options = {}, pinia2, hot, isOptionsStore) {
+  let scope;
+  const optionsForPlugin = assign({ actions: {} }, options);
+  const $subscribeOptions = { deep: true };
+  let isListening;
+  let isSyncListening;
+  let subscriptions = [];
+  let actionSubscriptions = [];
+  let debuggerEvents;
+  const initialState = pinia2.state.value[$id];
+  if (!isOptionsStore && !initialState && true) {
+    {
+      pinia2.state.value[$id] = {};
+    }
+  }
+  ref({});
+  let activeListener;
+  function $patch(partialStateOrMutator) {
+    let subscriptionMutation;
+    isListening = isSyncListening = false;
+    if (typeof partialStateOrMutator === "function") {
+      partialStateOrMutator(pinia2.state.value[$id]);
+      subscriptionMutation = {
+        type: MutationType.patchFunction,
+        storeId: $id,
+        events: debuggerEvents
+      };
+    } else {
+      mergeReactiveObjects(pinia2.state.value[$id], partialStateOrMutator);
+      subscriptionMutation = {
+        type: MutationType.patchObject,
+        payload: partialStateOrMutator,
+        storeId: $id,
+        events: debuggerEvents
+      };
+    }
+    const myListenerId = activeListener = Symbol();
+    nextTick().then(() => {
+      if (activeListener === myListenerId) {
+        isListening = true;
+      }
+    });
+    isSyncListening = true;
+    triggerSubscriptions(subscriptions, subscriptionMutation, pinia2.state.value[$id]);
+  }
+  const $reset = isOptionsStore ? function $reset2() {
+    const { state } = options;
+    const newState = state ? state() : {};
+    this.$patch(($state) => {
+      assign($state, newState);
+    });
+  } : (
+    /* istanbul ignore next */
+    noop
+  );
+  function $dispose() {
+    scope.stop();
+    subscriptions = [];
+    actionSubscriptions = [];
+    pinia2._s.delete($id);
+  }
+  const action = (fn, name = "") => {
+    if (ACTION_MARKER in fn) {
+      fn[ACTION_NAME] = name;
+      return fn;
+    }
+    const wrappedAction = function() {
+      setActivePinia(pinia2);
+      const args = Array.from(arguments);
+      const afterCallbackList = [];
+      const onErrorCallbackList = [];
+      function after(callback) {
+        afterCallbackList.push(callback);
+      }
+      function onError(callback) {
+        onErrorCallbackList.push(callback);
+      }
+      triggerSubscriptions(actionSubscriptions, {
+        args,
+        name: wrappedAction[ACTION_NAME],
+        store,
+        after,
+        onError
+      });
+      let ret;
+      try {
+        ret = fn.apply(this && this.$id === $id ? this : store, args);
+      } catch (error) {
+        triggerSubscriptions(onErrorCallbackList, error);
+        throw error;
+      }
+      if (ret instanceof Promise) {
+        return ret.then((value) => {
+          triggerSubscriptions(afterCallbackList, value);
+          return value;
+        }).catch((error) => {
+          triggerSubscriptions(onErrorCallbackList, error);
+          return Promise.reject(error);
+        });
+      }
+      triggerSubscriptions(afterCallbackList, ret);
+      return ret;
+    };
+    wrappedAction[ACTION_MARKER] = true;
+    wrappedAction[ACTION_NAME] = name;
+    return wrappedAction;
+  };
+  const partialStore = {
+    _p: pinia2,
+    // _s: scope,
+    $id,
+    $onAction: addSubscription.bind(null, actionSubscriptions),
+    $patch,
+    $reset,
+    $subscribe(callback, options2 = {}) {
+      const removeSubscription = addSubscription(subscriptions, callback, options2.detached, () => stopWatcher());
+      const stopWatcher = scope.run(() => watch(() => pinia2.state.value[$id], (state) => {
+        if (options2.flush === "sync" ? isSyncListening : isListening) {
+          callback({
+            storeId: $id,
+            type: MutationType.direct,
+            events: debuggerEvents
+          }, state);
+        }
+      }, assign({}, $subscribeOptions, options2)));
+      return removeSubscription;
+    },
+    $dispose
+  };
+  const store = reactive(partialStore);
+  pinia2._s.set($id, store);
+  const runWithContext = pinia2._a && pinia2._a.runWithContext || fallbackRunWithContext;
+  const setupStore = runWithContext(() => pinia2._e.run(() => (scope = effectScope()).run(() => setup({ action }))));
+  for (const key in setupStore) {
+    const prop = setupStore[key];
+    if (isRef(prop) && !isComputed(prop) || isReactive(prop)) {
+      if (!isOptionsStore) {
+        if (initialState && shouldHydrate(prop)) {
+          if (isRef(prop)) {
+            prop.value = initialState[key];
+          } else {
+            mergeReactiveObjects(prop, initialState[key]);
+          }
+        }
+        {
+          pinia2.state.value[$id][key] = prop;
+        }
+      }
+    } else if (typeof prop === "function") {
+      const actionValue = action(prop, key);
+      {
+        setupStore[key] = actionValue;
+      }
+      optionsForPlugin.actions[key] = prop;
+    } else ;
+  }
+  {
+    assign(store, setupStore);
+    assign(toRaw(store), setupStore);
+  }
+  Object.defineProperty(store, "$state", {
+    get: () => pinia2.state.value[$id],
+    set: (state) => {
+      $patch(($state) => {
+        assign($state, state);
+      });
+    }
+  });
+  pinia2._p.forEach((extender) => {
+    {
+      assign(store, scope.run(() => extender({
+        store,
+        app: pinia2._a,
+        pinia: pinia2,
+        options: optionsForPlugin
+      })));
+    }
+  });
+  if (initialState && isOptionsStore && options.hydrate) {
+    options.hydrate(store.$state, initialState);
+  }
+  isListening = true;
+  isSyncListening = true;
+  return store;
+}
+/*! #__NO_SIDE_EFFECTS__ */
+// @__NO_SIDE_EFFECTS__
+function defineStore(idOrOptions, setup, setupOptions) {
+  let id;
+  let options;
+  const isSetupStore = typeof setup === "function";
+  {
+    id = idOrOptions;
+    options = isSetupStore ? setupOptions : setup;
+  }
+  function useStore(pinia2, hot) {
+    const hasContext = hasInjectionContext();
+    pinia2 = // in test mode, ignore the argument provided as we can always retrieve a
+    // pinia instance with getActivePinia()
+    pinia2 || (hasContext ? inject(piniaSymbol, null) : null);
+    if (pinia2)
+      setActivePinia(pinia2);
+    pinia2 = activePinia;
+    if (!pinia2._s.has(id)) {
+      if (isSetupStore) {
+        createSetupStore(id, setup, options, pinia2);
+      } else {
+        createOptionsStore(id, options, pinia2);
+      }
+    }
+    const store = pinia2._s.get(id);
+    return store;
+  }
+  useStore.$id = id;
+  return useStore;
+}
+const useDoorsStore = /* @__PURE__ */ defineStore("doors", () => {
+  const doors = ref([]);
+  const logs = ref([]);
+  const stats = ref({});
+  const playerInfo = ref({});
+  const isLoading = ref(false);
+  function setDoors(data) {
+    doors.value = data;
+  }
+  function setLogs(data) {
+    logs.value = data;
+  }
+  function setStats(data) {
+    stats.value = data;
+  }
+  function setPlayerInfo(data) {
+    playerInfo.value = data;
+  }
+  function setLoading(value) {
+    isLoading.value = value;
+  }
+  return {
+    doors,
+    logs,
+    stats,
+    playerInfo,
+    isLoading,
+    setDoors,
+    setLogs,
+    setStats,
+    setPlayerInfo,
+    setLoading
+  };
+});
+const _hoisted_1$c = { class: "header" };
+const _hoisted_2$b = { class: "header-right" };
+const _sfc_main$c = {
+  __name: "AppHeader",
+  emits: ["close"],
+  setup(__props) {
+    return (_ctx, _cache) => {
+      return openBlock(), createElementBlock("div", _hoisted_1$c, [
+        _cache[2] || (_cache[2] = createStaticVNode('<div class="header-content"><div class="header-icon-wrapper"><svg class="header-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2" ry="2" stroke="currentColor" fill="none"></rect><path d="M7 4v16" stroke="currentColor" fill="none"></path><path d="M7 12h10" stroke="currentColor" fill="none"></path><circle cx="9" cy="12" r="1" stroke="currentColor" fill="none"></circle></svg></div><div><div class="title">Portas</div></div></div>', 1)),
+        createBaseVNode("div", _hoisted_2$b, [
+          createBaseVNode("button", {
+            class: "close-btn",
+            onClick: _cache[0] || (_cache[0] = ($event) => _ctx.$emit("close")),
+            title: "Fechar"
+          }, [..._cache[1] || (_cache[1] = [
+            createBaseVNode("svg", {
+              viewBox: "0 0 24 24",
+              fill: "none",
+              stroke: "currentColor",
+              "stroke-width": "2"
+            }, [
+              createBaseVNode("path", {
+                d: "M18 6L6 18M6 6L18 18",
+                stroke: "currentColor",
+                "stroke-linecap": "round",
+                "stroke-linejoin": "round"
+              })
+            ], -1)
+          ])])
+        ])
+      ]);
+    };
+  }
+};
+const _export_sfc = (sfc, props) => {
+  const target = sfc.__vccOpts || sfc;
+  for (const [key, val] of props) {
+    target[key] = val;
+  }
+  return target;
+};
+const _hoisted_1$b = { class: "footer" };
+const _hoisted_2$a = { class: "footer-left" };
+const _hoisted_3$9 = { class: "footer-user" };
+const _hoisted_4$9 = { class: "footer-user-avatar" };
+const _hoisted_5$7 = ["src"];
+const _hoisted_6$6 = { class: "footer-text" };
+const _hoisted_7$5 = { class: "player-name" };
+const _hoisted_8$5 = { class: "player-info-row" };
+const _hoisted_9$5 = { class: "player-info-item" };
+const _hoisted_10$5 = { class: "player-info-value" };
+const _hoisted_11$5 = { class: "footer-nav" };
+const _sfc_main$b = {
+  __name: "AppFooter",
+  props: {
+    playerInfo: {
+      type: Object,
+      default: () => ({})
+    },
+    activeTab: {
+      type: String,
+      default: "portas"
+    }
+  },
+  emits: ["switch-tab", "close"],
+  setup(__props) {
+    function handleAvatarError(e) {
+      e.target.src = "https://i.imgur.com/8ciNGcq.png";
+    }
+    return (_ctx, _cache) => {
+      return openBlock(), createElementBlock("div", _hoisted_1$b, [
+        createBaseVNode("div", _hoisted_2$a, [
+          createBaseVNode("div", _hoisted_3$9, [
+            createBaseVNode("div", _hoisted_4$9, [
+              createBaseVNode("img", {
+                src: __props.playerInfo.avatar || "https://i.imgur.com/default-avatar.png",
+                alt: "Avatar",
+                onError: handleAvatarError
+              }, null, 40, _hoisted_5$7)
+            ]),
+            createBaseVNode("div", _hoisted_6$6, [
+              _cache[5] || (_cache[5] = createBaseVNode("span", { class: "footer-greeting" }, "Olá, seja bem-vindo(a)", -1)),
+              createBaseVNode("span", _hoisted_7$5, toDisplayString(__props.playerInfo.fullName || "Carregando..."), 1),
+              createBaseVNode("div", _hoisted_8$5, [
+                createBaseVNode("span", _hoisted_9$5, [
+                  _cache[4] || (_cache[4] = createBaseVNode("i", { class: "fas fa-id-card" }, null, -1)),
+                  createBaseVNode("span", _hoisted_10$5, toDisplayString(__props.playerInfo.passport || "-"), 1)
+                ])
+              ])
+            ])
+          ])
+        ]),
+        createBaseVNode("div", _hoisted_11$5, [
+          createBaseVNode("button", {
+            class: normalizeClass(["nav-icon-btn", { active: __props.activeTab === "portas" }]),
+            onClick: _cache[0] || (_cache[0] = ($event) => _ctx.$emit("switch-tab", "portas")),
+            title: "Portas"
+          }, [..._cache[6] || (_cache[6] = [
+            createStaticVNode('<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-v-3eb8e96f><rect x="3" y="4" width="18" height="16" rx="2" ry="2" stroke="currentColor" fill="none" data-v-3eb8e96f></rect><path d="M7 4v16" stroke="currentColor" fill="none" data-v-3eb8e96f></path><path d="M7 12h10" stroke="currentColor" fill="none" data-v-3eb8e96f></path><circle cx="9" cy="12" r="1" stroke="currentColor" fill="none" data-v-3eb8e96f></circle></svg>', 1)
+          ])], 2),
+          createBaseVNode("button", {
+            class: normalizeClass(["nav-icon-btn", { active: __props.activeTab === "logs" }]),
+            onClick: _cache[1] || (_cache[1] = ($event) => _ctx.$emit("switch-tab", "logs")),
+            title: "Logs"
+          }, [..._cache[7] || (_cache[7] = [
+            createStaticVNode('<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-v-3eb8e96f><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" fill="none" data-v-3eb8e96f></path><polyline points="14 2 14 8 20 8" stroke="currentColor" fill="none" data-v-3eb8e96f></polyline><line x1="16" y1="13" x2="8" y2="13" stroke="currentColor" fill="none" data-v-3eb8e96f></line><line x1="16" y1="17" x2="8" y2="17" stroke="currentColor" fill="none" data-v-3eb8e96f></line><polyline points="10 9 9 9 8 9" stroke="currentColor" fill="none" data-v-3eb8e96f></polyline></svg>', 1)
+          ])], 2),
+          createBaseVNode("button", {
+            class: normalizeClass(["nav-icon-btn", { active: __props.activeTab === "estatisticas" }]),
+            onClick: _cache[2] || (_cache[2] = ($event) => _ctx.$emit("switch-tab", "estatisticas")),
+            title: "Estatísticas"
+          }, [..._cache[8] || (_cache[8] = [
+            createBaseVNode("svg", {
+              width: "20",
+              height: "20",
+              viewBox: "0 0 24 24",
+              fill: "none",
+              stroke: "currentColor",
+              "stroke-width": "2"
+            }, [
+              createBaseVNode("line", {
+                x1: "18",
+                y1: "20",
+                x2: "18",
+                y2: "10",
+                stroke: "currentColor",
+                fill: "none"
+              }),
+              createBaseVNode("line", {
+                x1: "12",
+                y1: "20",
+                x2: "12",
+                y2: "4",
+                stroke: "currentColor",
+                fill: "none"
+              }),
+              createBaseVNode("line", {
+                x1: "6",
+                y1: "20",
+                x2: "6",
+                y2: "14",
+                stroke: "currentColor",
+                fill: "none"
+              })
+            ], -1)
+          ])], 2),
+          createBaseVNode("button", {
+            class: "nav-icon-btn close-btn",
+            onClick: _cache[3] || (_cache[3] = ($event) => _ctx.$emit("close")),
+            title: "Sair"
+          }, [..._cache[9] || (_cache[9] = [
+            createBaseVNode("svg", {
+              width: "20",
+              height: "20",
+              viewBox: "0 0 24 24",
+              fill: "none",
+              stroke: "currentColor",
+              "stroke-width": "2"
+            }, [
+              createBaseVNode("path", {
+                d: "M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4",
+                stroke: "currentColor",
+                fill: "none"
+              }),
+              createBaseVNode("polyline", {
+                points: "16 17 21 12 16 7",
+                stroke: "currentColor",
+                fill: "none"
+              }),
+              createBaseVNode("line", {
+                x1: "21",
+                y1: "12",
+                x2: "9",
+                y2: "12",
+                stroke: "currentColor",
+                fill: "none"
+              })
+            ], -1)
+          ])])
+        ])
+      ]);
+    };
+  }
+};
+const AppFooter = /* @__PURE__ */ _export_sfc(_sfc_main$b, [["__scopeId", "data-v-3eb8e96f"]]);
+const _hoisted_1$a = ["data-doorid"];
+const _hoisted_2$9 = { class: "door-item-header" };
+const _hoisted_3$8 = { class: "door-item-name" };
+const _hoisted_4$8 = { class: "door-item-info" };
+const _hoisted_5$6 = { class: "door-item-details" };
+const _hoisted_6$5 = { class: "door-detail-item" };
+const _hoisted_7$4 = { class: "door-detail-content" };
+const _hoisted_8$4 = { class: "door-detail-value" };
+const _hoisted_9$4 = { class: "door-detail-item" };
+const _hoisted_10$4 = { class: "door-detail-content" };
+const _hoisted_11$4 = { class: "door-detail-value" };
+const _hoisted_12$4 = {
+  key: 0,
+  class: "door-detail-item"
+};
+const _hoisted_13$3 = { class: "door-detail-content" };
+const _hoisted_14$2 = { class: "door-detail-value" };
+const _hoisted_15$2 = { class: "door-detail-item" };
+const _hoisted_16$2 = { class: "door-detail-content" };
+const _hoisted_17$2 = { class: "door-detail-value" };
+const _hoisted_18$2 = { class: "door-detail-item" };
+const _hoisted_19$1 = { class: "door-detail-content" };
+const _hoisted_20$1 = { class: "door-detail-value" };
+const _hoisted_21$1 = { class: "door-item-actions" };
+const _sfc_main$a = {
+  __name: "DoorItem",
+  props: {
+    door: {
+      type: Object,
+      required: true
+    },
+    viewMode: {
+      type: String,
+      default: "grid"
+    }
+  },
+  emits: ["edit", "remove"],
+  setup(__props) {
+    return (_ctx, _cache) => {
+      return openBlock(), createElementBlock("div", {
+        class: "door-item",
+        "data-doorid": __props.door.id
+      }, [
+        createBaseVNode("div", _hoisted_2$9, [
+          createBaseVNode("div", _hoisted_3$8, [
+            _cache[2] || (_cache[2] = createBaseVNode("i", { class: "fas fa-door-closed" }, null, -1)),
+            createBaseVNode("span", null, toDisplayString(__props.door.name), 1)
+          ]),
+          createBaseVNode("span", {
+            class: normalizeClass(["ticket-badge", __props.door.state == 1 ? "ticket-badge-primary" : ""]),
+            style: normalizeStyle(__props.door.state != 1 ? "background: rgb(34 197 94);" : "")
+          }, [
+            createBaseVNode("i", {
+              class: normalizeClass(__props.door.state == 1 ? "fas fa-lock" : "fas fa-unlock")
+            }, null, 2),
+            createTextVNode(" " + toDisplayString(__props.door.state == 1 ? "Trancada" : "Destrancada"), 1)
+          ], 6)
+        ]),
+        createBaseVNode("div", _hoisted_4$8, [
+          createBaseVNode("div", _hoisted_5$6, [
+            createBaseVNode("div", _hoisted_6$5, [
+              _cache[4] || (_cache[4] = createBaseVNode("i", { class: "fas fa-map-marker-alt" }, null, -1)),
+              createBaseVNode("div", _hoisted_7$4, [
+                _cache[3] || (_cache[3] = createBaseVNode("span", { class: "door-detail-label" }, "Localização", -1)),
+                createBaseVNode("span", _hoisted_8$4, toDisplayString(__props.door.coords), 1)
+              ])
+            ]),
+            createBaseVNode("div", _hoisted_9$4, [
+              _cache[6] || (_cache[6] = createBaseVNode("i", { class: "fas fa-hashtag" }, null, -1)),
+              createBaseVNode("div", _hoisted_10$4, [
+                _cache[5] || (_cache[5] = createBaseVNode("span", { class: "door-detail-label" }, "Hash", -1)),
+                createBaseVNode("span", _hoisted_11$4, toDisplayString(__props.door.hash), 1)
+              ])
+            ]),
+            __props.door.model > 0 ? (openBlock(), createElementBlock("div", _hoisted_12$4, [
+              _cache[8] || (_cache[8] = createBaseVNode("i", { class: "fas fa-cube" }, null, -1)),
+              createBaseVNode("div", _hoisted_13$3, [
+                _cache[7] || (_cache[7] = createBaseVNode("span", { class: "door-detail-label" }, "Modelo", -1)),
+                createBaseVNode("span", _hoisted_14$2, toDisplayString(__props.door.model), 1)
+              ])
+            ])) : createCommentVNode("", true),
+            createBaseVNode("div", _hoisted_15$2, [
+              createBaseVNode("i", {
+                class: normalizeClass(__props.door.permission ? "fas fa-key" : "fas fa-unlock")
+              }, null, 2),
+              createBaseVNode("div", _hoisted_16$2, [
+                _cache[9] || (_cache[9] = createBaseVNode("span", { class: "door-detail-label" }, "Acesso", -1)),
+                createBaseVNode("span", _hoisted_17$2, toDisplayString(__props.door.permission || "Público"), 1)
+              ])
+            ]),
+            createBaseVNode("div", _hoisted_18$2, [
+              _cache[11] || (_cache[11] = createBaseVNode("i", { class: "fas fa-ruler" }, null, -1)),
+              createBaseVNode("div", _hoisted_19$1, [
+                _cache[10] || (_cache[10] = createBaseVNode("span", { class: "door-detail-label" }, "Distância", -1)),
+                createBaseVNode("span", _hoisted_20$1, toDisplayString(__props.door.distance || 1.75) + "m", 1)
+              ])
+            ])
+          ])
+        ]),
+        createBaseVNode("div", _hoisted_21$1, [
+          createBaseVNode("button", {
+            class: "btn-edit-door",
+            onClick: _cache[0] || (_cache[0] = ($event) => _ctx.$emit("edit", __props.door))
+          }, [..._cache[12] || (_cache[12] = [
+            createBaseVNode("i", { class: "fas fa-edit" }, null, -1),
+            createBaseVNode("span", null, "Editar", -1)
+          ])]),
+          createBaseVNode("button", {
+            class: "btn-remove-door",
+            onClick: _cache[1] || (_cache[1] = ($event) => _ctx.$emit("remove", __props.door.id))
+          }, [..._cache[13] || (_cache[13] = [
+            createBaseVNode("i", { class: "fas fa-trash" }, null, -1),
+            createBaseVNode("span", null, "Remover", -1)
+          ])])
+        ])
+      ], 8, _hoisted_1$a);
+    };
+  }
+};
+const _hoisted_1$9 = { class: "empty-state" };
+const _sfc_main$9 = {
+  __name: "EmptyState",
+  emits: ["create"],
+  setup(__props) {
+    return (_ctx, _cache) => {
+      return openBlock(), createElementBlock("div", _hoisted_1$9, [
+        _cache[2] || (_cache[2] = createStaticVNode('<div class="empty-icon"><svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="16" rx="2" ry="2" stroke="currentColor" fill="none"></rect><path d="M7 4v16" stroke="currentColor" fill="none"></path><path d="M7 12h10" stroke="currentColor" fill="none"></path><circle cx="9" cy="12" r="1" stroke="currentColor" fill="none"></circle></svg></div><div class="empty-message">Nenhuma porta configurada</div><div class="empty-hint">Comece criando sua primeira porta para gerenciar o acesso aos locais do servidor</div>', 3)),
+        createBaseVNode("button", {
+          class: "btn-create-door",
+          style: { "margin-top": "1.5rem" },
+          onClick: _cache[0] || (_cache[0] = ($event) => _ctx.$emit("create"))
+        }, [..._cache[1] || (_cache[1] = [
+          createBaseVNode("i", { class: "fas fa-plus" }, null, -1),
+          createTextVNode(" Criar Primeira Porta ", -1)
+        ])])
+      ]);
+    };
+  }
+};
+const _hoisted_1$8 = { class: "command-section" };
+const _hoisted_2$8 = {
+  key: 0,
+  class: "empty-state"
+};
+const _hoisted_3$7 = { class: "doors-header" };
+const _hoisted_4$7 = ["title"];
+const STORAGE_KEY = "node-doors-view-mode";
+const _sfc_main$8 = {
+  __name: "DoorList",
+  props: {
+    doors: {
+      type: Array,
+      default: () => []
+    },
+    loading: {
+      type: Boolean,
+      default: false
+    }
+  },
+  emits: ["create", "edit", "remove"],
+  setup(__props) {
+    const viewMode = ref("grid");
+    function setViewMode(mode) {
+      viewMode.value = mode;
+      localStorage.setItem(STORAGE_KEY, mode);
+    }
+    function toggleViewMode() {
+      const newMode = viewMode.value === "grid" ? "list" : "grid";
+      setViewMode(newMode);
+    }
+    onMounted(() => {
+      const savedMode = localStorage.getItem(STORAGE_KEY);
+      if (savedMode === "grid" || savedMode === "list") {
+        viewMode.value = savedMode;
+      }
+    });
+    return (_ctx, _cache) => {
+      return openBlock(), createElementBlock("div", _hoisted_1$8, [
+        _cache[6] || (_cache[6] = createBaseVNode("div", { class: "section-title" }, [
+          createBaseVNode("i", { class: "fas fa-door-open" }),
+          createTextVNode(" Portas Configuradas ")
+        ], -1)),
+        __props.loading ? (openBlock(), createElementBlock("div", _hoisted_2$8, [..._cache[4] || (_cache[4] = [
+          createBaseVNode("div", { class: "empty-message" }, "Carregando portas...", -1)
+        ])])) : __props.doors.length === 0 ? (openBlock(), createBlock(_sfc_main$9, {
+          key: 1,
+          onCreate: _cache[0] || (_cache[0] = ($event) => _ctx.$emit("create"))
+        })) : (openBlock(), createElementBlock(Fragment, { key: 2 }, [
+          createBaseVNode("div", _hoisted_3$7, [
+            createBaseVNode("button", {
+              class: "btn-create-door",
+              onClick: _cache[1] || (_cache[1] = ($event) => _ctx.$emit("create"))
+            }, [..._cache[5] || (_cache[5] = [
+              createBaseVNode("i", { class: "fas fa-plus" }, null, -1),
+              createTextVNode(" Nova Porta ", -1)
+            ])]),
+            createBaseVNode("button", {
+              class: "btn-view-toggle",
+              onClick: toggleViewMode,
+              title: viewMode.value === "grid" ? "Alternar para Lista" : "Alternar para Grid"
+            }, [
+              createBaseVNode("i", {
+                class: normalizeClass(viewMode.value === "grid" ? "fas fa-list" : "fas fa-th")
+              }, null, 2),
+              createBaseVNode("span", null, toDisplayString(viewMode.value === "grid" ? "Lista" : "Grid"), 1)
+            ], 8, _hoisted_4$7)
+          ]),
+          createBaseVNode("div", {
+            class: normalizeClass(["doors-list", `doors-list-${viewMode.value}`])
+          }, [
+            (openBlock(true), createElementBlock(Fragment, null, renderList(__props.doors, (door) => {
+              return openBlock(), createBlock(_sfc_main$a, {
+                key: door.id,
+                door,
+                "view-mode": viewMode.value,
+                onEdit: _cache[2] || (_cache[2] = ($event) => _ctx.$emit("edit", $event)),
+                onRemove: _cache[3] || (_cache[3] = ($event) => _ctx.$emit("remove", $event))
+              }, null, 8, ["door", "view-mode"]);
+            }), 128))
+          ], 2)
+        ], 64))
+      ]);
+    };
+  }
+};
+const _hoisted_1$7 = { class: "command-section" };
+const _hoisted_2$7 = {
+  key: 0,
+  class: "empty-state"
+};
+const _hoisted_3$6 = {
+  key: 1,
+  class: "empty-state"
+};
+const _hoisted_4$6 = {
+  key: 2,
+  class: "logs-list"
+};
+const _hoisted_5$5 = { class: "log-item-header" };
+const _hoisted_6$4 = { class: "log-item-info" };
+const _hoisted_7$3 = { class: "log-item-action" };
+const _hoisted_8$3 = { class: "log-item-meta" };
+const _hoisted_9$3 = {
+  key: 0,
+  class: "log-item-details"
+};
+const _hoisted_10$3 = { class: "log-detail-item" };
+const _hoisted_11$3 = {
+  key: 0,
+  class: "log-detail-item"
+};
+const _hoisted_12$3 = {
+  key: 1,
+  class: "log-detail-item"
+};
+const _hoisted_13$2 = {
+  key: 2,
+  class: "log-detail-item"
+};
+const _sfc_main$7 = {
+  __name: "LogsList",
+  props: {
+    logs: {
+      type: Array,
+      default: () => []
+    },
+    loading: {
+      type: Boolean,
+      default: false
+    }
+  },
+  setup(__props) {
+    function getActionIcon(action) {
+      if (action.includes("Criar")) return "fa-plus-circle";
+      if (action.includes("Remover")) return "fa-trash";
+      if (action.includes("Editar")) return "fa-edit";
+      return "fa-door-closed";
+    }
+    function getActionColor(action) {
+      if (action.includes("Criar")) return "rgb(34 197 94)";
+      if (action.includes("Remover")) return "rgb(239 68 68)";
+      if (action.includes("Editar")) return "rgb(251 191 36)";
+      return "rgb(var(--main))";
+    }
+    function formatDateTime(dateTimeStr) {
+      if (!dateTimeStr) return "N/A";
+      const date = new Date(dateTimeStr);
+      const day = String(date.getDate()).padStart(2, "0");
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const year = date.getFullYear();
+      const hours = String(date.getHours()).padStart(2, "0");
+      const minutes = String(date.getMinutes()).padStart(2, "0");
+      return `${day}/${month}/${year} ${hours}:${minutes}`;
+    }
+    function formatAdditionalInfo(info) {
+      return info.replace(/\*\*/g, "").replace(/\n/g, " | ");
+    }
+    return (_ctx, _cache) => {
+      return openBlock(), createElementBlock("div", _hoisted_1$7, [
+        _cache[11] || (_cache[11] = createBaseVNode("div", { class: "section-title" }, [
+          createBaseVNode("i", { class: "fas fa-file-alt" }),
+          createTextVNode(" Logs de Ações ")
+        ], -1)),
+        __props.loading ? (openBlock(), createElementBlock("div", _hoisted_2$7, [..._cache[0] || (_cache[0] = [
+          createBaseVNode("div", { class: "empty-message" }, "Carregando logs...", -1)
+        ])])) : __props.logs.length === 0 ? (openBlock(), createElementBlock("div", _hoisted_3$6, [..._cache[1] || (_cache[1] = [
+          createStaticVNode('<div class="empty-icon"><svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" fill="none"></path><polyline points="14 2 14 8 20 8" stroke="currentColor" fill="none"></polyline><line x1="16" y1="13" x2="8" y2="13" stroke="currentColor" fill="none"></line><line x1="16" y1="17" x2="8" y2="17" stroke="currentColor" fill="none"></line><polyline points="10 9 9 9 8 9" stroke="currentColor" fill="none"></polyline></svg></div><div class="empty-message">Nenhum log encontrado</div><div class="empty-hint">Os logs de ações das portas aparecerão aqui</div>', 3)
+        ])])) : (openBlock(), createElementBlock("div", _hoisted_4$6, [
+          (openBlock(true), createElementBlock(Fragment, null, renderList(__props.logs, (log) => {
+            return openBlock(), createElementBlock("div", {
+              key: log.id,
+              class: "log-item"
+            }, [
+              createBaseVNode("div", _hoisted_5$5, [
+                createBaseVNode("div", {
+                  class: "log-item-icon",
+                  style: normalizeStyle({ background: getActionColor(log.action) })
+                }, [
+                  createBaseVNode("i", {
+                    class: normalizeClass("fas " + getActionIcon(log.action))
+                  }, null, 2)
+                ], 4),
+                createBaseVNode("div", _hoisted_6$4, [
+                  createBaseVNode("div", _hoisted_7$3, toDisplayString(log.action), 1),
+                  createBaseVNode("div", _hoisted_8$3, [
+                    createBaseVNode("span", null, [
+                      _cache[2] || (_cache[2] = createBaseVNode("i", { class: "fas fa-user" }, null, -1)),
+                      createTextVNode(" " + toDisplayString(log.staffName) + " (#" + toDisplayString(log.staffPassport) + ")", 1)
+                    ]),
+                    createBaseVNode("span", null, [
+                      _cache[3] || (_cache[3] = createBaseVNode("i", { class: "fas fa-clock" }, null, -1)),
+                      createTextVNode(" " + toDisplayString(formatDateTime(log.createdAt)), 1)
+                    ])
+                  ])
+                ])
+              ]),
+              log.doorName ? (openBlock(), createElementBlock("div", _hoisted_9$3, [
+                createBaseVNode("div", _hoisted_10$3, [
+                  _cache[5] || (_cache[5] = createBaseVNode("i", { class: "fas fa-door-closed" }, null, -1)),
+                  createBaseVNode("span", null, [
+                    _cache[4] || (_cache[4] = createBaseVNode("strong", null, "Porta:", -1)),
+                    createTextVNode(" " + toDisplayString(log.doorName), 1)
+                  ])
+                ]),
+                log.doorCoords ? (openBlock(), createElementBlock("div", _hoisted_11$3, [
+                  _cache[7] || (_cache[7] = createBaseVNode("i", { class: "fas fa-map-marker-alt" }, null, -1)),
+                  createBaseVNode("span", null, [
+                    _cache[6] || (_cache[6] = createBaseVNode("strong", null, "Coords Porta:", -1)),
+                    createTextVNode(" " + toDisplayString(log.doorCoords), 1)
+                  ])
+                ])) : createCommentVNode("", true),
+                log.staffCoords ? (openBlock(), createElementBlock("div", _hoisted_12$3, [
+                  _cache[9] || (_cache[9] = createBaseVNode("i", { class: "fas fa-user-location" }, null, -1)),
+                  createBaseVNode("span", null, [
+                    _cache[8] || (_cache[8] = createBaseVNode("strong", null, "Coords Staff:", -1)),
+                    createTextVNode(" " + toDisplayString(log.staffCoords), 1)
+                  ])
+                ])) : createCommentVNode("", true),
+                log.additionalInfo ? (openBlock(), createElementBlock("div", _hoisted_13$2, [
+                  _cache[10] || (_cache[10] = createBaseVNode("i", { class: "fas fa-info-circle" }, null, -1)),
+                  createBaseVNode("span", null, toDisplayString(formatAdditionalInfo(log.additionalInfo)), 1)
+                ])) : createCommentVNode("", true)
+              ])) : createCommentVNode("", true)
+            ]);
+          }), 128))
+        ]))
+      ]);
+    };
+  }
+};
+const _hoisted_1$6 = { class: "command-section" };
+const _hoisted_2$6 = {
+  key: 0,
+  class: "empty-state"
+};
+const _hoisted_3$5 = {
+  key: 1,
+  class: "doors-list",
+  style: { "grid-template-columns": "repeat(auto-fill, minmax(280px, 1fr))" }
+};
+const _hoisted_4$5 = { class: "door-item" };
+const _hoisted_5$4 = { class: "door-item-info" };
+const _hoisted_6$3 = { class: "stat-value" };
+const _hoisted_7$2 = { class: "door-item" };
+const _hoisted_8$2 = { class: "door-item-info" };
+const _hoisted_9$2 = { class: "stat-value" };
+const _hoisted_10$2 = { class: "door-item" };
+const _hoisted_11$2 = { class: "door-item-info" };
+const _hoisted_12$2 = { class: "stat-value stat-green" };
+const _hoisted_13$1 = { class: "door-item" };
+const _hoisted_14$1 = { class: "door-item-info" };
+const _hoisted_15$1 = { class: "stat-value stat-yellow" };
+const _hoisted_16$1 = { class: "door-item" };
+const _hoisted_17$1 = { class: "door-item-info" };
+const _hoisted_18$1 = { class: "stat-value stat-green" };
+const _sfc_main$6 = {
+  __name: "StatsList",
+  props: {
+    stats: {
+      type: Object,
+      default: () => ({})
+    },
+    loading: {
+      type: Boolean,
+      default: false
+    }
+  },
+  setup(__props) {
+    return (_ctx, _cache) => {
+      return openBlock(), createElementBlock("div", _hoisted_1$6, [
+        _cache[6] || (_cache[6] = createBaseVNode("div", { class: "section-title" }, [
+          createBaseVNode("i", { class: "fas fa-chart-bar" }),
+          createTextVNode(" Estatísticas do Sistema ")
+        ], -1)),
+        __props.loading ? (openBlock(), createElementBlock("div", _hoisted_2$6, [..._cache[0] || (_cache[0] = [
+          createStaticVNode('<div class="empty-icon" data-v-76adbb88><svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-v-76adbb88><line x1="18" y1="20" x2="18" y2="10" stroke="currentColor" fill="none" data-v-76adbb88></line><line x1="12" y1="20" x2="12" y2="4" stroke="currentColor" fill="none" data-v-76adbb88></line><line x1="6" y1="20" x2="6" y2="14" stroke="currentColor" fill="none" data-v-76adbb88></line></svg></div><div class="empty-message" data-v-76adbb88>Carregando Estatísticas</div><div class="empty-hint" data-v-76adbb88>Aguarde enquanto buscamos as informações do sistema</div>', 3)
+        ])])) : (openBlock(), createElementBlock("div", _hoisted_3$5, [
+          createBaseVNode("div", _hoisted_4$5, [
+            _cache[1] || (_cache[1] = createBaseVNode("div", { class: "door-item-header" }, [
+              createBaseVNode("div", { class: "door-item-name" }, [
+                createBaseVNode("i", { class: "fas fa-door-open" }),
+                createBaseVNode("span", null, "Total de Portas")
+              ])
+            ], -1)),
+            createBaseVNode("div", _hoisted_5$4, [
+              createBaseVNode("div", _hoisted_6$3, toDisplayString(__props.stats.totalPortas || 0), 1)
+            ])
+          ]),
+          createBaseVNode("div", _hoisted_7$2, [
+            _cache[2] || (_cache[2] = createBaseVNode("div", { class: "door-item-header" }, [
+              createBaseVNode("div", { class: "door-item-name" }, [
+                createBaseVNode("i", { class: "fas fa-lock" }),
+                createBaseVNode("span", null, "Portas Trancadas")
+              ])
+            ], -1)),
+            createBaseVNode("div", _hoisted_8$2, [
+              createBaseVNode("div", _hoisted_9$2, toDisplayString(__props.stats.portasTrancadas || 0), 1)
+            ])
+          ]),
+          createBaseVNode("div", _hoisted_10$2, [
+            _cache[3] || (_cache[3] = createBaseVNode("div", { class: "door-item-header" }, [
+              createBaseVNode("div", { class: "door-item-name" }, [
+                createBaseVNode("i", { class: "fas fa-unlock" }),
+                createBaseVNode("span", null, "Portas Destrancadas")
+              ])
+            ], -1)),
+            createBaseVNode("div", _hoisted_11$2, [
+              createBaseVNode("div", _hoisted_12$2, toDisplayString(__props.stats.portasDestrancadas || 0), 1)
+            ])
+          ]),
+          createBaseVNode("div", _hoisted_13$1, [
+            _cache[4] || (_cache[4] = createBaseVNode("div", { class: "door-item-header" }, [
+              createBaseVNode("div", { class: "door-item-name" }, [
+                createBaseVNode("i", { class: "fas fa-key" }),
+                createBaseVNode("span", null, "Com Permissão")
+              ])
+            ], -1)),
+            createBaseVNode("div", _hoisted_14$1, [
+              createBaseVNode("div", _hoisted_15$1, toDisplayString(__props.stats.portasComPermissao || 0), 1)
+            ])
+          ]),
+          createBaseVNode("div", _hoisted_16$1, [
+            _cache[5] || (_cache[5] = createBaseVNode("div", { class: "door-item-header" }, [
+              createBaseVNode("div", { class: "door-item-name" }, [
+                createBaseVNode("i", { class: "fas fa-unlock-alt" }),
+                createBaseVNode("span", null, "Portas Públicas")
+              ])
+            ], -1)),
+            createBaseVNode("div", _hoisted_17$1, [
+              createBaseVNode("div", _hoisted_18$1, toDisplayString(__props.stats.portasPublicas || 0), 1)
+            ])
+          ])
+        ]))
+      ]);
+    };
+  }
+};
+const StatsList = /* @__PURE__ */ _export_sfc(_sfc_main$6, [["__scopeId", "data-v-76adbb88"]]);
+const _hoisted_1$5 = { class: "modal-content" };
+const _hoisted_2$5 = { class: "modal-header" };
+const _hoisted_3$4 = { class: "modal-body" };
+const _hoisted_4$4 = {
+  key: 0,
+  class: "modal-footer"
+};
+const _sfc_main$5 = {
+  __name: "Modal",
+  props: {
+    visible: {
+      type: Boolean,
+      default: false
+    },
+    title: {
+      type: String,
+      default: "Título"
+    },
+    showFooter: {
+      type: Boolean,
+      default: true
+    }
+  },
+  emits: ["close", "confirm"],
+  setup(__props) {
+    return (_ctx, _cache) => {
+      return openBlock(), createElementBlock("div", {
+        class: normalizeClass(["modal", { hidden: !__props.visible }])
+      }, [
+        createBaseVNode("div", _hoisted_1$5, [
+          createBaseVNode("div", _hoisted_2$5, [
+            createBaseVNode("h2", null, toDisplayString(__props.title), 1),
+            createBaseVNode("button", {
+              onClick: _cache[0] || (_cache[0] = ($event) => _ctx.$emit("close"))
+            }, [..._cache[3] || (_cache[3] = [
+              createBaseVNode("svg", {
+                viewBox: "0 0 24 24",
+                fill: "none",
+                xmlns: "http://www.w3.org/2000/svg"
+              }, [
+                createBaseVNode("path", {
+                  d: "M18 6L6 18M6 6L18 18",
+                  stroke: "currentColor",
+                  "stroke-width": "2",
+                  "stroke-linecap": "round",
+                  "stroke-linejoin": "round"
+                })
+              ], -1)
+            ])])
+          ]),
+          createBaseVNode("div", _hoisted_3$4, [
+            renderSlot(_ctx.$slots, "body")
+          ]),
+          __props.showFooter ? (openBlock(), createElementBlock("div", _hoisted_4$4, [
+            createBaseVNode("button", {
+              class: "btn-cancel",
+              onClick: _cache[1] || (_cache[1] = ($event) => _ctx.$emit("close"))
+            }, "Cancelar"),
+            createBaseVNode("button", {
+              class: "btn-confirm",
+              onClick: _cache[2] || (_cache[2] = ($event) => _ctx.$emit("confirm"))
+            }, "Confirmar")
+          ])) : createCommentVNode("", true)
+        ])
+      ], 2);
+    };
+  }
+};
+const _hoisted_1$4 = {
+  class: "modal-content",
+  style: { "width": "450px" }
+};
+const _hoisted_2$4 = {
+  class: "modal-header",
+  style: { "background": "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)" }
+};
+const _hoisted_3$3 = { class: "modal-body" };
+const _hoisted_4$3 = { class: "confirm-message-container" };
+const _hoisted_5$3 = ["innerHTML"];
+const _hoisted_6$2 = { class: "modal-footer" };
+const _sfc_main$4 = {
+  __name: "ConfirmModal",
+  props: {
+    visible: {
+      type: Boolean,
+      default: false
+    },
+    title: {
+      type: String,
+      default: "Confirmar Ação"
+    },
+    message: {
+      type: String,
+      default: ""
+    }
+  },
+  emits: ["close", "confirm"],
+  setup(__props) {
+    return (_ctx, _cache) => {
+      return openBlock(), createElementBlock("div", {
+        class: normalizeClass(["modal", { hidden: !__props.visible }])
+      }, [
+        createBaseVNode("div", _hoisted_1$4, [
+          createBaseVNode("div", _hoisted_2$4, [
+            createBaseVNode("h2", null, toDisplayString(__props.title), 1),
+            createBaseVNode("button", {
+              onClick: _cache[0] || (_cache[0] = ($event) => _ctx.$emit("close"))
+            }, [..._cache[3] || (_cache[3] = [
+              createBaseVNode("svg", {
+                viewBox: "0 0 24 24",
+                fill: "none",
+                xmlns: "http://www.w3.org/2000/svg"
+              }, [
+                createBaseVNode("path", {
+                  d: "M18 6L6 18M6 6L18 18",
+                  stroke: "currentColor",
+                  "stroke-width": "2",
+                  "stroke-linecap": "round",
+                  "stroke-linejoin": "round"
+                })
+              ], -1)
+            ])])
+          ]),
+          createBaseVNode("div", _hoisted_3$3, [
+            createBaseVNode("div", _hoisted_4$3, [
+              _cache[4] || (_cache[4] = createBaseVNode("i", { class: "fas fa-exclamation-triangle confirm-icon" }, null, -1)),
+              createBaseVNode("p", {
+                class: "confirm-message-text",
+                innerHTML: __props.message
+              }, null, 8, _hoisted_5$3)
+            ])
+          ]),
+          createBaseVNode("div", _hoisted_6$2, [
+            createBaseVNode("button", {
+              class: "btn-cancel",
+              onClick: _cache[1] || (_cache[1] = ($event) => _ctx.$emit("close"))
+            }, "Cancelar"),
+            createBaseVNode("button", {
+              class: "btn-confirm",
+              style: { "background": "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)" },
+              onClick: _cache[2] || (_cache[2] = ($event) => _ctx.$emit("confirm"))
+            }, " Confirmar ")
+          ])
+        ])
+      ], 2);
+    };
+  }
+};
+const ConfirmModal = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["__scopeId", "data-v-24e06cd2"]]);
+const _hoisted_1$3 = {
+  class: "modal-content",
+  style: { "width": "400px", "max-width": "90vw" }
+};
+const _hoisted_2$3 = { class: "modal-header" };
+const _hoisted_3$2 = { class: "modal-body" };
+const _hoisted_4$2 = { class: "form-group" };
+const _hoisted_5$2 = { class: "modal-footer" };
+const _sfc_main$3 = {
+  __name: "PasswordModal",
+  props: {
+    visible: {
+      type: Boolean,
+      default: false
+    },
+    doorName: {
+      type: String,
+      default: "Porta"
+    }
+  },
+  emits: ["close", "submit"],
+  setup(__props, { emit: __emit }) {
+    const props = __props;
+    const emit2 = __emit;
+    const password = ref("");
+    const passwordInput = ref(null);
+    watch(() => props.visible, (newVal) => {
+      if (newVal) {
+        password.value = "";
+        nextTick(() => {
+          var _a;
+          (_a = passwordInput.value) == null ? void 0 : _a.focus();
+        });
+      }
+    });
+    function handleSubmit() {
+      emit2("submit", password.value.trim());
+      password.value = "";
+    }
+    return (_ctx, _cache) => {
+      return openBlock(), createElementBlock("div", {
+        class: normalizeClass(["modal", { hidden: !__props.visible }])
+      }, [
+        createBaseVNode("div", _hoisted_1$3, [
+          createBaseVNode("div", _hoisted_2$3, [
+            createBaseVNode("h2", null, "Código de Acesso - " + toDisplayString(__props.doorName), 1),
+            createBaseVNode("button", {
+              onClick: _cache[0] || (_cache[0] = ($event) => _ctx.$emit("close"))
+            }, [..._cache[3] || (_cache[3] = [
+              createBaseVNode("svg", {
+                viewBox: "0 0 24 24",
+                fill: "none",
+                xmlns: "http://www.w3.org/2000/svg"
+              }, [
+                createBaseVNode("path", {
+                  d: "M18 6L6 18M6 6L18 18",
+                  stroke: "currentColor",
+                  "stroke-width": "2",
+                  "stroke-linecap": "round",
+                  "stroke-linejoin": "round"
+                })
+              ], -1)
+            ])])
+          ]),
+          createBaseVNode("div", _hoisted_3$2, [
+            createBaseVNode("div", _hoisted_4$2, [
+              _cache[4] || (_cache[4] = createBaseVNode("label", null, "Digite o código de acesso:", -1)),
+              withDirectives(createBaseVNode("input", {
+                type: "password",
+                "onUpdate:modelValue": _cache[1] || (_cache[1] = ($event) => password.value = $event),
+                placeholder: "Código...",
+                autocomplete: "off",
+                ref_key: "passwordInput",
+                ref: passwordInput,
+                onKeypress: withKeys(handleSubmit, ["enter"])
+              }, null, 544), [
+                [vModelText, password.value]
+              ])
+            ])
+          ]),
+          createBaseVNode("div", _hoisted_5$2, [
+            createBaseVNode("button", {
+              class: "btn-cancel",
+              onClick: _cache[2] || (_cache[2] = ($event) => _ctx.$emit("close"))
+            }, "Cancelar"),
+            createBaseVNode("button", {
+              class: "btn-confirm",
+              onClick: handleSubmit
+            }, "Confirmar")
+          ])
+        ])
+      ], 2);
+    };
+  }
+};
+const _hoisted_1$2 = { class: "form-group" };
+const _hoisted_2$2 = { style: { "display": "flex", "align-items": "center", "gap": "0.5rem", "margin-bottom": "1rem" } };
+const _sfc_main$2 = {
+  __name: "CreateDoorForm",
+  props: {
+    onStartSelection: {
+      type: Function,
+      required: true
+    },
+    onClose: {
+      type: Function,
+      required: true
+    }
+  },
+  setup(__props) {
+    const props = __props;
+    const isDouble = ref(false);
+    function startSelection() {
+      props.onStartSelection(isDouble.value);
+    }
+    return (_ctx, _cache) => {
+      return openBlock(), createElementBlock("div", null, [
+        createBaseVNode("div", _hoisted_1$2, [
+          createBaseVNode("label", _hoisted_2$2, [
+            withDirectives(createBaseVNode("input", {
+              type: "checkbox",
+              "onUpdate:modelValue": _cache[0] || (_cache[0] = ($event) => isDouble.value = $event),
+              style: { "width": "auto", "margin": "0" }
+            }, null, 512), [
+              [vModelCheckbox, isDouble.value]
+            ]),
+            _cache[1] || (_cache[1] = createBaseVNode("span", null, "Porta Dupla (selecionar duas portas)", -1))
+          ]),
+          _cache[2] || (_cache[2] = createBaseVNode("p", { class: "item-info-text" }, [
+            createBaseVNode("i", { class: "fas fa-info-circle" }),
+            createTextVNode(" Marque esta opção se a porta é composta por duas portas controladas juntas ")
+          ], -1))
+        ]),
+        createBaseVNode("div", { class: "form-group" }, [
+          createBaseVNode("button", {
+            class: "btn-start-selection",
+            onClick: startSelection
+          }, [..._cache[3] || (_cache[3] = [
+            createBaseVNode("i", { class: "fas fa-door-open" }, null, -1),
+            createTextVNode(" Iniciar Seleção de Porta ", -1)
+          ])])
+        ])
+      ]);
+    };
+  }
+};
+const _hoisted_1$1 = { class: "modal-scroll-container" };
+const _hoisted_2$1 = { class: "form-group" };
+const _hoisted_3$1 = { class: "form-group" };
+const _hoisted_4$1 = ["value"];
+const _hoisted_5$1 = { class: "form-group" };
+const _hoisted_6$1 = ["value"];
+const _hoisted_7$1 = { class: "form-group" };
+const _hoisted_8$1 = ["value"];
+const _hoisted_9$1 = { class: "form-group" };
+const _hoisted_10$1 = ["value"];
+const _hoisted_11$1 = { class: "form-group" };
+const _hoisted_12$1 = ["value"];
+const _hoisted_13 = { class: "form-group" };
+const _hoisted_14 = ["value"];
+const _hoisted_15 = { class: "form-group" };
+const _hoisted_16 = ["readonly"];
+const _hoisted_17 = {
+  key: 0,
+  class: "item-info-text"
+};
+const _hoisted_18 = { class: "form-group" };
+const _hoisted_19 = ["readonly"];
+const _hoisted_20 = { class: "form-group" };
+const _hoisted_21 = ["readonly"];
+const _hoisted_22 = { class: "form-group" };
+const _hoisted_23 = { class: "form-group" };
+const _hoisted_24 = { class: "form-group" };
+const _hoisted_25 = { class: "form-group" };
+const _hoisted_26 = { class: "form-group" };
+const _hoisted_27 = { class: "form-group" };
+const _hoisted_28 = { class: "form-group" };
+const _hoisted_29 = { class: "form-group" };
+const _hoisted_30 = { class: "form-group" };
+const _hoisted_31 = {
+  key: 2,
+  class: "checkbox-group"
+};
+const _hoisted_32 = { class: "checkbox-group" };
+const _hoisted_33 = { class: "checkbox-group" };
+const _hoisted_34 = { class: "checkbox-group" };
+const _hoisted_35 = { class: "checkbox-group" };
+const _sfc_main$1 = {
+  __name: "EditDoorForm",
+  props: {
+    doorData: {
+      type: Object,
+      default: () => ({})
+    },
+    isDouble: {
+      type: Boolean,
+      default: false
+    },
+    isNew: {
+      type: Boolean,
+      default: false
+    },
+    onSubmit: {
+      type: Function,
+      default: null
+    }
+  },
+  setup(__props, { expose: __expose }) {
+    const props = __props;
+    const formData = ref({
+      name: "",
+      coords: "",
+      hash: 0,
+      model: 0,
+      passcode: "",
+      permission: "",
+      grade: 0,
+      characters: "",
+      items: "",
+      state: 1,
+      distance: 1.75,
+      autolock: 0,
+      doorRate: 5,
+      double: false,
+      automatic: false,
+      lockpick: false,
+      hideUI: false,
+      holdOpen: false
+    });
+    function formatCoords(coords) {
+      if (!coords) return "";
+      if (typeof coords === "string") return coords;
+      return `${coords.x}, ${coords.y}, ${coords.z}`;
+    }
+    function initFormData() {
+      var _a, _b;
+      const data = props.doorData;
+      if (props.isNew && !props.isDouble) {
+        formData.value.coords = formatCoords(data.coords);
+        formData.value.hash = data.hash || 0;
+        formData.value.model = data.model || 0;
+        formData.value.double = false;
+      } else if (props.isNew && props.isDouble) {
+        formData.value.double = true;
+        formData.value.hash = ((_a = data.door1) == null ? void 0 : _a.hash) || 0;
+        formData.value.model = ((_b = data.door1) == null ? void 0 : _b.model) || 0;
+      } else {
+        formData.value.name = data.name || "";
+        formData.value.coords = data.coords || "";
+        formData.value.hash = data.hash || 0;
+        formData.value.model = data.model || 0;
+        formData.value.passcode = data.passcode || "";
+        formData.value.permission = data.permission || "";
+        formData.value.grade = data.grade || 0;
+        formData.value.characters = Array.isArray(data.characters) ? data.characters.join(",") : "";
+        formData.value.items = Array.isArray(data.items) ? data.items.join(",") : "";
+        formData.value.state = data.state ?? 1;
+        formData.value.distance = data.distance || 1.75;
+        formData.value.autolock = data.autolock || 0;
+        formData.value.doorRate = data.doorRate || 5;
+        formData.value.double = data.double || false;
+        formData.value.automatic = data.automatic || false;
+        formData.value.lockpick = data.lockpick || false;
+        formData.value.hideUI = data.hideUI || false;
+        formData.value.holdOpen = data.holdOpen || false;
+      }
+    }
+    onMounted(() => {
+      initFormData();
+    });
+    watch(() => props.doorData, () => {
+      initFormData();
+    }, { deep: true });
+    function submit() {
+      var _a;
+      if (!formData.value.name) {
+        return null;
+      }
+      let charactersArray = null;
+      if (formData.value.characters) {
+        charactersArray = formData.value.characters.split(",").map((c) => parseInt(c.trim())).filter((c) => !isNaN(c));
+        if (charactersArray.length === 0) charactersArray = null;
+      }
+      let itemsArray = null;
+      if (formData.value.items) {
+        itemsArray = formData.value.items.split(",").map((i) => i.trim()).filter((i) => i.length > 0);
+        if (itemsArray.length === 0) itemsArray = null;
+      }
+      const result = {
+        doorid: (_a = props.doorData) == null ? void 0 : _a.id,
+        name: formData.value.name,
+        coords: formData.value.coords,
+        hash: formData.value.hash,
+        model: formData.value.model,
+        passcode: formData.value.passcode || "",
+        permission: formData.value.permission || "",
+        grade: formData.value.grade,
+        characters: charactersArray,
+        items: itemsArray,
+        state: formData.value.state,
+        distance: formData.value.distance,
+        autolock: formData.value.autolock,
+        doorRate: formData.value.doorRate,
+        double: props.isDouble || formData.value.double,
+        automatic: formData.value.automatic,
+        lockpick: formData.value.lockpick,
+        hideUI: formData.value.hideUI,
+        holdOpen: formData.value.holdOpen
+      };
+      if (props.isNew && props.isDouble && props.doorData.door1 && props.doorData.door2) {
+        result.doors = {
+          door1: {
+            coords: formatCoords(props.doorData.door1.coords),
+            hash: props.doorData.door1.hash,
+            model: props.doorData.door1.model
+          },
+          door2: {
+            coords: formatCoords(props.doorData.door2.coords),
+            hash: props.doorData.door2.hash,
+            model: props.doorData.door2.model
+          }
+        };
+      }
+      if (props.onSubmit) {
+        props.onSubmit(result);
+      }
+      return result;
+    }
+    __expose({ submit });
+    return (_ctx, _cache) => {
+      return openBlock(), createElementBlock("div", _hoisted_1$1, [
+        createBaseVNode("div", _hoisted_2$1, [
+          _cache[18] || (_cache[18] = createBaseVNode("label", null, "Nome da Porta *", -1)),
+          withDirectives(createBaseVNode("input", {
+            type: "text",
+            "onUpdate:modelValue": _cache[0] || (_cache[0] = ($event) => formData.value.name = $event),
+            placeholder: "Ex: Porta Principal",
+            required: ""
+          }, null, 512), [
+            [vModelText, formData.value.name]
+          ])
+        ]),
+        __props.isDouble && __props.doorData.door1 && __props.doorData.door2 ? (openBlock(), createElementBlock(Fragment, { key: 0 }, [
+          createBaseVNode("div", _hoisted_3$1, [
+            _cache[19] || (_cache[19] = createBaseVNode("label", null, "Porta 1 - Coordenadas *", -1)),
+            createBaseVNode("input", {
+              type: "text",
+              value: formatCoords(__props.doorData.door1.coords),
+              readonly: ""
+            }, null, 8, _hoisted_4$1)
+          ]),
+          createBaseVNode("div", _hoisted_5$1, [
+            _cache[20] || (_cache[20] = createBaseVNode("label", null, "Porta 1 - Hash *", -1)),
+            createBaseVNode("input", {
+              type: "number",
+              value: __props.doorData.door1.hash,
+              readonly: ""
+            }, null, 8, _hoisted_6$1)
+          ]),
+          createBaseVNode("div", _hoisted_7$1, [
+            _cache[21] || (_cache[21] = createBaseVNode("label", null, "Porta 1 - Model", -1)),
+            createBaseVNode("input", {
+              type: "number",
+              value: __props.doorData.door1.model,
+              readonly: ""
+            }, null, 8, _hoisted_8$1)
+          ]),
+          createBaseVNode("div", _hoisted_9$1, [
+            _cache[22] || (_cache[22] = createBaseVNode("label", null, "Porta 2 - Coordenadas *", -1)),
+            createBaseVNode("input", {
+              type: "text",
+              value: formatCoords(__props.doorData.door2.coords),
+              readonly: ""
+            }, null, 8, _hoisted_10$1)
+          ]),
+          createBaseVNode("div", _hoisted_11$1, [
+            _cache[23] || (_cache[23] = createBaseVNode("label", null, "Porta 2 - Hash *", -1)),
+            createBaseVNode("input", {
+              type: "number",
+              value: __props.doorData.door2.hash,
+              readonly: ""
+            }, null, 8, _hoisted_12$1)
+          ]),
+          createBaseVNode("div", _hoisted_13, [
+            _cache[24] || (_cache[24] = createBaseVNode("label", null, "Porta 2 - Model", -1)),
+            createBaseVNode("input", {
+              type: "number",
+              value: __props.doorData.door2.model,
+              readonly: ""
+            }, null, 8, _hoisted_14)
+          ])
+        ], 64)) : (openBlock(), createElementBlock(Fragment, { key: 1 }, [
+          createBaseVNode("div", _hoisted_15, [
+            _cache[26] || (_cache[26] = createBaseVNode("label", null, "Coordenadas *", -1)),
+            withDirectives(createBaseVNode("input", {
+              type: "text",
+              "onUpdate:modelValue": _cache[1] || (_cache[1] = ($event) => formData.value.coords = $event),
+              readonly: __props.isNew
+            }, null, 8, _hoisted_16), [
+              [vModelText, formData.value.coords]
+            ]),
+            __props.isNew ? (openBlock(), createElementBlock("p", _hoisted_17, [..._cache[25] || (_cache[25] = [
+              createBaseVNode("i", { class: "fas fa-info-circle" }, null, -1),
+              createTextVNode(" Coordenadas exatas da porta selecionada ", -1)
+            ])])) : createCommentVNode("", true)
+          ]),
+          createBaseVNode("div", _hoisted_18, [
+            _cache[27] || (_cache[27] = createBaseVNode("label", null, "Hash da Porta *", -1)),
+            withDirectives(createBaseVNode("input", {
+              type: "number",
+              "onUpdate:modelValue": _cache[2] || (_cache[2] = ($event) => formData.value.hash = $event),
+              readonly: __props.isNew
+            }, null, 8, _hoisted_19), [
+              [
+                vModelText,
+                formData.value.hash,
+                void 0,
+                { number: true }
+              ]
+            ])
+          ]),
+          createBaseVNode("div", _hoisted_20, [
+            _cache[28] || (_cache[28] = createBaseVNode("label", null, "Model", -1)),
+            withDirectives(createBaseVNode("input", {
+              type: "number",
+              "onUpdate:modelValue": _cache[3] || (_cache[3] = ($event) => formData.value.model = $event),
+              readonly: __props.isNew
+            }, null, 8, _hoisted_21), [
+              [
+                vModelText,
+                formData.value.model,
+                void 0,
+                { number: true }
+              ]
+            ])
+          ])
+        ], 64)),
+        createBaseVNode("div", _hoisted_22, [
+          _cache[29] || (_cache[29] = createBaseVNode("label", null, "Código de Acesso (Opcional)", -1)),
+          withDirectives(createBaseVNode("input", {
+            type: "text",
+            "onUpdate:modelValue": _cache[4] || (_cache[4] = ($event) => formData.value.passcode = $event),
+            placeholder: "Ex: 1234 ou frase secreta"
+          }, null, 512), [
+            [vModelText, formData.value.passcode]
+          ]),
+          _cache[30] || (_cache[30] = createBaseVNode("p", { class: "item-info-text" }, [
+            createBaseVNode("i", { class: "fas fa-info-circle" }),
+            createTextVNode(" Código ou frase para abrir a porta ")
+          ], -1))
+        ]),
+        createBaseVNode("div", _hoisted_23, [
+          _cache[31] || (_cache[31] = createBaseVNode("label", null, "Permissão/Grupo (Opcional)", -1)),
+          withDirectives(createBaseVNode("input", {
+            type: "text",
+            "onUpdate:modelValue": _cache[5] || (_cache[5] = ($event) => formData.value.permission = $event),
+            placeholder: "Ex: Admin, Policia"
+          }, null, 512), [
+            [vModelText, formData.value.permission]
+          ])
+        ]),
+        createBaseVNode("div", _hoisted_24, [
+          _cache[32] || (_cache[32] = createBaseVNode("label", null, "Grade Mínima do Grupo (Opcional)", -1)),
+          withDirectives(createBaseVNode("input", {
+            type: "number",
+            "onUpdate:modelValue": _cache[6] || (_cache[6] = ($event) => formData.value.grade = $event),
+            min: "0",
+            max: "10"
+          }, null, 512), [
+            [
+              vModelText,
+              formData.value.grade,
+              void 0,
+              { number: true }
+            ]
+          ])
+        ]),
+        createBaseVNode("div", _hoisted_25, [
+          _cache[33] || (_cache[33] = createBaseVNode("label", null, "IDs de Personagens Permitidos (Opcional)", -1)),
+          withDirectives(createBaseVNode("input", {
+            type: "text",
+            "onUpdate:modelValue": _cache[7] || (_cache[7] = ($event) => formData.value.characters = $event),
+            placeholder: "Ex: 1,2,3 (separados por vírgula)"
+          }, null, 512), [
+            [vModelText, formData.value.characters]
+          ])
+        ]),
+        createBaseVNode("div", _hoisted_26, [
+          _cache[34] || (_cache[34] = createBaseVNode("label", null, "Itens Necessários (Opcional)", -1)),
+          withDirectives(createBaseVNode("input", {
+            type: "text",
+            "onUpdate:modelValue": _cache[8] || (_cache[8] = ($event) => formData.value.items = $event),
+            placeholder: "Ex: keycard,lockpick (separados por vírgula)"
+          }, null, 512), [
+            [vModelText, formData.value.items]
+          ])
+        ]),
+        createBaseVNode("div", _hoisted_27, [
+          _cache[36] || (_cache[36] = createBaseVNode("label", null, "Estado Inicial", -1)),
+          withDirectives(createBaseVNode("select", {
+            "onUpdate:modelValue": _cache[9] || (_cache[9] = ($event) => formData.value.state = $event)
+          }, [..._cache[35] || (_cache[35] = [
+            createBaseVNode("option", { value: 1 }, "Trancada", -1),
+            createBaseVNode("option", { value: 0 }, "Destrancada", -1)
+          ])], 512), [
+            [
+              vModelSelect,
+              formData.value.state,
+              void 0,
+              { number: true }
+            ]
+          ])
+        ]),
+        createBaseVNode("div", _hoisted_28, [
+          _cache[37] || (_cache[37] = createBaseVNode("label", null, "Distância de Interação", -1)),
+          withDirectives(createBaseVNode("input", {
+            type: "number",
+            "onUpdate:modelValue": _cache[10] || (_cache[10] = ($event) => formData.value.distance = $event),
+            step: "0.1",
+            min: "0.5",
+            max: "5.0"
+          }, null, 512), [
+            [
+              vModelText,
+              formData.value.distance,
+              void 0,
+              { number: true }
+            ]
+          ])
+        ]),
+        createBaseVNode("div", _hoisted_29, [
+          _cache[38] || (_cache[38] = createBaseVNode("label", null, "Auto-Trancar Após (Segundos)", -1)),
+          withDirectives(createBaseVNode("input", {
+            type: "number",
+            "onUpdate:modelValue": _cache[11] || (_cache[11] = ($event) => formData.value.autolock = $event),
+            min: "0",
+            step: "1"
+          }, null, 512), [
+            [
+              vModelText,
+              formData.value.autolock,
+              void 0,
+              { number: true }
+            ]
+          ])
+        ]),
+        createBaseVNode("div", _hoisted_30, [
+          _cache[39] || (_cache[39] = createBaseVNode("label", null, "Velocidade da Porta (Door Rate)", -1)),
+          withDirectives(createBaseVNode("input", {
+            type: "number",
+            "onUpdate:modelValue": _cache[12] || (_cache[12] = ($event) => formData.value.doorRate = $event),
+            step: "0.1",
+            min: "0.1",
+            max: "10.0"
+          }, null, 512), [
+            [
+              vModelText,
+              formData.value.doorRate,
+              void 0,
+              { number: true }
+            ]
+          ])
+        ]),
+        !__props.isNew ? (openBlock(), createElementBlock("div", _hoisted_31, [
+          withDirectives(createBaseVNode("input", {
+            type: "checkbox",
+            "onUpdate:modelValue": _cache[13] || (_cache[13] = ($event) => formData.value.double = $event),
+            id: "double"
+          }, null, 512), [
+            [vModelCheckbox, formData.value.double]
+          ]),
+          _cache[40] || (_cache[40] = createBaseVNode("label", { for: "double" }, "Porta Dupla", -1))
+        ])) : createCommentVNode("", true),
+        createBaseVNode("div", _hoisted_32, [
+          withDirectives(createBaseVNode("input", {
+            type: "checkbox",
+            "onUpdate:modelValue": _cache[14] || (_cache[14] = ($event) => formData.value.automatic = $event),
+            id: "automatic"
+          }, null, 512), [
+            [vModelCheckbox, formData.value.automatic]
+          ]),
+          _cache[41] || (_cache[41] = createBaseVNode("label", { for: "automatic" }, "Porta Automática", -1))
+        ]),
+        createBaseVNode("div", _hoisted_33, [
+          withDirectives(createBaseVNode("input", {
+            type: "checkbox",
+            "onUpdate:modelValue": _cache[15] || (_cache[15] = ($event) => formData.value.lockpick = $event),
+            id: "lockpick"
+          }, null, 512), [
+            [vModelCheckbox, formData.value.lockpick]
+          ]),
+          _cache[42] || (_cache[42] = createBaseVNode("label", { for: "lockpick" }, "Pode ser Lockpickada", -1))
+        ]),
+        createBaseVNode("div", _hoisted_34, [
+          withDirectives(createBaseVNode("input", {
+            type: "checkbox",
+            "onUpdate:modelValue": _cache[16] || (_cache[16] = ($event) => formData.value.hideUI = $event),
+            id: "hideUI"
+          }, null, 512), [
+            [vModelCheckbox, formData.value.hideUI]
+          ]),
+          _cache[43] || (_cache[43] = createBaseVNode("label", { for: "hideUI" }, "Esconder UI", -1))
+        ]),
+        createBaseVNode("div", _hoisted_35, [
+          withDirectives(createBaseVNode("input", {
+            type: "checkbox",
+            "onUpdate:modelValue": _cache[17] || (_cache[17] = ($event) => formData.value.holdOpen = $event),
+            id: "holdOpen"
+          }, null, 512), [
+            [vModelCheckbox, formData.value.holdOpen]
+          ]),
+          _cache[44] || (_cache[44] = createBaseVNode("label", { for: "holdOpen" }, "Manter Aberta (Hold Open)", -1))
+        ])
+      ]);
+    };
+  }
+};
+const _hoisted_1 = { class: "tablet-container bg-default shadow-tablet" };
+const _hoisted_2 = { class: "main-wrapper" };
+const _hoisted_3 = { class: "content" };
+const _hoisted_4 = { class: "tab-content active" };
+const _hoisted_5 = { class: "tab-container" };
+const _hoisted_6 = { class: "commands-area" };
+const _hoisted_7 = { class: "tab-content active" };
+const _hoisted_8 = { class: "tab-container" };
+const _hoisted_9 = { class: "commands-area" };
+const _hoisted_10 = { class: "tab-content active" };
+const _hoisted_11 = { class: "tab-container" };
+const _hoisted_12 = { class: "commands-area" };
+const _sfc_main = {
+  __name: "App",
+  setup(__props) {
+    useDoorsStore();
+    const isVisible = ref(false);
+    const activeTab = ref("portas");
+    const doorsList = ref([]);
+    const logsList = ref([]);
+    const statsData = ref({});
+    const playerInfo = ref({});
+    const loading = ref(false);
+    const logsLoading = ref(false);
+    const statsLoading = ref(false);
+    const modalVisible = ref(false);
+    const modalTitle = ref("");
+    const modalShowFooter = ref(true);
+    const modalComponent = shallowRef(null);
+    const modalProps = ref({});
+    const modalContent = ref(null);
+    const confirmModalVisible = ref(false);
+    const confirmTitle = ref("");
+    const confirmMessage = ref("");
+    const confirmAction = ref(null);
+    const passwordModalVisible = ref(false);
+    const passwordDoorName = ref("");
+    provide("resourceName", "node-doors");
+    function getResourceName() {
+      return "node-doors";
+    }
+    function applyThemeColors(themeColors) {
+      const root = document.documentElement;
+      if (themeColors.main) root.style.setProperty("--main", themeColors.main);
+      if (themeColors.mainHover) root.style.setProperty("--mainHover", themeColors.mainHover);
+      if (themeColors.mainText) root.style.setProperty("--mainText", themeColors.mainText);
+      if (themeColors.from) root.style.setProperty("--from", themeColors.from);
+      if (themeColors.to) root.style.setProperty("--to", themeColors.to);
+    }
+    async function loadDoors() {
+      loading.value = true;
+      try {
+        const response = await fetch(`https://${getResourceName()}/executarComando`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ comando: "getDoors", parametros: {} })
+        });
+        const data = await response.json();
+        if (data && data.success && data.data) {
+          doorsList.value = data.data;
+        } else {
+          doorsList.value = [];
+        }
+      } catch (error) {
+        doorsList.value = [];
+      }
+      loading.value = false;
+    }
+    async function loadLogs() {
+      logsLoading.value = true;
+      try {
+        const response = await fetch(`https://${getResourceName()}/executarComando`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ comando: "getLogs", parametros: {} })
+        });
+        const data = await response.json();
+        if (data && data.success && data.data) {
+          logsList.value = data.data;
+        } else {
+          logsList.value = [];
+        }
+      } catch (error) {
+        logsList.value = [];
+      }
+      logsLoading.value = false;
+    }
+    async function loadStats() {
+      statsLoading.value = true;
+      try {
+        const response = await fetch(`https://${getResourceName()}/executarComando`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ comando: "getEstatisticas", parametros: {} })
+        });
+        const data = await response.json();
+        if (data && data.success && data.data) {
+          statsData.value = data.data;
+        } else {
+          statsData.value = {};
+        }
+      } catch (error) {
+        statsData.value = {};
+      }
+      statsLoading.value = false;
+    }
+    function switchTab(tabName) {
+      activeTab.value = tabName;
+      if (tabName === "portas") {
+        loadDoors();
+      } else if (tabName === "logs") {
+        loadLogs();
+      } else if (tabName === "estatisticas") {
+        loadStats();
+      }
+    }
+    function openNUI(data) {
+      if (data && data.themeColors) {
+        applyThemeColors(data.themeColors);
+      }
+      if (data && data.playerInfo && data.playerInfo.success) {
+        playerInfo.value = data.playerInfo;
+      }
+      isVisible.value = true;
+      loadDoors();
+    }
+    function closeNUI() {
+      isVisible.value = false;
+      fetch(`https://${getResourceName()}/Close`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({})
+      }).catch(() => {
+      });
+    }
+    function openCreateModal() {
+      modalTitle.value = "Criar Porta";
+      modalShowFooter.value = false;
+      modalComponent.value = markRaw(_sfc_main$2);
+      modalProps.value = {
+        onStartSelection: startDoorSelection,
+        onClose: closeModal
+      };
+      modalVisible.value = true;
+    }
+    function editDoor(doorData) {
+      modalTitle.value = "Editar Porta";
+      modalShowFooter.value = true;
+      modalComponent.value = markRaw(_sfc_main$1);
+      modalProps.value = { doorData };
+      modalVisible.value = true;
+    }
+    async function submitEditDoor(doorData) {
+      try {
+        const response = await fetch(`https://${getResourceName()}/executarComando`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ comando: "editDoor", parametros: doorData })
+        });
+        const data = await response.json();
+        if (data && data.success) {
+          closeModal();
+          loadDoors();
+        }
+      } catch (error) {
+        console.error("Erro ao editar porta:", error);
+      }
+    }
+    function removeDoor(doorId) {
+      confirmTitle.value = "Confirmar Remoção";
+      confirmMessage.value = "Deseja realmente remover esta porta?<br>Esta ação não pode ser desfeita.";
+      confirmAction.value = async () => {
+        try {
+          const response = await fetch(`https://${getResourceName()}/executarComando`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ comando: "removeDoor", parametros: { doorid: doorId } })
+          });
+          const data = await response.json();
+          if (data && data.success) {
+            loadDoors();
+          }
+        } catch (error) {
+          console.error("Erro ao remover porta:", error);
+        }
+      };
+      confirmModalVisible.value = true;
+    }
+    function closeModal() {
+      modalVisible.value = false;
+      modalComponent.value = null;
+      modalProps.value = {};
+    }
+    function confirmModal() {
+      if (modalContent.value && typeof modalContent.value.submit === "function") {
+        const data = modalContent.value.submit();
+        if (data) {
+          submitEditDoor(data);
+        }
+      }
+    }
+    function closeConfirmModal() {
+      confirmModalVisible.value = false;
+      confirmAction.value = null;
+    }
+    function executeConfirmAction() {
+      if (confirmAction.value) {
+        confirmAction.value();
+      }
+      closeConfirmModal();
+    }
+    async function startDoorSelection(isDouble) {
+      closeModal();
+      closeNUI();
+      setTimeout(async () => {
+        try {
+          await fetch(`https://${getResourceName()}/startDoorSelection`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ isDouble })
+          });
+        } catch (error) {
+          console.error("Erro ao iniciar seleção:", error);
+        }
+      }, 300);
+    }
+    function openDoorEditModal(doorData, isDouble) {
+      modalTitle.value = "Criar Porta";
+      modalShowFooter.value = true;
+      modalComponent.value = markRaw(_sfc_main$1);
+      modalProps.value = {
+        doorData,
+        isDouble,
+        isNew: true,
+        onSubmit: submitCreateDoor
+      };
+      modalVisible.value = true;
+    }
+    async function submitCreateDoor(doorData) {
+      try {
+        const response = await fetch(`https://${getResourceName()}/executarComando`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ comando: "createDoor", parametros: doorData })
+        });
+        const data = await response.json();
+        if (data && data.success) {
+          closeModal();
+          loadDoors();
+        }
+      } catch (error) {
+        console.error("Erro ao criar porta:", error);
+      }
+    }
+    function openPasswordModal(doorName) {
+      passwordDoorName.value = doorName;
+      passwordModalVisible.value = true;
+    }
+    function closePasswordModal() {
+      passwordModalVisible.value = false;
+      passwordDoorName.value = "";
+      fetch(`https://${getResourceName()}/doorPasswordCancel`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({})
+      }).catch(() => {
+      });
+    }
+    async function submitPassword(password) {
+      try {
+        await fetch(`https://${getResourceName()}/doorPasswordSubmit`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ password })
+        });
+      } catch (error) {
+        console.error("Erro ao enviar senha:", error);
+      }
+      passwordModalVisible.value = false;
+      passwordDoorName.value = "";
+    }
+    function handleMessage(event) {
+      const data = event.data;
+      if (data.Action === "Open" || data.action === "open") {
+        const payload = data.Payload || data;
+        openNUI(payload);
+      } else if (data.Action === "Close" || data.action === "close") {
+        isVisible.value = false;
+      } else if (data.action === "reopen") {
+        isVisible.value = true;
+        if (data.themeColors) {
+          applyThemeColors(data.themeColors);
+        }
+        if (data.playerInfo && data.playerInfo.success) {
+          playerInfo.value = data.playerInfo;
+        }
+      } else if (data.action === "doorSelected") {
+        const doorData = data.doorData;
+        const isDouble = data.isDouble || false;
+        fetch(`https://${getResourceName()}/reopenPanel`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({})
+        }).then(() => {
+          setTimeout(() => {
+            openDoorEditModal(doorData, isDouble);
+          }, 300);
+        }).catch(() => {
+          setTimeout(() => {
+            openDoorEditModal(doorData, isDouble);
+          }, 500);
+        });
+      } else if (data.action === "doorSelectionCancelled") {
+        fetch(`https://${getResourceName()}/reopenPanel`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({})
+        });
+      } else if (data.action === "openPasswordInput") {
+        openPasswordModal(data.doorName || "Porta");
+      }
+    }
+    function handleKeyup(e) {
+      if (e.key === "Escape" && isVisible.value) {
+        if (passwordModalVisible.value) {
+          closePasswordModal();
+        } else if (confirmModalVisible.value) {
+          closeConfirmModal();
+        } else if (modalVisible.value) {
+          closeModal();
+        } else {
+          closeNUI();
+        }
+      }
+    }
+    onMounted(() => {
+      window.addEventListener("message", handleMessage);
+      document.addEventListener("keyup", handleKeyup);
+    });
+    onUnmounted(() => {
+      window.removeEventListener("message", handleMessage);
+      document.removeEventListener("keyup", handleKeyup);
+    });
+    return (_ctx, _cache) => {
+      return openBlock(), createElementBlock(Fragment, null, [
+        createBaseVNode("div", {
+          id: "nui-app",
+          class: normalizeClass({ hidden: !isVisible.value })
+        }, [
+          createBaseVNode("div", _hoisted_1, [
+            createVNode(_sfc_main$c, { onClose: closeNUI }),
+            createBaseVNode("div", _hoisted_2, [
+              createBaseVNode("div", _hoisted_3, [
+                withDirectives(createBaseVNode("div", _hoisted_4, [
+                  createBaseVNode("div", _hoisted_5, [
+                    createBaseVNode("div", _hoisted_6, [
+                      createVNode(_sfc_main$8, {
+                        doors: doorsList.value,
+                        loading: loading.value,
+                        onCreate: openCreateModal,
+                        onEdit: editDoor,
+                        onRemove: removeDoor
+                      }, null, 8, ["doors", "loading"])
+                    ])
+                  ])
+                ], 512), [
+                  [vShow, activeTab.value === "portas"]
+                ]),
+                withDirectives(createBaseVNode("div", _hoisted_7, [
+                  createBaseVNode("div", _hoisted_8, [
+                    createBaseVNode("div", _hoisted_9, [
+                      createVNode(_sfc_main$7, {
+                        logs: logsList.value,
+                        loading: logsLoading.value
+                      }, null, 8, ["logs", "loading"])
+                    ])
+                  ])
+                ], 512), [
+                  [vShow, activeTab.value === "logs"]
+                ]),
+                withDirectives(createBaseVNode("div", _hoisted_10, [
+                  createBaseVNode("div", _hoisted_11, [
+                    createBaseVNode("div", _hoisted_12, [
+                      createVNode(StatsList, {
+                        stats: statsData.value,
+                        loading: statsLoading.value
+                      }, null, 8, ["stats", "loading"])
+                    ])
+                  ])
+                ], 512), [
+                  [vShow, activeTab.value === "estatisticas"]
+                ])
+              ])
+            ]),
+            createVNode(AppFooter, {
+              "player-info": playerInfo.value,
+              "active-tab": activeTab.value,
+              onSwitchTab: switchTab,
+              onClose: closeNUI
+            }, null, 8, ["player-info", "active-tab"])
+          ])
+        ], 2),
+        createVNode(_sfc_main$5, {
+          visible: modalVisible.value,
+          title: modalTitle.value,
+          "show-footer": modalShowFooter.value,
+          onClose: closeModal,
+          onConfirm: confirmModal
+        }, {
+          body: withCtx(() => [
+            (openBlock(), createBlock(resolveDynamicComponent(modalComponent.value), mergeProps(modalProps.value, {
+              ref_key: "modalContent",
+              ref: modalContent
+            }), null, 16))
+          ]),
+          _: 1
+        }, 8, ["visible", "title", "show-footer"]),
+        createVNode(ConfirmModal, {
+          visible: confirmModalVisible.value,
+          title: confirmTitle.value,
+          message: confirmMessage.value,
+          onClose: closeConfirmModal,
+          onConfirm: executeConfirmAction
+        }, null, 8, ["visible", "title", "message"]),
+        createVNode(_sfc_main$3, {
+          visible: passwordModalVisible.value,
+          "door-name": passwordDoorName.value,
+          onClose: closePasswordModal,
+          onSubmit: submitPassword
+        }, null, 8, ["visible", "door-name"])
+      ], 64);
+    };
+  }
+};
+const app = createApp(_sfc_main);
+const pinia = createPinia();
+app.use(pinia);
+app.mount("#app");
